@@ -1,7 +1,7 @@
 import FormInput from "../components/shared/FormInput";
 import Row from "../components/shared/Row";
 import { useAuth } from "../hooks/useAuth";
-import { useUpdatePassword } from "../hooks/useUSer";
+import { useUpdatePassword } from "../hooks/useUser";
 import { updatePasswordSchema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form"; 

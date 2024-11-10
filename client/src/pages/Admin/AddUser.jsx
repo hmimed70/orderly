@@ -7,7 +7,7 @@ import Row from "../../components/shared/Row";
 import { useNavigate } from "react-router-dom";
 
 import { useTranslation } from "react-i18next";
-import { useCreateUser } from "../../hooks/useUSer";
+import { useCreateUser } from "../../hooks/useUser";
 
 const AddUser = () => {
   const { t } = useTranslation(); // Initialize the translation hook

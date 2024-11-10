@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import FormInput from "../components/shared/FormInput";
-import { useUpdateMe } from "../hooks/useUSer";
+import { useUpdateMe } from "../hooks/useUser";
 import { updatedMeSchema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";

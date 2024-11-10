@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import { updatedUserSchema } from "../../schema/index"; 
 import Row from "../../components/shared/Row";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEditUser, useGetSingleUser } from "../../hooks/useUSer";
+import { useEditUser, useGetSingleUser } from "../../hooks/useUser";
 
 const EditUser = () => {
   const { t } = useTranslation(); // Initialize translation function

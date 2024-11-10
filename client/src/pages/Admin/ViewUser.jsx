@@ -1,6 +1,6 @@
 import { Fragment } from "react";
 import { useParams } from "react-router-dom";
-import { useGetSingleUser } from "../../hooks/useUSer";
+import { useGetSingleUser } from "../../hooks/useUser";
 import { useTranslation } from "react-i18next"; // Import useTranslation
 
 const ViewUser = () => {

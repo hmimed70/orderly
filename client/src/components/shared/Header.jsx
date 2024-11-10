@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { useLanguage } from "../../hooks/LanguageProvider";
 
 import { useTheme } from "../../hooks/useTheme";
-import { useLogout } from "../../hooks/useUSer";
+import { useLogout } from "../../hooks/useUser";
 const Header = ({ toggleSidebar }) => {
   const { t } = useTranslation();
 
