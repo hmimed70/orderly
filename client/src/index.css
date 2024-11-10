@@ -1,0 +1,115 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-scrollbar {
+  overflow-x: auto;       /* Enable horizontal scrolling */
+  overflow-y: auto;     /* Disable vertical scrolling */
+  scrollbar-width: thin;  /* For Firefox */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;            /* Adjust the height of the horizontal scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #888; /* Style for the scrollbar thumb */
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;    /* Style for the scrollbar track */
+}
+ss */
+
+:root {
+  --bg-color-light: #ffffff;
+  --text-color-light: #333333;
+  --button-bg-light: #e0e0e0;
+  --button-text-light: #333333;
+  --toast-bg-color: #333; /* Example background color */
+  --toast-text-color: #fff; /* Example text color */
+}
+
+.dark {
+  --bg-color-light: #1a1a1a;
+  --text-color-light: #ffffff;
+  --button-bg-light: #333333;
+  --button-text-light: #e0e0e0;
+}
+
+body {
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+
+
+  /* Apply the colors to Tailwind utility classes */
+  .bg-base {
+    background-color: var(--bg-color);
+  }
+  
+  .text-base {
+    color: var(--text-color);
+  }
+  
+  .bg-primary {
+    background-color: var(--primary-color);
+  }
+  
+  .text-primary {
+    color: var(--primary-color);
+  }
+  
+  .bg-secondary {
+    background-color: var(--secondary-color);
+  }
+  
+  .text-secondary {
+    color: var(--secondary-color);
+  }
+  
+  
+body {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+}
+
+.navlink:link, .navlink:visited {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+  
+      color: #4b5563;
+      font-size: 22px;
+      font-weight: 500;
+      padding: 0.8rem 1.2rem;
+      transition: all 0.3s;
+    }
+  
+    /* This works because react-router places the active class on the active NavLink */
+    .navlink:hover,
+    .navlink:active,
+    .navlink .active:link,
+    .navlink .active:visited {
+      color: #c4c6c8;
+      background-color:  #f9fafb;
+      border-radius: var(--border-radius-sm);
+    }
+  
+    .navlink svg {
+      width: 2.4rem;
+      height: 2.4rem;
+      color: #9ca3af;
+      transition: all 0.3s;
+    }
+  
+    .navlink:hover svg,
+    .navlink:active svg,
+    .navlink.active:link svg,
+    .navlink.active:visited svg {
+      color: #4b5563;
+    }
