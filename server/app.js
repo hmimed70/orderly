@@ -21,7 +21,7 @@ const app = express();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: 'http://localhost:5173', // frontend URL
+  origin: 'https://orderly-frontend.onrender.com', // frontend URL
   credentials: true,
 }));
 app.options('*', cors());
