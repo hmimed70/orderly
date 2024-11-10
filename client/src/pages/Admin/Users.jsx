@@ -1,5 +1,5 @@
 import  { useEffect, useState } from "react";
-import { useDeleteUser, useUser } from '../../hooks/useUSer';
+import { useDeleteUser, useUser } from '../../hooks/useUser';
 import UsersTable from "../../components/users/UserTable";
 import Pagination from "../../components/shared/Pagination";
 import RowsPerPageSelector from "../../components/shared/RowsPage";
