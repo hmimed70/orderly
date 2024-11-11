@@ -5,17 +5,24 @@ const User = require("../models/userModel");
 const { promisify } = require('util');
 
 exports.isAuthenticated = catchAsyncError(async (req, res, next) => {
-     let token;
+  console.log("inside auth")  
+  let token;
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith('Bearer')
     ) {
+      console.log("Bearer token")  
+
       token = req.headers.authorization.split(' ')[1];
 
     } else if (req.cookies.jwt) {
+      console.log("cookies token")  
+
       token = req.cookies.jwt;
     }
     if (!token) {
+      console.log("not login")  
+      console.log(process.env.JWT_SECRET)
       return next(
         new ErrorHandler('You are not logged in! Please log in to get access.', 401)
       );
@@ -39,7 +46,7 @@ exports.isAuthenticated = catchAsyncError(async (req, res, next) => {
   
     req.user = currentUser;
     res.locals.user = currentUser;
-
+    console.log("get me")
     next();
   });
 

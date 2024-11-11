@@ -21,12 +21,13 @@ const app = express();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: 'https://orderly-frontend.onrender.com', // frontend URL
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173', // frontend URL
   credentials: true,
 }));
 app.options('*', cors());
 app.use(helmet());
 app.use(mongoSanitize());
+app.set('trust proxy', 1); // for secure cookies behind a proxy
 
 app.use(xss());
 app.use(express.json());

@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { BACKEND_URL } from '../utils';
 
 // Create an Axios instance
@@ -13,14 +12,7 @@ API.interceptors.response.use(
   (response) => response, // Simply return the response if no error
   (error) => {
     if (error.response && error.response.status === 401) {
-      // Logout the user on 401 error
-      // You can remove the JWT cookie or handle token clearing here
-      // For example:
       document.cookie = 'jwt=; expires=Thu, 01 Jan 1970 00:00:00 GMT'; // Delete cookie
-
-      // Redirect to login page
-      const navigate = useNavigate();
-      navigate('/login', { replace: true });
     }
     return Promise.reject(error); // Reject the error to propagate it
   }
