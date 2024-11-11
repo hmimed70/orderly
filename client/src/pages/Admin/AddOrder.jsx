@@ -24,7 +24,6 @@ const AddOrder = () => {
   const { register, handleSubmit, reset , watch, formState: { errors } } = useForm({
     resolver: zodResolver(orderSchema),
   });
-console.log(errors);
   function onSubmit(data) {
       const orderData = {
         invoice_information: {
