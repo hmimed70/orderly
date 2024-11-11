@@ -4,7 +4,7 @@ import API from "./Api";
 // Login function: returns user data directly from the nested structure
 export const login = async (data) => {
   const response = await API.post('/users/login', data);
-  return response.data.user; // Extract user from response
+  return response.data; // Extract user from response
 };
 // Logout function
 export const logout = async () => {

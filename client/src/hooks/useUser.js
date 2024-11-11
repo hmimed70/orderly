@@ -113,6 +113,7 @@ export function useLogout() {
   const { mutate: logout, isLoading } = useMutation({
     mutationFn: () => logoutUser(),
     onSuccess: () => {
+      localStorage.clear();
       toast.success(t('user.logoutSuccess')); // Use t to get the translation
       queryClient.removeQueries();
       navigate('/login', { replace: true });

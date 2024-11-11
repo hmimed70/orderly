@@ -42,6 +42,16 @@ function App() {
       <BrowserRouter>
             <Routes>
             <Route
+                    element={
+                    <ProtectedRoute>
+                      <AppLayout />
+                    </ProtectedRoute>
+                  }
+                >
+                  <Route path="/account/update-profile" element={<Account />} />
+                  <Route path="/account/update-password" element={<UpdatePassword />} />
+                </Route>
+            <Route
               element={
                 <ProtectedRoute forAdmin>
                   <AppLayout />
@@ -75,16 +85,7 @@ function App() {
                 <Route path="/statistics" element={<StatisticsUser />} />
 
                 </Route>
-                <Route
-                    element={
-                    <ProtectedRoute>
-                      <AppLayout />
-                    </ProtectedRoute>
-                  }
-                >
-                  <Route path="/account/update-profile" element={<Account />} />
-                  <Route path="/account/update-password" element={<UpdatePassword />} />
-                </Route>
+         
                 <Route path="/login" element={<Login  />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>

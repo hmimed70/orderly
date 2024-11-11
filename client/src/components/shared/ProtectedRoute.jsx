@@ -13,10 +13,6 @@ function ProtectedRoute({ children, forAdmin }) {
       if(!isAdmin && !isUser) {
         navigate('/login', { replace: true });
       }
-      if(isAdmin && !forAdmin) {
-
-         navigate('/admin/dashboard', { replace: true });
-       }
        if (isUser && forAdmin) {
 
         navigate('/login', { replace: true });

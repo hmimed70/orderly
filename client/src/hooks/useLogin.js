@@ -10,15 +10,20 @@ export function useLogin() {
   const { mutate: login, isLoading } = useMutation({
     mutationFn: ({ email, password }) => apiLogin({ email, password }),
 
+    onSuccess: (response) => {
+      const { token, user } = response; // Destructure token and user from the response
+      if (token) {
+        localStorage.setItem('token', token);
+        queryClient.setQueryData(['myauthuser'], user);
 
-    onSuccess: (user) => {
-      queryClient.setQueryData(['myauthuser'], user.user);
-        if(user.role === 'admin') {
+        if (user.role === 'admin') {
           navigate('/admin/dashboard', { replace: true });
-        }
-        if(user.role === 'confirmatrice') {
+        } else if (user.role === 'confirmatrice') {
           navigate('/dashboard', { replace: true });
         }
+      } else {
+        console.error('Token is missing in the response');
+      }
     },
     onError: (err) => {
       console.error(err);

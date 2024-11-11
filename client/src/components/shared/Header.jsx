@@ -31,7 +31,7 @@ const Header = ({ toggleSidebar }) => {
   };
 const handleLanguageChangge = (lang) => {
   changeLanguage(lang);
-  toggleLanguageDropdown();
+  toggleLanguageDropdown(false);
 }
   const logoutUser = () => {
     logout();

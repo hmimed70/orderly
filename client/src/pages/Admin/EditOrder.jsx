@@ -175,8 +175,8 @@ const EditOrder = () => {
                   onChange={(event) => setSelectedCommune(event.target.value)}
                 >
                   <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700"  value="" disabled>{t('editOrder1.chooseCommune')}</option>
-                  {myCommunes.map((commune) => (
-                    <option  className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={commune.code} value={commune.code}>
+                  {myCommunes.map((commune, index) => (
+                    <option  className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={index} value={commune.code}>
                       {commune.nom}
                     </option>
                   ))}

@@ -2,9 +2,9 @@ import { useEffect, useState, useCallback } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 import FormRowVertical from "./FormRowVertical";
-import { useLogin } from "../../hooks/useLogin";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import { useLogin } from "../../hooks/useLogin";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -13,17 +13,12 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const { login, isLoading: loading } = useLogin();
   const { t } = useTranslation();
-
-  const handleNavigation = useCallback(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
-
-  useEffect(() => {
-    handleNavigation();
-  }, [handleNavigation]);
-
+  useEffect(
+    function () {
+      if (user) navigate("/dashboard", { replace: true });
+    },
+    [user, navigate]
+  );
   function handleSubmit(e) {
     e.preventDefault();
     if (!email || !password) return;
