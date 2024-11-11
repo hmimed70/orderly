@@ -31,7 +31,6 @@ const EditUser = () => {
         fullname: user.fullname || "",
         username: user.username || "",
         email: user.email || "",
-        password: "", 
         role: user.role || "confirmatrice",
         phone: user.phone || "",
         state: user.state || "",
@@ -47,7 +46,6 @@ const EditUser = () => {
       fullname: data.fullname,
       username: data.username,
       email: data.email,
-      password: data.password, 
       role: data.role,
       phone: data.phone,
       state: data.state,
@@ -104,17 +102,6 @@ const EditUser = () => {
                 errors={errors.username}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-              <FormInput
-                type="password"
-                placeholder={t('editUser.password')}
-                name="password"
-                disabled={isEditing}
-                register={register}
-                errors={errors.password}
-                className="dark:bg-gray-700 dark:text-gray-200"
-              />
-            </Row>
-            <Row>
               <div className="w-full flex justify-center items-center my-2 text-left rtl:text-right">
                 <label htmlFor="role" className="text-slate-800 dark:text-gray-100 px-2 w-3/5 text-left rtl:text-right">{t('editUser.role')}</label>
                 <select
@@ -128,6 +115,8 @@ const EditUser = () => {
                 </select>
                 {errors.role && <p className="text-red-600">{errors.role.message}</p>}
               </div>
+              </Row>
+              <Row>
               <FormInput
                 disabled={isEditing}
                 type="text"
@@ -137,8 +126,7 @@ const EditUser = () => {
                 errors={errors.phone}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-            </Row>
-            <Row>
+      
               <FormInput
                 disabled={isEditing}
                 type="text"
@@ -148,6 +136,8 @@ const EditUser = () => {
                 errors={errors.handleLimit}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
+                    </Row>
+                    <Row>
               <FormInput
                 disabled={isEditing}
                 type="text"
@@ -157,8 +147,7 @@ const EditUser = () => {
                 errors={errors.orderConfirmedPrice}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-            </Row>
-            <Row>
+        
               <FormInput
                 disabled={isEditing}
                 type="text"
@@ -168,6 +157,8 @@ const EditUser = () => {
                 errors={errors.state}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
+                  </Row>
+                  <Row>
               <div className=" text-left rtl:text-right w-full flex justify-center items-center my-2">
                 <span className="text-slate-800 dark:text-gray-100 w-2/3 text-left rtl:text-right  pr-1">{t('editUser.gender')}</span>
                 <div className="flex w-full">

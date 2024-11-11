@@ -93,7 +93,6 @@ export const updatedUserSchema = z.object({
     .min(10, { message: "Primary phone number should be at least 10 digits" })
     .regex(/^[0-9]+$/, { message: "Phone number should contain only numbers" }),
 email: z.string().email("Invalid email").trim(),
-password: z.string().optional(),
 username: z.string().min(3, {message: "username is required"}),
 gender: z.enum(["male", "female"]),
 state: z.string().optional(),

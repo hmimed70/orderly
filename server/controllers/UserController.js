@@ -128,7 +128,8 @@ exports.createUser = catchAsyncError(async (req, res, next) => {
   
 
   exports.updateUser = catchAsyncError(async (req, res, next) => {
-    if (!req.body.password) {
+    console.log(req.body);
+    if (req.body.password) {
       delete req.body.password; // Remove password from userData if not provided
     }
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
