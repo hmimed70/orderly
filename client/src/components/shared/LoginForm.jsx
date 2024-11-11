@@ -8,16 +8,17 @@ import { useLogin } from "../../hooks/useLogin";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { isAdmin, isUser } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading: loading } = useLogin();
   const { t } = useTranslation();
   useEffect(
     function () {
-      if (user) navigate("/dashboard", { replace: true });
+      if (isUser) navigate("/dashboard", { replace: true });
+      if(isAdmin) navigate("/admin/dashboard", { replace: true });
     },
-    [user, navigate]
+    [isAdmin,isUser, navigate]
   );
   function handleSubmit(e) {
     e.preventDefault();
