@@ -49,7 +49,7 @@ exports.LoginUser = catchAsyncError(async (req, res, next) => {
 })
 
 exports.logout = (req, res) => {
-  res.cookie('jwt', 'loggedout', {
+  res.cookie('token', 'loggedout', {
     expires: new Date(Date.now() + 1 * 1000),
     httpOnly: true
   });

@@ -2,10 +2,26 @@ import { HiRefresh } from 'react-icons/hi';
 import { HiEye, HiTrash } from "react-icons/hi2";
 import { NavLink } from 'react-router-dom';
 import { formattedDate } from '../../utils';
+import MyModal from '../shared/MyModal';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
+import EditUser from '../../pages/Admin/EditUser';
 const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
   const { t } = useTranslation(); // Get the translation function
+  const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+
+  const [selectedUserId, setSelectedUserId] = useState(null);
+
+  const handleEditClick = (orderId) => {
+    setSelectedUserId(orderId);
+    setIsModalEditOpen(true);
+  };
+
+  const closeModalEdit = () => {
+    setIsModalEditOpen(false);
+    setSelectedUserId(null);
+  };
 
   return (
     <div className="max-h-[30rem] overflow-y-scroll custom-scrollbar mt-2">
@@ -45,12 +61,12 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
                 {visibleColumns.createdAt && <td className="px-4 py-4">{formattedDate(user.createdAt)}</td>}
                 {visibleColumns.actions && (
                   <td className="py-4 flex gap-4">
-                    <NavLink to={`/admin/users/view/${user._id}`} className="flex items-center text-xl text-indigo-600 hover:text-indigo-400 transition-colors duration-200">
+                    <NavLink to={`/admin/users/view/${user._id}`} className="flex items-center text-xl text-orange-600 hover:text-orange-400 transition-colors duration-200">
                       <HiEye className="text-2xl" />
                     </NavLink>
-                    <NavLink to={`/admin/users/edit/${user._id}`} className="flex items-center text-xl text-green-600 hover:text-green-400 transition-colors duration-200">
+                    <button onClick={() => handleEditClick(user._id)} className="flex items-center text-xl text-green-600 hover:text-green-400 transition-colors duration-200">
                       <HiRefresh className="text-2xl" />
-                    </NavLink>
+                    </button>
                     <button
                       onClick={() => onDeleteUser && onDeleteUser(user._id)}
                       className="flex items-center text-xl text-red-600 hover:text-red-400 transition-colors duration-200"
@@ -68,6 +84,11 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
           )}
         </tbody>
       </table>
+      {isModalEditOpen && 
+      <MyModal isVisible={isModalEditOpen} onClose={closeModalEdit}>
+      <EditUser id={selectedUserId} onClose={closeModalEdit} />
+      </MyModal>
+      }
     </div>
   );
 };

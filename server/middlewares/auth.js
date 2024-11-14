@@ -10,8 +10,9 @@ exports.isAuthenticated = catchAsyncError(async (req, res, next) => {
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     token = req.headers.authorization.split(' ')[1];
   }
-
+  
   if (!token) {
+    console.log("no token provided")
     return next(new ErrorHandler('You are not logged in! Please log in to get access.', 401));
   }
 

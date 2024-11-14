@@ -11,6 +11,7 @@ function ProtectedRoute({ children, forAdmin }) {
   useEffect(() => {
     if(!isLoading) {
       if(!isAdmin && !isUser) {
+        console.log('not admin, not user');
         navigate('/login', { replace: true });
       }
        if (isUser && forAdmin) {

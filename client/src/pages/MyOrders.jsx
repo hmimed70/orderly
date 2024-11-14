@@ -6,7 +6,7 @@ import ColumnVisibilityToggle from "../components/shared/ColumnVisibilty";
 import OrdersTable from "../components/orders/OrderTable";
 import Pagination from "../components/shared/Pagination";
 import ConfirmationModal from "../components/shared/ConfirmationModal";
-import { useAssignOrders, useConfirmOrder, useCancelOrder, useMyOrder } from "../hooks/useOrder"; // New hooks for confirming and canceling orders
+import {  useMyOrder } from "../hooks/useOrder"; // New hooks for confirming and canceling orders
 import DateFilter from "../components/shared/DateFilter";
 import { useTranslation } from "react-i18next";
 
@@ -14,14 +14,9 @@ const OrdersPage = () => {
   const {t} = useTranslation();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const { isAssigning, assignOrder } = useAssignOrders();
-  const { isConfirming, confirmOrd } = useConfirmOrder(); // New hook for confirming
-  const { isCanceling, cancelOrd } = useCancelOrder(); // New hook for canceling
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalAction, setModalAction] = useState(null); // Track action type for modal
-  const [idToHandle, setIdToHandle] = useState(null);
   const [ date, setDate ] = useState(""); // New hook for canceling
-  const [status, setStatus] = useState("in-progress"); // New state for status filter
+  const [status, setStatus] = useState("inProgress"); // New state for status filter
   const { isLoading, data, error } = useMyOrder(currentPage, rowsPerPage,status, date);
   const [searchTerm, setSearchTerm] = useState("");
   const [visibleColumns, setVisibleColumns] = useState(() => {
@@ -32,7 +27,6 @@ const OrdersPage = () => {
       product_sku: true,
       wilaya: true,
       commune: true,
-      address: false,
       price: false,
       status: true,
       total: true,
@@ -62,32 +56,10 @@ const OrdersPage = () => {
   const totalOrders = searchTerm!==""  ? filteredOrders.length : filteredOrdersCount;
   const totalPages = Math.ceil(totalOrders / rowsPerPage) || 1;
 
-  const handleConfirmOrder = (id) => {
-    setModalAction("confirm");
-  
-    setIdToHandle(id);
-     
-    setIsModalOpen(true);
-  };
-
-  const handleCancelOrder = (id) => {
-    setModalAction("cancel");
-    setIdToHandle(id);
-    setIsModalOpen(true);
-  };
   const toggleColumnVisibility = (column) => {
     setVisibleColumns(prev => ({ ...prev, [column]: !prev[column] }));
   };
-  const handleModalConfirm = () => {
-    if (modalAction === "assign") {
-      assignOrder();
-    } else if (modalAction === "confirm") {
-      confirmOrd(idToHandle);
-    } else if (modalAction === "cancel") {
-      cancelOrd(idToHandle);
-    }
-    setIsModalOpen(false);
-  };
+
   return (
     <div>
     <h1 className="text-2xl font-bold">{t('orders')}</h1>
@@ -101,19 +73,11 @@ const OrdersPage = () => {
         </div>
     <ColumnVisibilityToggle visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
     <OrdersTable
-        onConfirmOrder={handleConfirmOrder}
-        onCancelOrder={handleCancelOrder}
+
         orders={filteredOrders}
         visibleColumns={visibleColumns}
       />    <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={setCurrentPage} totalOrders={totalOrders} ordersCount={ordersCount} />
-    {isModalOpen && (
-        <ConfirmationModal
-          disable={isAssigning || isConfirming || isCanceling}
-          message={t('confirm_modal')}
-          onConfirm={handleModalConfirm}
-          onCancel={() => setIsModalOpen(false)}
-        />
-      )}
+
   </div>
   );
 };

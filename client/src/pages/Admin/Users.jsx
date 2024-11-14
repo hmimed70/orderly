@@ -5,10 +5,10 @@ import Pagination from "../../components/shared/Pagination";
 import RowsPerPageSelector from "../../components/shared/RowsPage";
 import SearchBar from "../../components/shared/SearchBar";
 import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
-import { NavLink } from "react-router-dom";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useTranslation } from 'react-i18next'; // Import useTranslation
-
+import AddUser from "./AddUser";
+import MyModal from '../../components/shared/MyModal';
 const UsersPage = () => {
   const { t } = useTranslation(); // Initialize translation function
 
@@ -19,6 +19,7 @@ const UsersPage = () => {
   const [userToDelete, setUserToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { deleteUser, isDeleting } = useDeleteUser();
+  const [isModalAddOpen, setIsModalAddOpen] = useState(false);
 
   const [visibleColumns, setVisibleColumns] = useState(() => {
     // Retrieve saved column visibility from localStorage, or use default values if not available
@@ -57,6 +58,13 @@ const UsersPage = () => {
   const totalUsers = searchTerm !== "" ? filteredUsers.length : usersCount;
   const totalPages = Math.ceil(totalUsers / rowsPerPage) || 1;
 
+  const handleAddClick = () => {
+    setIsModalAddOpen(true);
+  };
+
+  const closeModalAdd = () => {
+    setIsModalAddOpen(false);
+  };
   const handleRowsPerPageChange = (e) => {
     setRowsPerPage(parseInt(e.target.value, 10));
     setCurrentPage(1);
@@ -79,8 +87,8 @@ const UsersPage = () => {
         <div className="flex items-center space-x-2">
           <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={handleRowsPerPageChange} usersCount={usersCount} />
         </div>
-        <button className="py-3 px-6 rounded-md bg-indigo-600 cursor-pointer text-white hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600">
-          <NavLink to="/admin/users/create">{t('usersPage.addUser')}</NavLink>
+        <button onClick={handleAddClick} className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600">
+          {t('usersPage.addUser')}
         </button>
       </div>
 
@@ -99,6 +107,12 @@ const UsersPage = () => {
           onCancel={() => setIsModalOpen(false)}
         />
       )}
+          {isModalAddOpen && 
+                <MyModal isVisible={isModalAddOpen} onClose={closeModalAdd}>
+          <AddUser onClose={closeModalAdd} />
+          </MyModal>
+          }
+
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
-import { editOrderDataUser, getOrderCountByStatusAdmin, getSingleOrder, getSingleOrderUser, newOrder, userStatistics } from "../services/OrderApi";
-import { getAllOrders, getMyOrders ,getPendingOrders, editOrderData,deleteOrderFn,assignOrders, confirmOrder, cancelOrder,getOrderCountByStatusUser } from "../services/OrderApi";
+import { changeStatus, getOrderCountByStatusAdmin, getSingleOrder, newOrder, userStatistics, MoveToTrashs, getTrashOrders, recoverFromTrash } from "../services/OrderApi";
+import { getAllOrders, getMyOrders ,getPendingOrders, editOrderData,deleteOrderFn,assignOrders,getOrderCountByStatusUser } from "../services/OrderApi";
 import { useTranslation } from 'react-i18next';
 
 export function useAdminOrder(page, limit, status, date) {
@@ -16,7 +16,18 @@ export function useAdminOrder(page, limit, status, date) {
 
   return { isLoading, error, data };
 }
+export function useTrashOrder (page, limit, status,date) {
+  const {
+    isLoading,
+    data,
+    error,
+  } = useQuery({
+    queryKey: ["orders",page, limit, status, date],
+    queryFn: () => getTrashOrders(page, limit, status, date),
+  });
 
+  return { isLoading, error, data };
+}
 export function useMyOrder(page, limit, status,date) {
   const {
     isLoading,
@@ -29,6 +40,7 @@ export function useMyOrder(page, limit, status,date) {
 
   return { isLoading, error, data };
 }
+
 
 export function useOrdersPending(page, limit) {
   const {
@@ -56,18 +68,7 @@ export function useGetSingleOrder(id) {
   return { isLoading, error, data };
 }
 
-export function useGetSingleOrderUser(id) {
-  const {
-    isLoading,
-    data,
-    error,
-  } = useQuery({
-    queryKey: ["orders"],
-    queryFn: () => getSingleOrderUser(id),
-  });
 
-  return { isLoading, error, data };
-}
 
 export function useGetOrderCountsAdmin() {
   const { isLoading, data: dataCount, error } = useQuery({
@@ -104,7 +105,35 @@ export function useDeleteOrder() {
 
   return { isDeleting, deleteOrder };
 }
+export function UseRecoverFromTrash(){
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+  const { mutate: recoverMultipleOrder, isLoading: isRecovering } = useMutation({
+    mutationFn: recoverFromTrash,
+    onSuccess: () => {
+      toast.success(t("order.recover.recover"));
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (err) => toast.error(err.response.data.message),
+  });
 
+  return { isRecovering, recoverMultipleOrder };
+}
+
+export function useDeleteMultipleOrder() {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+  const { mutate: deleteMultipleOrder, isLoading: isDeletingsMultiple } = useMutation({
+    mutationFn: MoveToTrashs,
+    onSuccess: () => {
+      toast.success(t("order.create.success"));
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (err) => toast.error(err.response.data.message),
+  });
+
+  return { isDeletingsMultiple, deleteMultipleOrder };
+}
 export function useCreateOrder() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -119,7 +148,6 @@ export function useCreateOrder() {
 
   return { isCreating, createOrder };
 }
-
 export function useEditOrder() {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
@@ -135,20 +163,21 @@ export function useEditOrder() {
   return { isEditing, editOrder };
 }
 
-export function useEditOrderUser() {
+export const useChangeStatus = () => {
   const queryClient = useQueryClient();
   const { t } = useTranslation();
-  const { mutate: editOrderUser, isLoading: isEditing } = useMutation({
-    mutationFn: ({ myorder, id }) => editOrderDataUser(myorder, id),
+  const { mutate: changeStat, isLoading: isChangingStatus } = useMutation({
+    mutationFn:( {status, orderId} ) => changeStatus(status, orderId),
     onSuccess: () => {
-      toast.success(t("order.edit.success"));
+      toast.success(t("order.changeStatus.success"));
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (err) => toast.error(err.response.data.message),
   });
+   return {changeStat, isChangingStatus}
 
-  return { isEditing, editOrderUser };
 }
+
 
 export function useAssignOrders() {
   const queryClient = useQueryClient();
@@ -163,36 +192,6 @@ export function useAssignOrders() {
   });
 
   return { isAssigning, assignOrder };
-}
-
-export function useCancelOrder(id) {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const { mutate: cancelOrd, isLoading: isAssigning } = useMutation({
-    mutationFn: (id) => cancelOrder(id),
-    onSuccess: () => {
-      toast.success(t("order.cancel.success"));
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-    },
-    onError: (err) => toast.error(err.response.data.message),
-  });
-
-  return { isAssigning, cancelOrd };
-}
-
-export function useConfirmOrder(id) {
-  const { t } = useTranslation();
-  const queryClient = useQueryClient();
-  const { mutate: confirmOrd, isLoading: isAssigning } = useMutation({
-    mutationFn: (id) => confirmOrder(id),
-    onSuccess: () => {
-      toast.success(t("order.confirm.success"));
-      queryClient.invalidateQueries({ queryKey: ["orders"] });
-    },
-    onError: (err) => toast.error(err.response.data.message),
-  });
-
-  return { isAssigning, confirmOrd };
 }
 
 export function useGetUserStatistics(date) {

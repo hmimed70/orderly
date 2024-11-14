@@ -111,7 +111,7 @@ const Account = () => {
             />
           </Row>
           <div className="flex justify-center my-6 gap-16">
-            <button type="submit" className="py-3 px-6 rounded-md bg-indigo-600 cursor-pointer text-white hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600">
+            <button type="submit" className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600">
               {t('update_info_button')}
             </button>
           </div>

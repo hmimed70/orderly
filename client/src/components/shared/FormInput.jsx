@@ -2,21 +2,22 @@ import PropTypes from 'prop-types';
 
 const FormInput = ({ disabled, type, placeholder, name, register, errors }) => {
   return (
-    <div className={`w-full my-2 py-2 flex justify-center items-center px-2 ${errors ? 'border-red-600' : ''}`}>
+    <div className={`w-full my-1 py-1 flex flex-col justify-start items-start  px-2 ${errors ? 'border-red-600' : ''}`}>
       <label 
         htmlFor={name} 
-        className="text-slate-800 dark:text-gray-100 w-3/5 text-left rtl:text-right">{placeholder}</label>
+        className="text-slate-800 dark:text-gray-100 w-full text-left rtl:text-right">{placeholder}</label>
       <input 
         disabled={disabled}  
         type={type}
         placeholder={placeholder}
         name={name}
         {...register(name)}
-        className={`outline-none bg-white border rounded-md py-2 px-2 w-3/4 dark:bg-gray-700 dark:text-gray-200 
+        className={`outline-none focus:border-orange-600 bg-white border border-gray-300 rounded-md py-2 px-2 w-full dark:bg-gray-700 dark:text-gray-200 
           ${errors ? 'border-red-600 bg-red-200' : ''} rtl:text-right`}
       />
-      {errors && <div><p className="text-red-600">{errors.message}</p></div>}
+      {errors && <div><p className="text-red-600">*{errors.message}</p></div>}
     </div>
+
   );
 };
 

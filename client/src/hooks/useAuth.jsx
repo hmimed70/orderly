@@ -7,7 +7,12 @@ const useAuth = () => {
     queryKey: ["myauthuser"],
     queryFn: getCurrentUser,
     retry: false,
+    
+    onSuccess: (data) => {
+      console.log(data);
+    },
     onError: (err) => {
+      console.log(err);
       if (err.response && err.response.status === 401) {
         // Attempt to refetch the user
         //refetch();

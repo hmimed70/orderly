@@ -21,12 +21,12 @@ const app = express();
 
 app.use(cookieParser());
 app.use(cors({
-  origin: process.env.FRONTEND_URL, // frontend URL
+  origin: 'http://localhost:5173', //process.env.FRONTEND_URL, // frontend URL
   credentials: true,
 }));
 app.options('*', cors());
 app.use(helmet());
-app.use(mongoSanitize());
+//app.use(mongoSanitize());
 app.set('trust proxy', 1); // for secure cookies behind a proxy
 
 app.use(xss());

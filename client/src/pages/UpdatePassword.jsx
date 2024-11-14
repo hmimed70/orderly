@@ -77,7 +77,7 @@ const UpdatePassword = () => {
           <button
             type="submit"
             disabled={isEditing}
-            className="py-3 px-6 rounded-md bg-indigo-600 cursor-pointer text-white hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600"
+            className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600"
           >
             {t("updatePasswordButton")}
           </button>

@@ -13,17 +13,17 @@ import Account from "./pages/Account";
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
 import MyOrders from "./pages/MyOrders";
-import AddOrder from "./pages/Admin/AddOrder";
-import EditOrder from "./pages/Admin/EditOrder";
+import AddOrder from "./pages/AddOrder";
+import EditOrder from "./pages/EditOrder";
 import AddUser from "./pages/Admin/AddUser";
 import EditUser from "./pages/Admin/EditUser";
 import ViewUser from "./pages/Admin/ViewUser";
-import ViewOrder from "./pages/ViewOrder";
-import EditOrderUser from "./pages/EditOrderUser";
 import UpdatePassword from "./pages/UpdatePassword";
 import ProtectedRoute from "./components/shared/ProtectedRoute";
 import AppLayout from "./components/shared/AppLayout";
 import NotFound from "./components/shared/NotFound";
+import ViewOrder from "./pages/ViewOrder";
+import TrashOrders from "./pages/TrashPage";
 
 
 const queryClient = new QueryClient({
@@ -48,6 +48,11 @@ function App() {
                     </ProtectedRoute>
                   }
                 >
+                   <Route path="/orders" element={<OrdersPage />} />
+                   <Route path="/trash" element={<TrashOrders />} />
+                   <Route path="/orders/create" element={<AddOrder />} />
+                   <Route path="/orders/edit/:id" element={<EditOrder />} />
+                   <Route path="/orders/view/:id" element={<ViewOrder />} />
                   <Route path="/account/update-profile" element={<Account />} />
                   <Route path="/account/update-password" element={<UpdatePassword />} />
                 </Route>
@@ -57,13 +62,9 @@ function App() {
                   <AppLayout />
                 </ProtectedRoute>
               }>
-                <Route index element={<Navigate replace to="dashboard" />} />
+                <Route index element={<Navigate replace to="/admin/dashboard" />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/orders" element={<OrdersPage />} />
-                <Route path="/admin/orders/create" element={<AddOrder />} />
-                <Route path="/admin/orders/edit/:id" element={<EditOrder />} />
-                <Route path="/admin/orders/view/:id" element={<ViewOrder />} />
-
                 <Route path="/admin/users/create" element={<AddUser />} />
                 <Route path="/admin/users/edit/:id" element={<EditUser />} />
                 <Route path="/admin/users/view/:id" element={<ViewUser />} />
@@ -81,7 +82,6 @@ function App() {
                 <Route index element={<Navigate replace to="dashboard" />} />
                 <Route path="/dashboard" element={<UserDashboard />} />
                 <Route path="/my_orders" element={<MyOrders />} />
-                <Route path="/edit/:id" element={<EditOrderUser />} />
                 <Route path="/statistics" element={<StatisticsUser />} />
 
                 </Route>

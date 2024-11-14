@@ -8,18 +8,19 @@ import {
 
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../hooks/useAuth";
+import { HiTrash } from "react-icons/hi";
 
 export default function MainNav() {
   const { isAdmin, isUser } = useAuth(); // Get user role from custom hook
 const { t } = useTranslation();
   return (
-    <ul className="flex flex-col gap-4">
+    <ul className="flex flex-col gap-y-4">
       {/* Conditionally render Home link for regular users */}
       {isUser && (
         <li>
           <NavLink to="/dashboard" className="navlink dark:text-gray-200 text-gray-900">
             <HiOutlineHome />
-            <span>{t("home")}</span>
+            <span className>{t("home")}</span>
           </NavLink>
         </li>
       )}
@@ -34,7 +35,7 @@ const { t } = useTranslation();
       )}
             {isAdmin && (
         <li>
-          <NavLink to="/admin/orders" className="navlink dark:text-gray-200 text-gray-900">
+          <NavLink to="/orders" className="navlink dark:text-gray-200 text-gray-900">
             <HiOutlineCalendarDays />
             <span>{t("orders")}</span>
           </NavLink>
@@ -43,7 +44,7 @@ const { t } = useTranslation();
       {/* My Orders link for regular users only */}
       {isUser && (
         <li>
-          <NavLink to="/my_orders" className="navlink dark:text-gray-200 text-gray-900">
+          <NavLink to="/orders" className="navlink dark:text-gray-200 text-gray-900">
             <HiOutlineCalendarDays />
             <span>{t("myOrders")}</span>
           </NavLink>
@@ -76,7 +77,14 @@ const { t } = useTranslation();
           </NavLink>
         </li>
       )}
-  
+            {(isUser || isAdmin) && (
+          <li>
+          <NavLink to="/trash" className="navlink dark:text-gray-200 text-gray-900">
+            <HiTrash />
+            <span>{t("Trash")}</span>
+          </NavLink>
+        </li>
+              )}
     </ul>
   );
 }

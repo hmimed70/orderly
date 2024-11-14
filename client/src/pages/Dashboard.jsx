@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAssignOrders, useConfirmOrder, useCancelOrder, useOrdersPending } from "../hooks/useOrder"; // New hooks for confirming and canceling orders
+import { useAssignOrders,useOrdersPending } from "../hooks/useOrder"; // New hooks for confirming and canceling orders
 import RowsPerPageSelector from "../components/shared/RowsPage";
 import SearchBar from "../components/shared/SearchBar";
 
@@ -20,11 +20,8 @@ const Dashboard = () => {
   const { isLoading, data, error } = useOrdersPending(currentPage, rowsPerPage);
   const [searchTerm, setSearchTerm] = useState("");
   const { isAssigning, assignOrder } = useAssignOrders();
-  const { isConfirming, confirmOrd } = useConfirmOrder(); // New hook for confirming
-  const { isCanceling, cancelOrd } = useCancelOrder(); // New hook for canceling
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalAction, setModalAction] = useState(null); // Track action type for modal
-  const [idToHandle, setIdToHandle] = useState(null);
   const { t } = useTranslation();
   const [visibleColumns, setVisibleColumns] = useState(() => {
     const savedColumns = localStorage.getItem("dashboardColumns");
@@ -34,7 +31,6 @@ const Dashboard = () => {
     product_sku: true,
     wilaya: true,
     commune: true,
-    address: true,
     price: true,
     status: true,
     total: true,
@@ -78,18 +74,6 @@ const Dashboard = () => {
     setIsModalOpen(true);
   };
 
-  const handleConfirmOrder = (id) => {
-    setModalAction("confirm");
-    setIdToHandle(id);
-
-    setIsModalOpen(true);
-  };
-
-  const handleCancelOrder = (id) => {
-    setModalAction("cancel");
-    setIdToHandle(id);
-    setIsModalOpen(true);
-  };
 
   const toggleColumnVisibility = (column) => {
     setVisibleColumns(prev => ({ ...prev, [column]: !prev[column] }));
@@ -98,10 +82,6 @@ const Dashboard = () => {
   const handleModalConfirm = () => {
     if (modalAction === "assign") {
       assignOrder();
-    } else if (modalAction === "confirm") {
-      confirmOrd(idToHandle);
-    } else if (modalAction === "cancel") {
-      cancelOrd(idToHandle);
     }
     setIsModalOpen(false);
   };
@@ -119,14 +99,12 @@ const Dashboard = () => {
           />
         </div>
 
-        <button onClick={handleAssignOrders} className="py-3 px-6 rounded-md bg-indigo-600 cursor-pointer text-white hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600">
+        <button onClick={handleAssignOrders} className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600">
            {t("assignOrders")}
         </button>
       </div>
       <ColumnVisibilityToggle visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
       <OrdersTable
-        onConfirmOrder={handleConfirmOrder}
-        onCancelOrder={handleCancelOrder}
         orders={filteredOrders}
         visibleColumns={visibleColumns}
       />
@@ -139,7 +117,7 @@ const Dashboard = () => {
       />
       {isModalOpen && (
         <ConfirmationModal
-          disable={isAssigning || isConfirming || isCanceling}
+          disable={isAssigning }
           message={`Are you sure you want to ${modalAction} orders?`}
           onConfirm={handleModalConfirm}
           onCancel={() => setIsModalOpen(false)}

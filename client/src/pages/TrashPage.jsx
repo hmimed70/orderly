@@ -1,40 +1,40 @@
 import { useEffect, useState } from "react";
-import { useAdminOrder, useMyOrder, useChangeStatus, useDeleteMultipleOrder, useDeleteOrder } from '../../hooks/useOrder';
-import SearchBar from "../../components/shared/SearchBar";
-import StatusFilter from "../../components/shared/StatusFilter";
-import RowsPerPageSelector from "../../components/shared/RowsPage";
-import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
-import OrdersTable from "../../components/orders/OrderTable";
-import Pagination from "../../components/shared/Pagination";
+import {  useChangeStatus, useDeleteMultipleOrder, useDeleteOrder,UseRecoverFromTrash,useTrashOrder } from "../hooks/useOrder";
+
 import { NavLink } from "react-router-dom";
-import ConfirmationModal from "../../components/shared/ConfirmationModal";
-import DateFilter from "../../components/shared/DateFilter";
 import { io } from "socket.io-client";
 import { useTranslation } from "react-i18next"; // Importing the translation hook
 import { useQueryClient } from "@tanstack/react-query";
-import { BACKEND_URL } from "../../utils";
-import { useAuth } from "../../hooks/useAuth";
-import AddUser from "./AddUser";
+import SearchBar from "../components/shared/SearchBar";
+import RowsPerPageSelector from "../components/shared/RowsPage";
+import DateFilter from "../components/shared/DateFilter";
+import StatusFilter from "../components/shared/StatusFilter";
+import Pagination from "../components/shared/Pagination";
+import ConfirmationModal from "../components/shared/ConfirmationModal";
+import { useAuth } from "../hooks/useAuth";
+import { BACKEND_URL } from "../utils";
+import ColumnVisibilityToggle from "../components/shared/ColumnVisibilty";
+import OrdersTable from "../components/orders/OrderTable";
 
-const Orders = () => {
+const TrashOrders = () => {
+
   const { t } = useTranslation(); // Initialize the translation hook
    const { isAdmin } = useAuth();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
-  const { isLoading, data, error } = isAdmin  ? useAdminOrder(currentPage, rowsPerPage, status, dateRange)  : useMyOrder(currentPage, rowsPerPage, status, dateRange);
-   console.log(data)
+  const { isLoading, data, error } =  useTrashOrder(currentPage, rowsPerPage, status, dateRange);
   const [searchTerm, setSearchTerm] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
   const { isDeleting, deleteOrder } = useDeleteOrder();
-  const { isDeletingsMultiple, deleteMultipleOrder } = useDeleteMultipleOrder();
+  const { isRecovering, recoverMultipleOrder } = UseRecoverFromTrash();
   const socket = io(BACKEND_URL); // Replace with your server URL
   const queryClient = useQueryClient(); // Initialize React Query client for manual query invalidation
   const { changeStat, isChangingStatus } = useChangeStatus();
   const [selectedOrders, setSelectedOrders] = useState([]);
-
+  
   const [visibleColumns, setVisibleColumns] = useState(() => {
     const savedColumns = localStorage.getItem("visibleColumnsOrder");
     return savedColumns ? JSON.parse(savedColumns) : {
@@ -88,19 +88,18 @@ const Orders = () => {
     localStorage.setItem("visibleColumnsOrder", JSON.stringify(visibleColumns));
   }, [visibleColumns]);
 
-  const handleDeleteSelected = () => {
-    deleteMultipleOrder({ orderIds: selectedOrders });
+  const handleRecoverSelected = () => {
+    recoverMultipleOrder({ orderIds: selectedOrders });
     console.log(selectedOrders);
-  };
-
-  const handleDateRangeChange = (dates) => {
-    setDateRange(dates);
-    // Perform any additional filtering actions with the date range
   };
 
   const handleDeleteOrder = (orderId) => {
     setOrderToDelete(orderId);
     setIsModalOpen(true);
+  };
+  const handleDateRangeChange = (dates) => {
+    setDateRange(dates);
+    // Perform any additional filtering actions with the date range
   };
 
   const handleChangeStatus = (status, orderId) => {
@@ -130,13 +129,13 @@ const Orders = () => {
         {isAdmin && (
           <div className="mb-4">
             <button
-              onClick={handleDeleteSelected}
+              onClick={handleRecoverSelected}
               className={`bg-red-600 text-white px-4 py-2 rounded-md ${
                 selectedOrders.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
               }`}
               disabled={selectedOrders.length === 0} // Disable button if no orders are selected
             >
-              {t('deleteSelectedOrders')}
+              {t('recoverSelectedOrders')}
             </button>
           </div>
         )}
@@ -144,9 +143,7 @@ const Orders = () => {
         <div className="flex flex-col md:flex-row  items-center justify-between gap-4 lg:gap-10">
           <StatusFilter status={status} handleStatusChange={(e) => setStatus(e.target.value)} />
           <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />;          <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))} ordersCount={ordersCount} />
-            <button type="submit" className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600">
-              <NavLink to="/orders/create">{t('ordersPage.createOrderButton')}</NavLink>
-            </button>
+          <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))} ordersCount={ordersCount} />
         </div>
       </div>
 
@@ -188,4 +185,4 @@ const Orders = () => {
   );
 };
 
-export default Orders;
+export default TrashOrders;

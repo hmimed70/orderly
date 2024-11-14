@@ -4,13 +4,9 @@ export const orderSchema = z.object({
   client: z.string().min(1, { message: "Client name is required" }),
   phone1: z
     .string()
-    .min(10, { message: "Primary phone number should be at least 10 digits" })
+    .min(10, { message: "please put a valid phone number" })
     .regex(/^[0-9]+$/, { message: "Phone number should contain only numbers" }),
-  phone2: z
-    .string()
-    .regex(/^[0-9]+$/, { message: "Secondary phone number should contain only numbers" })
-    .optional(),
-  address: z.string().min(1, { message: "Address is required" }),
+  phone2: z.string().optional(),
   wilaya: z.string().min(1, { message: "Wilaya is required" }),
   commune: z.string().min(1, { message: "Commune is required" }),
   product_sku: z.string().min(1, { message: "Product SKU is required" }),
@@ -52,7 +48,6 @@ export const updatedOrderSchema = z.object({
     .string()
     .regex(/^[0-9]+$/, { message: "Secondary phone number should contain only numbers" })
     .optional(),
-  address: z.string().min(1, { message: "Address is required" }),
   wilaya: z.string().min(1, { message: "Wilaya is required" }),
   commune: z.string().min(1, { message: "Commune is required" }),
 

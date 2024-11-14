@@ -7,7 +7,6 @@ const orderSchema = new Schema({
       client: { type: String, required: true },
       phone1: { type: String, required: true },
       phone2: { type: String },
-      address: { type: String, required: true },
       wilaya: { type: String, required: true },
       commune: { type: String, required: true },
     },
@@ -23,6 +22,10 @@ const orderSchema = new Schema({
     product_ref: { type: String, required: true },
     confirmedAt: { type: Date },
     cancelledAt: { type: Date },
+    active: {
+      type: Boolean,
+      default: true,
+    },
     attempts: [
       {
         timestamp: {
@@ -30,14 +33,12 @@ const orderSchema = new Schema({
           required: true,
         },
         attempt: {
-          type: Number,
-          required: true,
-          min: 1,
-          max: 5,  // Ensure attempt values are within the range 1-5
-        },
+          type: String,
+          enum: ['pending', 'inProgress', 'confirmed', 'cancelled', 'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4','phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder']
+            },
       },
     ],
-    status: { type: String, enum: ['pending', 'in-progress', 'confirmed', 'cancelled'], default: 'pending' },
+    status: { type: String, enum: ['pending', 'inProgress', 'confirmed', 'cancelled', 'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4','phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder'], default: 'pending' },
   },
   { timestamps: true }
 );

@@ -1,31 +1,27 @@
-// utils/dateHelpers.js
-
 const moment = require("moment");
 
 const getDateRange = (dateFilter) => {
   let startDate, endDate;
-   
-  switch (dateFilter) {
-    case "day":
-      startDate = moment().startOf("day").toDate();
-      endDate = moment().endOf("day").toDate();
-      break;
-    case "week":
-      startDate = moment().startOf("week").toDate(); // Start of the week
-      endDate = moment().endOf("week").toDate(); // End of the week
-      break;
-    case "month":
-      startDate = moment().startOf("month").toDate();
-      endDate = moment().endOf("month").toDate();
-      break;
-    case "year":
-      startDate = moment().startOf("year").toDate();
-      endDate = moment().endOf("year").toDate();
-      break;
-    default:
-      break;
-  }
-  return { startDate, endDate };
+
+  // Check if the dateFilter includes a custom date range (e.g., "Sat Aug 03 2024, Sun Aug 25 2024")
+  if (dateFilter.includes(",")) {
+    const [start, end] = dateFilter.split(",");
+    
+    // Parse the start and end dates and trim any extra whitespace
+    startDate = moment(new Date(start.trim()));
+    endDate = moment(new Date(end.trim()));
+   console.log(startDate, endDate);
+    // Check if both dates are valid
+    if (!startDate.isValid() || !endDate.isValid()) {
+      return {}; // Return an empty object if dates are invalid
+    }
+    
+    // Return the start and end dates with the time set to start and end of day
+    return {
+      startDate: startDate.startOf("day").toDate(),
+      endDate: endDate.endOf("day").toDate(),
+    };
+  } 
 };
 
 module.exports = { getDateRange };

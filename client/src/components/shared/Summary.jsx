@@ -1,49 +1,59 @@
-import PropTypes from "prop-types";
-import { useTranslation } from "react-i18next";  // Import the translation hook
+import PropTypes from 'prop-types';
 
-const OrderSummary = ({ client, shippingPrice, discount, quantity, price,totalPrice }) => {
-  const { t } = useTranslation();  // Initialize the translation hook
-
-  // Format currency function
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('ar-DZ', {
-      style: 'currency',
-      currency: 'DZD'
-    }).format(amount);
-  };
-
+const OrderSummary = ({ totalPrice, client, quantity, price, shippingPrice, discount, shippingType, wilaya, commune, phone1, phone2, productSku, productRef }) => {
   return (
-    <div className="order-summary p-6 border rounded-md shadow-lg dark:bg-gray-800">
-      <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-200">{t('orderSummary.title')}</h2>
-      <p className="text-gray-700 dark:text-gray-300">
-        <strong>{t('orderSummary.clientName')}:</strong> {client}
-      </p>
-      <p className="text-gray-700 dark:text-gray-300">
-        <strong>{t('orderSummary.quantity')}:</strong> {quantity}
-      </p>
-      <p className="text-gray-700 dark:text-gray-300">
-        <strong>{t('orderSummary.pricePerItem')}:</strong> {formatCurrency(price)}
-      </p>
-      <p className="text-gray-700 dark:text-gray-300">
-        <strong>{t('orderSummary.discount')}:</strong> {discount}%
-      </p>
-      <p className="text-gray-700 dark:text-gray-300">
-        <strong>{t('orderSummary.shippingPrice')}:</strong> {formatCurrency(shippingPrice)}
-      </p>
-      <p className="text-lg font-bold text-gray-900 dark:text-gray-200">
-        <strong>{t('orderSummary.totalPrice')}:</strong> {formatCurrency(totalPrice)}
-      </p>
+    <div className="order-summary bg-white dark:bg-gray-800 p-4 rounded-lg shadow-md">
+      <h2 className="text-xl font-semibold text-gray-950 dark:text-gray-100 mb-4">Order Summary</h2>
+      
+      {/* Product Details Section */}
+      <div className="mb-4">
+        <h3 className="text-lg font-medium text-orange-600 dark:text-orange-400">Product Details</h3>
+        <p><strong>SKU:</strong> {productSku}</p>
+        <p><strong>Reference:</strong> {productRef}</p>
+        <p><strong>Quantity:</strong> {quantity}</p>
+        <p><strong>Price per unit:</strong> {price} DA</p>
+        <p><strong>Discount:</strong> {discount}%</p>
+      </div>
+
+      {/* Delivery Details Section */}
+      <div className="mb-4">
+        <h3 className="text-lg font-medium text-orange-600 dark:text-orange-400">Delivery Details</h3>
+        <p><strong>Shipping Type:</strong> {shippingType}</p>
+        <p><strong>Shipping Price:</strong> {shippingPrice} DA</p>
+        <p><strong>Wilaya:</strong> {wilaya}</p>
+        <p><strong>Commune:</strong> {commune}</p>
+      </div>
+
+      {/* Invoice Details Section */}
+      <div className="mb-4">
+        <h3 className="text-lg font-medium text-orange-600 dark:text-orange-400">Invoice Details</h3>
+        <p><strong>Client Name:</strong> {client}</p>
+        <p><strong>Phone 1:</strong> {phone1}</p>
+        <p><strong>Phone 2:</strong> {phone2}</p>
+      </div>
+
+      {/* Total Price */}
+      <div className="mt-4 text-xl font-bold text-gray-800 dark:text-gray-200">
+        <p>Total Price: <span className='text-orange-600 '>{totalPrice.toFixed(2)} DA</span></p>
+      </div>
     </div>
   );
 };
 
- OrderSummary.propTypes = {
+OrderSummary.propTypes = {
+  totalPrice: PropTypes.number.isRequired,
   client: PropTypes.string.isRequired,
-  shippingPrice: PropTypes.number.isRequired,
-  discount: PropTypes.number.isRequired,
   quantity: PropTypes.number.isRequired,
   price: PropTypes.number.isRequired,
-  totalPrice: PropTypes.number.isRequired,
+  shippingPrice: PropTypes.number.isRequired,
+  discount: PropTypes.number,
+  shippingType: PropTypes.string.isRequired,
+  wilaya: PropTypes.string.isRequired,
+  commune: PropTypes.string.isRequired,
+  phone1: PropTypes.string.isRequired,
+  phone2: PropTypes.string,
+  productSku: PropTypes.string.isRequired,
+  productRef: PropTypes.string.isRequired,
 };
 
 export default OrderSummary;

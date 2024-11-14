@@ -10,7 +10,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange, totalOrders, or
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-300"
+          className="px-3 py-1 bg-orange-500 text-white rounded-md hover:bg-orange-600 disabled:bg-gray-300"
         >
           {t("previous")}
         </button>
@@ -21,7 +21,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange, totalOrders, or
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 disabled:bg-gray-300"
+          className="px-3 py-1 bg-orange-500 text-white rounded-md hover:bg-orange-600 disabled:bg-gray-300"
         >
           {t("next")}
         </button>

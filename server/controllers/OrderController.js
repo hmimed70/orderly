@@ -59,7 +59,9 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
   const resultPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 8;
   const { date } = req.query;
 
+  // Initialize an empty filter, which matches all documents if no date is provided
   let dateFilter = {};
+  
   if (date && date.trim()) {
     const { startDate, endDate } = getDateRange(date);
     if (startDate && endDate) {
@@ -68,8 +70,7 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
   }
 
   const aggregation = [
-    { $match: dateFilter },
-
+    { $match: dateFilter }, // This will match all documents if dateFilter is {}
     { 
       $group: {
         _id: '$confirmatrice', // Group by confirmatrice ID
@@ -77,7 +78,6 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
         cancelledOrders: { $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] } }
       }
     },
-
     { 
       $lookup: {
         from: 'users', 
@@ -86,7 +86,6 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
         as: 'confirmatriceDetails'
       }
     },
-
     { $unwind: '$confirmatriceDetails' }, 
     { 
       $project: {
@@ -119,7 +118,7 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
 
 
 exports.getOrderCountsByStatusAdmin = catchAsyncError(async (req, res, next) => {
-  const statuses = ['pending', 'in-progress', 'confirmed', 'cancelled'];
+  const statuses = ['pending', 'inProgress', 'confirmed', 'cancelled'];
 
   const counts = await Promise.all(
     statuses.map((status) => Order.countDocuments({ status }))
@@ -140,7 +139,7 @@ const { default: mongoose } = require('mongoose');
 
 
 exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
-  const statuses = ['in-progress', 'confirmed', 'cancelled'];
+  const statuses = ['inProgress', 'confirmed', 'cancelled'];
 
   const user = await User.findById(req.user._id);
   if (!user) {
@@ -234,123 +233,75 @@ exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
 });
 
 
-exports.getAllOrdersAdmin = catchAsyncError(async (req, res, next) => {
-  const resultPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 1000;
-  const {  date } = req.query;
-  let query = Order.find().populate('confirmatrice', 'fullname');
 
-  if (date && date.trim()) {
-    const { startDate, endDate } = getDateRange(date);
+
+
+  exports.getAllOrdersAdmin = catchAsyncError((req, res, next) => {
+    getOrders(req, res, next, {active: true});
+  });
+  
+  exports.getMyCurrentHandleOrder = catchAsyncError((req, res, next) => {
+    getOrders(req, res, next,{ confirmatrice: req.user._id, active: true });
+  });
+  
+
+  exports.listOrders = catchAsyncError((req, res, next) => {
+    console.log('listOrders');
+    getOrders(req, res, next, { confirmatrice: null, active: true });
+  });
+  
+  exports.inactiveOrders =catchAsyncError( (req, res, next) => {
+    console.log("inactive")
+    getOrders(req, res, next,  { active: false });
+  });
+  
+  const getOrders = async (req, res, next, filter = {}) => {
+    const resultPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 8;
+    const { date } = req.query;
     
-  query = query.where("createdAt").gte(startDate).lt(endDate);
-  
-}
-
-  const ordersCount = await Order.countDocuments();
-
-  const apiFeature = new ApiFeatures(query, req.query)
-    .search()
-    .filter()
-    .sort()
-    .limitFields()
-    .pagination(resultPerPage, req.query.page);
-
-  const orders = await apiFeature.query;
-
-  const filteredOrdersCount = await Order.countDocuments(apiFeature.query.getFilter());
-
-  res.status(200).json({
-    success: true,
-    orders,
-    ordersCount, 
-    filteredOrdersCount, 
-    resultPerPage,
-  });
-});
-
-
-
-
-exports.getMyCurrentHandleOrder = catchAsyncError(async (req, res, next) => {
-  const resultPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 8;
-  
-  const userId = req.user._id; // Ensure `userId` is defined before using
-  const { date } = req.query;
-  let query = Order.find({ confirmatrice: userId }).populate('confirmatrice', 'fullname');
-
-  if (date && date.trim()) {
-    const { startDate, endDate } = getDateRange(date);
-
-    if (startDate && endDate) {
-      query = query.where("createdAt").gte(startDate).lt(endDate);
-    }
-  }
-
-  const ordersCount = await Order.countDocuments({ confirmatrice: userId });
-
-  const apiFeature = new ApiFeatures(query, req.query)
-    .search()
-    .filter()
-    .sort()
-    .limitFields()
-    .pagination(resultPerPage, req.query.page);
-
-  // Execute the query to get the filtered orders
-  const orders = await apiFeature.query;
-
-  // Count filtered orders
-  const filteredOrdersCount = await Order.countDocuments(apiFeature.query.getFilter());
-
-
-  // Send the response
-  res.status(200).json({
-    success: true,
-    orders,
-    ordersCount,
-    filteredOrdersCount,
-    resultPerPage,
-  });
-});
-
-exports.listOrders = catchAsyncError(async (req, res, next) => {
-
-  const resultPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 8;
-  const {  date } = req.query;
-
-  let query =  Order.find({ confirmatrice: null });
-
+    let query = Order.find(filter).populate('confirmatrice', 'fullname');
+    
+    // Apply date filtering if a date is provided
     if (date && date.trim()) {
-      const { startDate, endDate } = getDateRange(date);
-  
-      if (startDate && endDate) {
-        query = query.where("createdAt").gte(startDate).lt(endDate);
+      const dateRange = getDateRange(date);
+      if (dateRange.startDate && dateRange.endDate) {
+        query = query.where("createdAt").gte(dateRange.startDate).lt(dateRange.endDate);
       }
-    } 
-    const ordersCount = await Order.countDocuments({ confirmatrice: null });
+    }
     
+    // Count all orders before applying pagination
+    const ordersCount = await Order.countDocuments(filter);
+    
+    // Apply additional query features
     const apiFeature = new ApiFeatures(query, req.query)
       .search()
       .filter()
       .sort()
       .limitFields()
       .pagination(resultPerPage, req.query.page);
-      
-      const orders = await apiFeature.query;
-      const filteredOrdersCount = await Order.find(apiFeature.query.getFilter()).countDocuments();
+    
+    // Execute the query and get filtered orders
+    const orders = await apiFeature.query;
+    
+    // Count filtered orders after all filters are applied
+    const filteredOrdersCount = await Order.countDocuments(apiFeature.query.getFilter());
+    
     res.status(200).json({
       success: true,
       orders,
       ordersCount,
+      filteredOrdersCount,
       resultPerPage,
-      filteredOrdersCount
     });
-  });
+  };
+  
+  
 
 // GET ORDER DETAILS
 exports.checkOrderAssignment = catchAsyncError(async (req, res, next) => {
   const orderId = req.body.orderId || req.params.id;
   const userId = req.user._id;
-
+     if(req.user.role === 'admin') return next();
     const order = await Order.findById(orderId);
 
     if (!order) {
@@ -379,6 +330,54 @@ exports.getOrderDetails = catchAsyncError(async (req, res, next) => {
   });
 });
 
+exports.trashOrders = catchAsyncError(async (req, res, next) => {
+  const { orderIds } = req.body; // Expect an array of order IDs
+  console.log(req.body);
+  if (!Array.isArray(orderIds) || orderIds.length === 0) {
+    return next(new ErrorHandler('No order IDs provided', 400));
+  }
+
+  // Update all specified orders to set `active` to false (soft delete)
+  const result = await Order.updateMany(
+    { _id: { $in: orderIds } },
+    { $set: { active: false, deletedAt: Date.now(), confirmatrice: null } }
+  );
+
+  if (result.matchedCount === 0) {
+    return next(new ErrorHandler('No matching orders found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Orders moved to trash successfully',
+    updatedCount: result.modifiedCount,
+  });
+});
+
+ exports.recoverOrders = catchAsyncError(async (req, res, next) => {
+  const { orderIds } = req.body; // Expect an array of order IDs
+  console.log('dpsogjfophjpoih',req.body);
+  if (!Array.isArray(orderIds) || orderIds.length === 0) {
+    return next(new ErrorHandler('No order IDs provided', 400));
+  }
+  let confirmatrice = null
+   if(req.role === 'confirmatrice') confirmatrice = req.user._id
+  // Update all specified orders to set `active` to false (soft delete)
+  const result = await Order.updateMany(
+    { _id: { $in: orderIds } },
+    { $set: { active: true, deletedAt: null, status: 'pending', confirmatrice: confirmatrice, createdAt: Date.now() } }
+  );
+
+  if (result.matchedCount === 0) {
+    return next(new ErrorHandler('No matching orders found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Orders moved to trash successfully',
+    updatedCount: result.modifiedCount,
+  });
+ })
 // DELETE ORDER
 exports.deleteOrder = catchAsyncError(async (req, res, next) => {
   const order = await Order.findByIdAndDelete(req.params.id); // Use findByIdAndDelete
@@ -402,7 +401,7 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
   // Check if the user has active orders (pending or in-progress)
   const activeOrders = await Order.find({
       confirmatrice: user._id,
-      status: { $in: ['pending', 'in-progress'] },
+      status: { $in: ['pending', 'inProgress'] },
   });
 
   if (activeOrders.length > 0) {
@@ -429,7 +428,7 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
   // Update the unassigned orders to assign them to the user and mark as 'in-progress'
   await Order.updateMany(
       { _id: { $in: ordersToAssign.map(order => order._id) } },
-      { confirmatrice: user._id, status: 'in-progress' }
+      { confirmatrice: user._id, status: 'inProgress' }
   );
     req.app.get('socketio').emit('orderUpdate');
 
@@ -504,73 +503,57 @@ exports.cancelOrder = catchAsyncError( async (req, res, next) => {
     });
 });
 
+exports.changeStatus = catchAsyncError(async (req, res, next) => {
+  const orderId = req.params.id;
+  const { status } = req.body;
+  console.log('status', req.body.status, 'order id', orderId);
+  const validStatuses = [
+    'pending', 'inProgress', 'confirmed', 'cancelled', 
+    'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4', 
+    'phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder'
+  ];
+  console.log('validStatuses');
+  // Validate newStatus
+  if (!validStatuses.includes(status)) {
+    console.log('validStatuses');
 
-exports.updateOrderUser = catchAsyncError(async (req, res, next) => {
-  const updatedData = req.body;
-  const allowedUpdateFields = ['invoice_information', 'shipping_type', 'note', 'attempt'];
-
-  // Filter the updated fields to only include the allowed ones
-  const filteredData = Object.keys(updatedData).reduce((acc, key) => {
-    if (allowedUpdateFields.includes(key)) {
-      acc[key] = updatedData[key];
-    }
-    return acc;
-  }, {});
-
-  // Find the order by ID
-  let order = await Order.findById(req.params.id);
-
-  if (!order) {
-    return next(new ErrorHandler('Order not found', 404));
+    return next(new ErrorHandler('Invalid status value.', 400));
   }
-
-  // Restrict updates for already processed orders
-  if (['confirmed', 'cancelled'].includes(order.status)) {
-    return next(new ErrorHandler('This order has already been processed', 400));
-  }
-
-  // Handle `attempt` updates with interval and valid value restrictions
-  if (filteredData.attempt && filteredData.attempt !== 0) {
-    const newAttempt = parseInt(filteredData.attempt, 10);
-
-    // Ensure attempt is between 1 and 5
-    if (newAttempt < 1 || newAttempt > 5) {
-      return next(new ErrorHandler('Attempt must be a value between 1 and 5.', 400));
-    }
-    const attemptExists = order.attempts.some(a => a.attempt === newAttempt);
-    if (attemptExists) {
-      return next(new ErrorHandler(`Attempt ${newAttempt} has already been made.`, 400));
-    }
-    // Check last attempt time and ensure at least 1 hour has passed
-    const lastAttempt = order.attempts[order.attempts.length - 1];
-    if (lastAttempt && (Date.now() - lastAttempt.timestamp.getTime() < 3600000)) {
-      return next(new ErrorHandler('You can only update the attempt once every hour.', 400));
+    // Fetch the order by ID
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return next(new ErrorHandler('Order not found', 400));
     }
 
+    // If the new status is the same as the current status, return without updating
+    if (order.status === status) {
+      return res.status(200).json({
+        success: true,
+        message: 'Order already has this status',
+        order,
+      });
+    }
+    if(status === 'pending') order.confirmatrice = null;
+    // Update the order's main status
+    order.status = status;
+
+    // Add a new attempt to the attempts history with timestamp
     order.attempts.push({
       timestamp: new Date(),
-      attempt: newAttempt,
-      note: `Attempt ${newAttempt}: Attempt note here`, // Add the corresponding note for the attempt
+      attempt: status,
     });
+    console.log('validStatuses');
 
-    // Remove the attempt field from filteredData to avoid overwriting attempts
-    delete filteredData.attempt;
-  }
+    // Save the updated order
+    const newOrd = await order.save();  
+    console.log(newOrd);
+    return res.status(200).json({
+      success: true,
+      message: 'Order updated successfully',
+      newOrd,
+    });
+})
 
-  // Update the order with the filtered data (excluding attempt) and the updated attempts
-  order = await Order.findByIdAndUpdate(req.params.id, { ...filteredData, attempts: order.attempts }, {
-    new: true,
-    runValidators: true,
-  });
-
-  await order.save();
-
-  res.status(200).json({
-    success: true,
-    message: 'Order updated successfully',
-    order,
-  });
-});
 
   // UPDATE ORDER
   exports.updateOrderAdmin = catchAsyncError(async (req, res, next) => {

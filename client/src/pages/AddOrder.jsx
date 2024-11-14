@@ -1,16 +1,22 @@
 import { Fragment, useState } from "react";
-import FormInput from "../../components/shared/FormInput";
+import FormInput from "../components/shared/FormInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { orderSchema } from "../../schema/index";
-import Wilaya from "../../data/Wilaya.json";
-import Communes from "../../data/Communes.json";
+import { orderSchema } from "../schema/index";
+import Wilaya from "../data/Wilaya.json";
+import Communes from "../data/Communes.json";
 
-import OrderSummary from "../../components/shared/Summary"; 
-import { useCreateOrder } from "../../hooks/useOrder";
+import OrderSummary from "../components/shared/Summary"; 
+import { useCreateOrder } from "../hooks/useOrder";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"; // Import useTranslation
-import Row from "../../components/shared/Row";
+import Row from "../components/shared/Row";
+import SelectInput from "../components/shared/SelectInput";
+import RadioGroup from "../components/shared/RadioGroup";
+import TextArea from "../components/shared/TextArea";
+import { getWilayaName } from "../utils";
+import { HiBuildingOffice } from "react-icons/hi2";
+import { HiOutlineHome } from "react-icons/hi";
 
 const AddOrder = () => {
   const { t } = useTranslation(); // Initialize translation hook
@@ -30,7 +36,6 @@ const AddOrder = () => {
           client: data.client,
           phone1: data.phone1,
           phone2: data.phone2,
-          address: data.address,
           wilaya: data.wilaya,
           commune: data.commune,
         },
@@ -98,73 +103,35 @@ const AddOrder = () => {
                 errors={errors.phone2}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-              <FormInput
-                type="text"
-                placeholder={t('addOrder.address')}
-                name="address"
-                disabled={isCreating}
-                register={register}
-                errors={errors.address}
-                className="dark:bg-gray-700 dark:text-gray-200"
-              />
             </Row>
 
             {/* Wilaya and Commune Fields */}
             <Row>
-              <div className=" text-left rtl:text-right w-full flex justify-center items-center  my-2">
-                <label htmlFor="wilaya" className=" text-left rtl:text-right text-slate-800 dark:text-gray-100 w-3/5 px-2">{t('addOrder.wilaya')}</label>
-                <select
-                  name="wilaya"
-                  value={selectedWilaya}
-                  disabled={isCreating}
-                  {...register("wilaya", { required: "Wilaya is required" })}
-                  className="outline-none bg-white border rounded-md py-2 px-2 w-4/5 dark:bg-gray-700 dark:text-gray-200"
-                  onChange={(event) => {
-                    setSelectedWilaya(event.target.value);
-                    const filteredCommunes = Communes.filter(commune => commune.wilaya_id === event.target.value);
-                    setMyCommunes(filteredCommunes);
-                    setSelectedCommune('');
-                  }}
-                >
-                  <option value="" disabled>{t('addOrder.wilaya')}</option>
-                  {Wilaya.map((wilaya) => (
-                    <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={wilaya.code} value={wilaya.code}>
-                      {wilaya.nom}
-                    </option>
+
+            <SelectInput label={t('addOrder.wilaya')} name="wilaya" value={selectedWilaya} 
+               disabled={isCreating} register={register} errors={errors.wilaya} 
+               onChange={(event) =>   { setSelectedWilaya(event.target.value)
+                const filteredCommunes = Communes.filter(commune => commune.wilaya_id === event.target.value);
+                setMyCommunes(filteredCommunes);
+                setSelectedCommune('');} }>
+                    <option value="" disabled>{t('addOrder.wilaya')}</option>
+                      {Wilaya.map((wilaya) => (
+                      <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={wilaya.code} value={wilaya.code}>
+                        {wilaya.nom}
+                      </option>
+                   ))}
+            </SelectInput>
+ 
+            <SelectInput label={t('addOrder.commune')} name="commune" value={selectedCommune} disabled={isCreating} register={register} errors={errors.commune} onChange={(event) => setSelectedCommune(event.target.value)}>
+            <option value="" disabled className="dark:bg-gray-700 dark:text-gray-200  text-gray-700">
+              {t('addOrder.commune')}
+            </option>
+            {myCommunes.map((commune) => (
+              <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={commune.code} value={commune.code}>
+                {commune.nom}
+              </option>
                   ))}
-                </select>
-                {errors.wilaya && <p className="text-red-600">{errors.wilaya.message}</p>}
-              </div>
-
-              <div className="text-left rtl:text-right w-full flex justify-center items-center my-2">
-  <label
-    htmlFor="commune"
-    className="text-slate-800 dark:text-gray-100 px-2 w-3/5 text-left rtl:text-right"
-  >
-    {t('addOrder.commune')}
-  </label>
-  <select
-    disabled={isCreating}
-    name="commune"
-    value={selectedCommune}
-    {...register("commune", { required: "Commune is required" })}
-    className="outline-none bg-white border rounded-md py-2 px-2 w-4/5 dark:bg-gray-700 dark:text-gray-200 rtl:text-right"
-    onChange={(event) => setSelectedCommune(event.target.value)}
-  >
-    <option value="" disabled className="dark:bg-gray-700 dark:text-gray-200  text-gray-700">
-      {t('addOrder.commune')}
-    </option>
-    {myCommunes.map((commune) => (
-      <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={commune.code} value={commune.code}>
-        {commune.nom}
-      </option>
-    ))}
-  </select>
-  {errors.commune && (
-    <p className="text-red-600">{errors.commune.message}</p>
-  )}
-</div>
-
+            </SelectInput>
             </Row>
 
             {/* Other Inputs */}
@@ -229,57 +196,24 @@ const AddOrder = () => {
               />
             </Row>
             <Row>
-            <div className="text-left rtl:text-right w-full flex justify-center items-center my-2">
-  <label htmlFor="shipping_type" className="text-slate-800 dark:text-gray-100 w-3/5 px-2">{t('addOrder.shippingType')}</label>
-  <div className="flex justify-start items-center w-4/5">
-    {/* Desk option */}
-    <div className="flex items-center mx-2">
-      <input
-        type="radio"
-        id="desk"
-        name="shipping_type"
-        value="desk"
-        disabled={isCreating}
-        {...register("shipping_type", { required: "Shipping type is required" })}
-        className="form-radio text-primary dark:bg-gray-700 dark:text-gray-200"
-      />
-      <label htmlFor="desk" className=" px-2 text-slate-800 dark:text-gray-200">{t('addOrder.desk')}</label>
-    </div>
+            <RadioGroup watch={watch}
+              name="shipping_type"
+              label={t('addOrder.shippingType')}
+              options={[
+                { value: 'desk', label: <div className="flex flex-col justify-center items-center"><HiBuildingOffice size={30} /><span>{t('addOrder.desk')}</span></div>  },
+                { value: 'home', label: <div className="flex flex-col justify-center items-center"><HiOutlineHome size={30} /><span>{t('addOrder.home')}</span></div>  },
+              ]}
+              register={register}
+              errors={errors.shipping_type}
+              disabled={isCreating}
+            />
+            <TextArea name="note" placeholder={t('addOrder.note')} 
+             register={register} errors={errors.note} disabled={isCreating} />
 
-    {/* Home option */}
-    <div className="flex items-center mx-2">
-      <input
-        type="radio"
-        id="home"
-        name="shipping_type"
-        value="home"
-        disabled={isCreating}
-        {...register("shipping_type", { required: "Shipping type is required" })}
-        className="px-1 form-radio text-primary dark:bg-gray-700 dark:text-gray-200"
-      />
-      <label htmlFor="home" className=" px-2 text-slate-800 dark:text-gray-200">{t('addOrder.home')}</label>
-    </div>
-  </div>
-  {errors.shipping_type && (
-    <p className="text-red-600">{errors.shipping_type.message}</p>
-  )}
-</div>
-
-              <FormInput
-                disabled={isCreating}
-                type="text"
-                placeholder={t('addOrder.note')}
-                name="note"
-                register={register}
-                errors={errors.note}
-                className="dark:bg-gray-700 dark:text-gray-200"
-              />
             </Row>
-
-            {/* Add other fields similarly using t() */}
             
             <div className="flex justify-center my-6">
-              <button type="submit" className="py-3 px-6 rounded-md bg-indigo-600 cursor-pointer text-white hover:bg-indigo-700 dark:bg-indigo-700 dark:hover:bg-indigo-600">
+              <button type="submit" className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600">
                 {t('addOrder.addOrderBtn')}
               </button>
             </div>
@@ -289,12 +223,19 @@ const AddOrder = () => {
         {/* Order Summary Section */}
         <div className="order-summary-container  m-8 md:m-2 rounded-lg p-4 w-full md:w-1/2 lg:w-1/3 self-center">
           <OrderSummary  
-            totalPrice={totalPrice}
-            client={client}
-            quantity={quantity}
-            price={price}
-            shippingPrice={shippingPrice}
-            discount={discount}
+       totalPrice={totalPrice}
+       client={client}
+       quantity={quantity}
+       price={price}
+       shippingPrice={shippingPrice}
+       discount={discount}
+       shippingType={watch("shipping_type")}
+       wilaya={selectedWilaya ? getWilayaName(selectedWilaya) : "Unknown"}
+       commune={selectedCommune}
+       phone1={watch("phone1")}
+       phone2={watch("phone2")}
+       productSku={watch("product_sku")}
+       productRef={watch("product_ref")}
           />
         </div>
       </div>

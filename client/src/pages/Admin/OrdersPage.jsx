@@ -13,62 +13,46 @@ const OrdersPage = () => {
   const [status, setStatus] = useState(""); // New state for status filter
   const { isLoading, data, error } = useOrder(currentPage, rowsPerPage,status);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedOrders, setSelectedOrders] = useState([]);
+  const handleOrderSelection = (orderId) => {
+    setSelectedOrders((prevSelectedOrders) => {
+      if (prevSelectedOrders.includes(orderId)) {
+        return prevSelectedOrders.filter(id => id !== orderId); // Deselect the order
+      }
+      return [...prevSelectedOrders, orderId]; // Select the order
+    });
+  };
 
-  const [visibleColumns, setVisibleColumns] = useState({
-    id: true,
-    client: true,
-    product_sku: true,
-    wilaya: true,
-    commune: true,
-    address: true,
-    confirmatrice: true,
-    price: true,
-    status: true,
-    total: true,
-    actions: true,
+  // Handle "select all" functionality
+  const handleSelectAll = () => {
+    if (selectedOrders.length === orders.length) {
+      setSelectedOrders([]); // Deselect all
+    } else {
+      setSelectedOrders(orders.map(order => order._id)); // Select all orders
+    }
+  };
+
+  const [visibleColumns, setVisibleColumns] = useState(() => {
+    // Retrieve saved column visibility from localStorage, or use default values if not available
+    const savedColumns = localStorage.getItem("visibleColumnsOrder");
+    return savedColumns ? JSON.parse(savedColumns) : {
+      id: true,
+      client: true,
+      product_sku: true,
+      wilaya: true,
+      commune: true,
+      confirmatrice: true,
+      price: false,
+      status: true,
+      total: true,
+      attempt: true,
+      phone: true,
+      actions: true,
+      confirmedAt: false,
+      cancelledAt: false,
+    };
   });
   
-  // Adjust columns for mobile
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 640) {
-        // Set only the required columns for mobile view
-        setVisibleColumns({
-          id: true,
-          client: true,
-          product_sku: true,
-          wilaya: false,
-          commune: false,
-          address: false,
-          confirmatrice: false,
-          price: false,
-          status: true,
-          total: true,
-          actions: true,
-        });
-      } else {
-        // Default view for larger screens
-        setVisibleColumns({
-          id: true,
-          client: true,
-          product_sku: true,
-          wilaya: true,
-          commune: true,
-          address: true,
-          confirmatrice: true,
-          price: true,
-          status: true,
-          total: true,
-          actions: true,
-        });
-      }
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
   if (isLoading) return <p>Loading orders...</p>;
   if (error) return <p>Error: {error.message}</p>;
 
@@ -106,7 +90,14 @@ const OrdersPage = () => {
       <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={handleRowsPerPageChange} ordersCount={ordersCount} />
     </div>
     <ColumnVisibilityToggle visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
-    <OrdersTable orders={orders} visibleColumns={visibleColumns} />
+    <OrdersTable
+        orders={filteredOrders}
+        visibleColumns={visibleColumns}
+        selectedOrders={selectedOrders}
+        setSelectedOrders={setSelectedOrders}
+        handleOrderSelection={handleOrderSelection}
+        handleSelectAll={handleSelectAll}
+      />
     <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={setCurrentPage} totalOrders={orders.length} ordersCount={ordersCount} />
   </div>
   );

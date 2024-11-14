@@ -15,7 +15,7 @@ const StatusFilter = ({ status, handleStatusChange }) => {
       >
         <option value="">{t("allStatuses")}</option>
         <option value="pending">{t("pending")}</option>
-        <option value="in-progress">{t("inProgress")}</option>
+        <option value="inProgress">{t("inProgress")}</option>
         <option value="confirmed">{t("confirmed")}</option>
         <option value="cancelled">{t("cancelled")}</option>
       </select>

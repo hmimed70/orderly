@@ -8,9 +8,9 @@ const ColumnVisibilityToggle = ({ visibleColumns, toggleColumnVisibility }) => {
           onClick={() => toggleColumnVisibility(column)}
           className={`px-3 py-1 rounded-md cursor-pointer ${
             visibleColumns[column]
-              ? "bg-indigo-500 text-white dark:bg-indigo-600"
+              ? "bg-orange-500 text-white dark:bg-orange-600"
               : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
-          } hover:bg-indigo-600 dark:hover:bg-indigo-500`}
+          } hover:bg-orange-600 dark:hover:bg-orange-500`}
         >
           {column.replace("_", " ")}
         </span>

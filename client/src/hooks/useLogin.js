@@ -13,12 +13,17 @@ export function useLogin() {
     onSuccess: (response) => {
       const { token, user } = response; // Destructure token and user from the response
       if (token) {
+        console.log('Login successful');
+        console.log(user, token);
         localStorage.setItem('token', token);
         queryClient.setQueryData(['myauthuser'], user);
 
         if (user.role === 'admin') {
+          console.log("admin");
+
           navigate('/admin/dashboard', { replace: true });
         } else if (user.role === 'confirmatrice') {
+          console.log("user");
           navigate('/dashboard', { replace: true });
         }
       } else {

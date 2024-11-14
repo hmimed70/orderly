@@ -122,6 +122,7 @@ exports.createUser = catchAsyncError(async (req, res, next) => {
   });
   });
   exports.getMe = (req, res, next) => {
+    console.log("me");
     req.params.id = req.user.id;
     next();
   };

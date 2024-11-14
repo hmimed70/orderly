@@ -3,13 +3,24 @@ import API from "./Api";
 API
 
 export const newOrder = async (data) => {
-  const response = await API.post('/orders/admin', data);
+  const response = await API.post('/orders/user', data);
   return response.data;
 }
 
+export const MoveToTrashs = async (data) => {
+  console.log(data);
+  const response = await API.post('/orders/admin/trash', data);
+  return response.data;
+}
 
+export const recoverFromTrash = async (data) => {
+  console.log(data);
+  const response = await API.post('/orders/user/recover', data);
+  return response.data;
+}
 
 export const getAllOrders = async (page, limit, status, date) => {
+  console.log("date",date)
   let query = `/orders/admin?page=${page}&limit=${limit}`
   if(status!=="") query += `&status=${status}`
   if(date) query += `&date=${date}`
@@ -17,6 +28,15 @@ export const getAllOrders = async (page, limit, status, date) => {
   const response = await API.get(query); // Update the endpoint as necessary
 
   return response.data;
+};
+export const getTrashOrders  = async (page, limit, status, date) => {
+  let query = `/orders/user/inactive?page=${page}&limit=${limit}`
+ if(status!=="") query += `&status=${status}`
+ if(date!=="" ) query += `&date=${date}`
+
+ const response = await API.get(query); // Update the endpoint as necessary
+ 
+ return response.data;
 };
 export const getMyOrders = async (page, limit, status, date) => {
    let query = `/orders/user/current?page=${page}&limit=${limit}`
@@ -35,27 +55,25 @@ export const getPendingOrders = async () => {
   return response.data;
 }
 export const getSingleOrder = async (id) => {
-  const response = await API.get(`/orders/admin/${id}`);
-  return response.data;
-}
-
-export const getSingleOrderUser = async (id) => {
   const response = await API.get(`/orders/user/${id}`);
-  return response.data;
-}
-export const editOrderDataUser = async (newOrderData, id) => {
-
-  const response = await API.put(`/orders/user/${id}`, newOrderData);
   return response.data;
 }
 
 export const deleteOrderFn = async (id) => {
-  const response = await API.delete(`/orders/admin/${id}`);
+  const response = await API.delete(`/orders/user/${id}`);
   return response.data;
 };
 
 export const editOrderData = async (newOrderData, id) => {
-  const response = await API.put(`/orders/admin/${id}`, newOrderData);
+  const response = await API.put(`/orders/user/${id}`, newOrderData);
+  return response.data;
+}
+
+
+
+export const changeStatus = async (newStatus, orderId) => {
+  console.log(newStatus, orderId)
+  const response = await API.put(`/orders/user/status/${orderId}`,{status: newStatus});
   return response.data;
 }
 
@@ -63,18 +81,6 @@ export const assignOrders = async () => {
   const response = await API.post(`/orders/user/assign`);
   return response.data;
 }
-
-export const confirmOrder = async (id) => {
-  const response = await API.put(`/orders/user/confirm/${id}`);
-  return response.data;
-}
-export const cancelOrder = async (id) => {
-
-  const response = await API.put(`/orders/user/cancel/${id}`);
-  return response.data;
-}
-
-
 
 
 export const getOrderCountByStatusAdmin = async () => {

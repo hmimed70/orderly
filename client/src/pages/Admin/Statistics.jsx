@@ -5,11 +5,13 @@ import UsersOrderChart from '../../components/users/UserOrderChart';
 import { useTranslation } from 'react-i18next';
 
 const Dashboard = () => {
-  const [dateFilter, setDateFilter] = useState("day"); // Default filter: This week
-  const { isLoading, error, data } = useGetUserStatistics(dateFilter);
+  const [dateRange, setDateRange] = useState([null, null]);
+  const { isLoading, error, data } = useGetUserStatistics(dateRange);
+
    const { t } = useTranslation();
-  const handleDateFilterChange = (e) => {
-    setDateFilter(e.target.value);
+   const handleDateRangeChange = (dates) => {
+    setDateRange(dates);
+    // Perform any additional filtering actions with the date range
   };
 
   if (isLoading) {
@@ -31,8 +33,8 @@ const Dashboard = () => {
 <>
   <div className="chart-page-container">
     <div className="chart-container">
-      <DateFilter day={dateFilter} handleDayChange={handleDateFilterChange} />
-      <UsersOrderChart chartData={chartData} />
+    <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />;         
+    <UsersOrderChart chartData={chartData} />
     </div>
   </div>
 </>

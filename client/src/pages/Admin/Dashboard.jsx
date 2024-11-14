@@ -4,12 +4,15 @@ import OrdersChart from '../../components/orders/OrdersChart';
 import { format } from 'date-fns';
 import { useAdminOrder, useGetOrderCountsAdmin } from '../../hooks/useOrder';
 import CardStat from '../../components/orders/CardStat';
+import { useMemo } from 'react';
+import { getCurrentMonthRange } from '../../utils';
 
 const Dashboard = () => {
   const { t } = useTranslation(); // Initialize the `t` function
   const { isLoading: loadAdmin, dataCount } = useGetOrderCountsAdmin();
+  const currentMonth = useMemo(() => getCurrentMonthRange(), []);
 
-  const { isLoading, data } = useAdminOrder(1, 10000, "", "month");
+  const { isLoading, data } = useAdminOrder(1, 10000, "", currentMonth);
 
   if (isLoading || loadAdmin) {
     return <div>{t('loading') || "Loading..."}</div>;

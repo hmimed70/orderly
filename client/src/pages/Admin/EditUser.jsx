@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import FormInput from "../../components/shared/FormInput";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,12 +7,15 @@ import { updatedUserSchema } from "../../schema/index";
 import Row from "../../components/shared/Row";
 import { useNavigate, useParams } from "react-router-dom";
 import { useEditUser, useGetSingleUser } from "../../hooks/useUser";
+import SelectInput from "../../components/shared/SelectInput";
+import RadioGroup from "../../components/shared/RadioGroup";
+import { MdOutlineMan2, MdOutlineWoman2 } from "react-icons/md";
 
-const EditUser = () => {
+const EditUser = ({id, onClose}) => {
   const { t } = useTranslation(); // Initialize translation function
-  const { id } = useParams();
   const { data, isLoading } = useGetSingleUser(id); 
   const { user } = data || {};
+  const [userRole, setUserRole] = useState(user?.role || "confirmatrice"); // Initialize userRole with the user's role or default to "confirmatrice" if not available in the user datuser?.role || "confirmatrice";
   const { isEditing, editUser } = useEditUser();
   const navigate = useNavigate();
 
@@ -20,6 +23,7 @@ const EditUser = () => {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors }
   } = useForm({
     resolver: zodResolver(updatedUserSchema), 
@@ -46,7 +50,7 @@ const EditUser = () => {
       fullname: data.fullname,
       username: data.username,
       email: data.email,
-      role: data.role,
+      role: userRole,
       phone: data.phone,
       state: data.state,
       gender: data.gender,
@@ -56,7 +60,7 @@ const EditUser = () => {
 
     editUser({ id, userData }, {
       onSuccess: () => {
-        navigate('/admin/users');
+       onClose();
       },
       onError: (error) => {
         console.error("User update failed", error);
@@ -68,8 +72,7 @@ const EditUser = () => {
 
   return (
     <Fragment>
-      <div className="orderContainer flex flex-col lg:flex-row justify-center items-center dark:bg-gray-900">
-        <div className="mainContainer bg-white dark:bg-gray-800 m-2 rounded-lg shadow-md p-4 w-full">
+        <div className="mainContainer bg-white dark:bg-gray-800  rounded-lg shadow-md p-1 w-full">
           <h1 className="text-gray-950 dark:text-gray-100 font-semibold text-3xl mb-8">{t('editUser.title')}</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="w-full">
             <Row>
@@ -91,8 +94,6 @@ const EditUser = () => {
                 errors={errors.email}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-            </Row>
-            <Row>
               <FormInput
                 type="text"
                 placeholder={t('editUser.username')}
@@ -102,19 +103,12 @@ const EditUser = () => {
                 errors={errors.username}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-              <div className="w-full flex justify-center items-center my-2 text-left rtl:text-right">
-                <label htmlFor="role" className="text-slate-800 dark:text-gray-100 px-2 w-3/5 text-left rtl:text-right">{t('editUser.role')}</label>
-                <select
-                  disabled={isEditing}
-                  name="role"
-                  {...register("role", { required: "Role is required" })}
-                  className="outline-none bg-white border rounded-md py-2 px-2 w-4/5 dark:bg-gray-700 dark:text-gray-200"
-                >
-                  <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="confirmatrice">{t('editUser.confirmatrice')}</option>
-                  <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="admin">{t('editUser.admin')}</option>
-                </select>
-                {errors.role && <p className="text-red-600">{errors.role.message}</p>}
-              </div>
+              <SelectInput label={t('editUser.role')} name="role"  disabled={isEditing} value={userRole} onChange={(e) =>{ 
+                 console.log(e.target.value);
+                setUserRole(e.target.value)}} register={register} errors={errors.role}>
+                <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="confirmatrice">{t('editUser.confirmatrice')}</option>
+                <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="admin">{t('editUser.admin')}</option>
+              </SelectInput>
               </Row>
               <Row>
               <FormInput
@@ -136,8 +130,6 @@ const EditUser = () => {
                 errors={errors.handleLimit}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-                    </Row>
-                    <Row>
               <FormInput
                 disabled={isEditing}
                 type="text"
@@ -148,6 +140,8 @@ const EditUser = () => {
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
         
+                  </Row>
+                  <Row>
               <FormInput
                 disabled={isEditing}
                 type="text"
@@ -157,41 +151,32 @@ const EditUser = () => {
                 errors={errors.state}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-                  </Row>
-                  <Row>
-              <div className=" text-left rtl:text-right w-full flex justify-center items-center my-2">
-                <span className="text-slate-800 dark:text-gray-100 w-2/3 text-left rtl:text-right  pr-1">{t('editUser.gender')}</span>
-                <div className="flex w-full">
-                  <label className="flex items-center mr-4 w-2/5">
-                    <input
-                      disabled={isEditing}
-                      type="radio"
-                      value="male"
-                      {...register("gender", { required: "Gender type is required" })}
-                      className="mr-2"
-                    />
-                    {t('editUser.male')}
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      disabled={isEditing}
-                      type="radio"
-                      value="female"
-                      {...register("gender", { required: "Gender type is required" })}
-                      className="mr-2"
-                    />
-                    {t('editUser.female')}
-                  </label>
-                </div>
-                {errors.gender && <p className="text-red-600">{errors.gender.message}</p>}
-              </div>
+              <RadioGroup  
+              label={t('editUser.gender')}
+              name="gender"
+              watch={watch}
+              options={[
+                { value: 'male', label: <div className="flex flex-col justify-center items-center"><MdOutlineMan2 size={30} /><span>{t('editUser.male')}</span></div>  },
+                { value: 'female', label: <div className="flex flex-col justify-center items-center"><MdOutlineWoman2 size={30} /><span>{t('editUser.female')}</span></div>  },
+              ]}
+              register={register}
+              errors={errors.gender}
+              disabled={isEditing}
+              />
             </Row>
-            <div className=" my-6 w-1/2 mx-auto">
-              <button type="submit" className="py-3 px-6 rounded-md bg-indigo-600 text-white text-sm w-5/6">{t('editUser.updateUser')}</button>
+            <div className=" flex justify-center items-center gap-4">
+            <button
+                type="button"
+                className="py-3 px-6 rounded-md bg-red-600 text-white text-sm"
+                onClick={onClose}
+              >
+                {t('cancel')}
+              </button>
+              <button type="submit" className="py-3 px-6 rounded-md bg-orange-600 text-white text-sm"> {isEditing ? t('editOrder1.saving') : t('editOrder1.save')}
+              </button>
             </div>
           </form>
         </div>
-      </div>
     </Fragment>
   );
 };

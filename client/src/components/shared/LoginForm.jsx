@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { BiLoaderAlt } from "react-icons/bi";
 import { useTranslation } from "react-i18next";
 import FormRowVertical from "./FormRowVertical";
@@ -8,17 +8,17 @@ import { useLogin } from "../../hooks/useLogin";
 
 function LoginForm() {
   const navigate = useNavigate();
-  const { isAdmin, isUser } = useAuth();
+  const { user } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, isLoading: loading } = useLogin();
   const { t } = useTranslation();
   useEffect(
     function () {
-      if (isUser) navigate("/dashboard", { replace: true });
-      if(isAdmin) navigate("/admin/dashboard", { replace: true });
+      if(user) navigate("/orders", { replace: true });
+  
     },
-    [isAdmin,isUser, navigate]
+    [user, navigate]
   );
   function handleSubmit(e) {
     e.preventDefault();
