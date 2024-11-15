@@ -122,14 +122,12 @@ exports.createUser = catchAsyncError(async (req, res, next) => {
   });
   });
   exports.getMe = (req, res, next) => {
-    console.log("me");
     req.params.id = req.user.id;
     next();
   };
   
 
   exports.updateUser = catchAsyncError(async (req, res, next) => {
-    console.log(req.body);
     if (req.body.password) {
       delete req.body.password; // Remove password from userData if not provided
     }

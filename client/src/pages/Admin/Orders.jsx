@@ -89,7 +89,6 @@ const Orders = () => {
   const handleDeleteSelected = () => {
     deleteMultipleOrder({ orderIds: selectedOrders });
   };
- console.log("sendedVal", sendedVal);
   const handleDateRangeChange = useCallback((dates) => {
     setDateRange(dates);
   }, []);

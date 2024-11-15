@@ -4,7 +4,6 @@ class ApiFeatures {
       this.queryStr = queryStr;
     }
     search() {
-      console.log("ddsggd",this.queryStr.keyword)
       const keyword = this.queryStr.keyword
       ? {
           $or: [

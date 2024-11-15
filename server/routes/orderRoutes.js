@@ -17,7 +17,6 @@ const { createOrder, getOrderDetails,
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
 orderRoutes.use(isAuthenticated);
 orderRoutes.get('/user', listOrders);
-console.log("isAuthenticated")
 orderRoutes.get('/user/current', getMyCurrentHandleOrder);
 orderRoutes.post('/user/assign', assignOrdersToUser);
 orderRoutes.get('/user/status-counts', getOrderCountsByStatusUser);
@@ -31,7 +30,6 @@ orderRoutes.delete('/user/:id',checkOrderAssignment ,deleteOrder)
 .get('/user/:id',checkOrderAssignment, getOrderDetails);
 orderRoutes.put('/user/status/:id',checkOrderAssignment, changeStatus);
 orderRoutes.use(isAdmin);
-console.log("isAuthenticated")
 orderRoutes.post('/admin/trash', trashOrders);
 orderRoutes.post('/admin/clear', clearTrash);
 

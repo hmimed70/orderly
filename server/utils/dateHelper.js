@@ -10,7 +10,6 @@ const getDateRange = (dateFilter) => {
     // Parse the start and end dates and trim any extra whitespace
     startDate = moment(new Date(start.trim()));
     endDate = moment(new Date(end.trim()));
-   console.log(startDate, endDate);
     // Check if both dates are valid
     if (!startDate.isValid() || !endDate.isValid()) {
       return {}; // Return an empty object if dates are invalid

@@ -1,8 +1,8 @@
 import { HiMenu } from "react-icons/hi";
 import { GiSun, GiMoon } from "react-icons/gi";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import {  MdAccountCircle } from "react-icons/md";
+import { useState, useRef, useEffect } from "react";
+import { MdAccountCircle } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 
 import PropTypes from 'prop-types';
@@ -10,33 +10,61 @@ import { useLanguage } from "../../hooks/LanguageProvider";
 
 import { useTheme } from "../../hooks/useTheme";
 import { useLogout } from "../../hooks/useUser";
+
 const Header = ({ toggleSidebar }) => {
   const { t } = useTranslation();
-
 
   const { logout, isLoading } = useLogout();
   const { theme, toggleTheme } = useTheme();
   const { changeLanguage } = useLanguage();
 
   const [isAccountDropdownOpen, setIsAccountDropdownOpen] = useState(false);
-  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false); // State for language dropdown
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
+  // Refs to track dropdown elements
+  const accountDropdownRef = useRef(null);
+  const languageDropdownRef = useRef(null);
+
+  // Toggle account dropdown visibility
   const toggleAccountDropdown = () => {
     setIsAccountDropdownOpen((prev) => !prev);
   };
 
+  // Toggle language dropdown visibility
   const toggleLanguageDropdown = () => {
-    setIsLanguageDropdownOpen((prev) => !prev); // Toggle language dropdown visibility
+    setIsLanguageDropdownOpen((prev) => !prev);
   };
-const handleLanguageChangge = (lang) => {
-  changeLanguage(lang);
-  toggleLanguageDropdown(false);
-}
+
+  const handleLanguageChange = (lang) => {
+    changeLanguage(lang);
+    setIsLanguageDropdownOpen(false); // Close language dropdown after selection
+  };
+
   const logoutUser = () => {
     logout();
     navigate('/login', { replace: true });
   };
+
+  // Close dropdowns if click happens outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        accountDropdownRef.current && !accountDropdownRef.current.contains(event.target) &&
+        languageDropdownRef.current && !languageDropdownRef.current.contains(event.target)
+      ) {
+        setIsAccountDropdownOpen(false);
+        setIsLanguageDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup the event listener on component unmount
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <header className="fixed top-0 left-0 lg:ltr:left-64 lg:rtl:right-64 mx-1 right-0 flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow-lg text-black dark:text-white">
@@ -52,7 +80,7 @@ const handleLanguageChangge = (lang) => {
         </button>
 
         {/* Language dropdown */}
-        <div className="relative">
+        <div className="relative" ref={languageDropdownRef}>
           <button
             onClick={toggleLanguageDropdown}
             className="flex items-center gap-2 font-medium"
@@ -63,13 +91,13 @@ const handleLanguageChangge = (lang) => {
             <ul onMouseLeave={toggleLanguageDropdown} className="absolute right-0 mt-2 bg-white dark:bg-gray-700 shadow-lg rounded-md py-2 w-40">
               <li>
                 <button
-                  onClick={() => handleLanguageChangge("en")}
+                  onClick={() => handleLanguageChange("en")}
                   className="block px-4 py-2 text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   English
                 </button>
                 <button
-                  onClick={() => handleLanguageChangge("fr")}
+                  onClick={() => handleLanguageChange("fr")}
                   className="block px-4 py-2 text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   Français
@@ -77,7 +105,7 @@ const handleLanguageChangge = (lang) => {
               </li>
               <li>
                 <button
-                  onClick={() => handleLanguageChangge("ar")}
+                  onClick={() => handleLanguageChange("ar")}
                   className="block px-4 py-2 text-sm text-gray-900 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
                 >
                   العربية
@@ -88,7 +116,7 @@ const handleLanguageChangge = (lang) => {
         </div>
 
         {/* Account dropdown */}
-        <div className="relative rtl:ml-28">
+        <div className="relative rtl:ml-28" ref={accountDropdownRef}>
           <button
             onClick={toggleAccountDropdown}
             className="flex items-center gap-2 font-medium"
@@ -134,7 +162,9 @@ const handleLanguageChangge = (lang) => {
     </header>
   );
 };
+
 Header.propTypes = {
   toggleSidebar: PropTypes.func.isRequired,
-}
+};
+
 export default Header;

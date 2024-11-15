@@ -8,23 +8,19 @@ export const newOrder = async (data) => {
 }
 
 export const clearFromTrash = async (data) => {
-  console.log(data);
   const response = await API.post('/orders/admin/clear', data);
   return response.data;
 }
 export const MoveToTrashs = async (data) => {
-  console.log(data);
   const response = await API.post('/orders/admin/trash', data);
   return response.data;
 }
 export const recoverFromTrash = async (data) => {
-  console.log(data);
   const response = await API.post('/orders/user/recover', data);
   return response.data;
 }
 
 export const getAllOrders = async (page, limit, status, date,search) => {
-  console.log("date",date)
   let query = `/orders/admin?page=${page}&limit=${limit}`
   if(status!=="") query += `&status=${status}`
   if(date) query += `&date=${date}`
@@ -45,7 +41,6 @@ export const getTrashOrders  = async (page, limit, status, date, search) => {
  return response.data;
 };
 export const getMyOrders = async (page, limit, status, date, search) => {
-   console.log(search)
   let query = `/orders/user/current?page=${page}&limit=${limit}`
   if(status!=="") query += `&status=${status}`
   if(date!=="" ) query += `&date=${date}`
@@ -80,7 +75,6 @@ export const editOrderData = async (newOrderData, id) => {
 
 
 export const changeStatus = async (newStatus, orderId) => {
-  console.log(newStatus, orderId)
   const response = await API.put(`/orders/user/status/${orderId}`,{status: newStatus});
   return response.data;
 }

@@ -104,7 +104,6 @@ const EditUser = ({id, onClose}) => {
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
               <SelectInput label={t('editUser.role')} name="role"  disabled={isEditing} value={userRole} onChange={(e) =>{ 
-                 console.log(e.target.value);
                 setUserRole(e.target.value)}} register={register} errors={errors.role}>
                 <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="confirmatrice">{t('editUser.confirmatrice')}</option>
                 <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="admin">{t('editUser.admin')}</option>

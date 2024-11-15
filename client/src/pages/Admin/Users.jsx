@@ -49,13 +49,9 @@ const UsersPage = () => {
   if (error) return <p>{t('usersPage.error', { message: error.message })}</p>;
 
   const { usersCount, users } = data;
-  const filteredUsers = users.filter(user => (
-    user.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.fullname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.state.toLowerCase().includes(searchTerm.toLowerCase())
-  ));
 
-  const totalUsers = searchTerm !== "" ? filteredUsers.length : usersCount;
+
+  const totalUsers =  usersCount;
   const totalPages = Math.ceil(totalUsers / rowsPerPage) || 1;
 
   const handleAddClick = () => {
@@ -83,7 +79,6 @@ const UsersPage = () => {
     <div>
       <h1 className="text-2xl font-bold">{t('usersPage.title')}</h1>
       <div className="flex flex-col lg:flex-row space-y-4 mt-4 justify-center items-center lg:justify-around">
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
         <div className="flex items-center space-x-2">
           <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={handleRowsPerPageChange} usersCount={usersCount} />
         </div>
@@ -92,7 +87,7 @@ const UsersPage = () => {
         </button>
       </div>
 
-      <UsersTable onDeleteUser={handleDeleteUser} users={filteredUsers} visibleColumns={visibleColumns} />
+      <UsersTable onDeleteUser={handleDeleteUser} users={users} visibleColumns={visibleColumns} />
       <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={setCurrentPage} totalOrders={totalUsers} ordersCount={usersCount} />
       <ColumnVisibilityToggle visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
 

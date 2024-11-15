@@ -12,7 +12,6 @@ exports.isAuthenticated = catchAsyncError(async (req, res, next) => {
   }
   
   if (!token) {
-    console.log("no token provided")
     return next(new ErrorHandler('You are not logged in! Please log in to get access.', 401));
   }
 

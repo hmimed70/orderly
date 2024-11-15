@@ -43,11 +43,9 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
 
   // Handle modal open and close
   const handleEditClick = (orderId) => {
-    console.log("is edit click")
     setSelectedOrderId(orderId);
     setIsModalOpen(true);
   };
-  console.log(isModalOpen);
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedOrderId(null);

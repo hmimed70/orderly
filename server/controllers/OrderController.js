@@ -250,12 +250,10 @@ exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
   
 
   exports.listOrders = catchAsyncError((req, res, next) => {
-    console.log('listOrders');
     getOrders(req, res, next, { confirmatrice: null,status: 'pending', active: true });
   });
   
   exports.inactiveOrders =catchAsyncError( (req, res, next) => {
-    console.log("inactive")
     getOrders(req, res, next,  { active: false });
   });
   
@@ -356,7 +354,6 @@ exports.clearTrash = catchAsyncError(async (req, res, next) => {
 });
 exports.trashOrders = catchAsyncError(async (req, res, next) => {
   const { orderIds } = req.body; // Expect an array of order IDs
-  console.log(req.body);
   if (!Array.isArray(orderIds) || orderIds.length === 0) {
     return next(new ErrorHandler('No order IDs provided', 400));
   }
@@ -379,7 +376,6 @@ exports.trashOrders = catchAsyncError(async (req, res, next) => {
 });
  exports.recoverOrders = catchAsyncError(async (req, res, next) => {
   const { orderIds } = req.body; // Expect an array of order IDs
-  console.log('dpsogjfophjpoih',req.body);
   if (!Array.isArray(orderIds) || orderIds.length === 0) {
     return next(new ErrorHandler('No order IDs provided', 400));
   }
@@ -459,16 +455,13 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
   exports.changeStatus = catchAsyncError(async (req, res, next) => {
     const orderId = req.params.id;
     const { status } = req.body;
-    console.log('status', req.body.status, 'order id', orderId);
     const validStatuses = [
       'pending', 'inProgress', 'confirmed', 'cancelled', 
       'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4', 
       'phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder'
     ];
-    console.log('validStatuses');
     // Validate newStatus
     if (!validStatuses.includes(status)) {
-      console.log('validStatuses');
   
       return next(new ErrorHandler('Invalid status value.', 400));
     }
@@ -497,11 +490,9 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
         timestamp: new Date(),
         attempt: status,
       });
-      console.log('validStatuses');
   
       // Save the updated order
       const newOrd = await order.save();  
-      console.log(newOrd);
       return res.status(200).json({
         success: true,
         message: 'Order updated successfully',

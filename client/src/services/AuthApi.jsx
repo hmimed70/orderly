@@ -32,8 +32,6 @@ export const updatePassword = async (data) => {
 
 // Get current user details
 export const getCurrentUser = async () => {
-  console.log("get current user");
   const response = await API.get('/users/getme');
-  console.log(response.data);
   return response.data; // Extract user from response
 };
