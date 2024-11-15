@@ -25,6 +25,9 @@ const orderSchema = new Schema({
       type: Boolean,
       default: true,
     },
+    deletedAt: {
+      type: Date
+    },
     attempts: [
       {
         timestamp: {

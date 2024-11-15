@@ -33,7 +33,9 @@ const Dashboard = () => {
 <>
   <div className="chart-page-container">
     <div className="chart-container">
-    <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />;         
+      <div className='mx-auto w-1/2 flex items-center justify-center'>
+    <DateFilter notshow dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />       
+      </div>
     <UsersOrderChart chartData={chartData} />
     </div>
   </div>

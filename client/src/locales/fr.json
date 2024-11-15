@@ -71,18 +71,26 @@
     "filteredOrders": "{{totalOrders}} filtrées sur {{ordersCount}} commandes au total",
     "rows": "Afficher",
     "all": "Tout",
-  
+    "client_information": "Information de Client",
+
+    "product_information": "Information de Produit",
+
     "searchOrders": "Rechercher",
     "filterByStatus": "état",
     
-    "orderSummary": {
-      "title": "Résumé de la commande",
-      "clientName": "Nom du client",
-      "quantity": "Quantité",
-      "pricePerItem": "Prix par article",
-      "shippingPrice": "Prix de livraison",
-      "totalPrice": "Prix total"
-    },
+"orderSummary": "Résumé de la commande",
+  "productDetails": "Détails du produit",
+  "sku": "Réf. produit",
+  "reference": "Référence",
+  "pricePerUnit": "Prix unitaire",
+  "deliveryDetails": "Détails de livraison",
+  "shippingType": "Type d'expédition",
+  "shippingPrice": "Prix de livraison",
+  "invoiceDetails": "Détails de la facture",
+  "phone1": "Téléphone 1",
+  "phone2": "Téléphone 2",
+  "totalPrice": "Prix total",
+  "currency": "DA",
     "usersOrderChart": {
       "title": "Commandes par utilisateur",
       "confirmedOrders": "Commandes confirmées",
@@ -142,12 +150,16 @@
       "actions": "Actions",
       "noUsersFound": "Aucun utilisateur trouvé."
     },
-    
+    "dateRange":"Date",
+    "selectDateRange": "Sélectionner la plage de dates",
+    "Trash": "Corbeille",
+
     "orderNumber": "Numéro de commande",
     "client": "Client",
     "productSKU": "SKU du produit",
     "phone": "Téléphone",
     "cancelledAt": "Annulé à",
+    "deletedAt": "Supprimer à",
     "confirmedAt": "Confirmé à",
     "wilaya": "Wilaya",
     "commune": "Commune",
@@ -268,8 +280,20 @@
         },
         "confirm": {
           "success": "Commande confirmée avec succès"
+        },
+        "trash": {
+          "cleared": "Corbeille vidée avec succès !",
+          "recovered": "Commandes récupérées avec succès !",
+          "moved": "Commandes déplacées dans la corbeille avec succès !"
+        },
+     
+        "status": {
+          "changed": "Statut de la commande mis à jour avec succès !"
         }
       },    
+      "order_details": "Détails de la commande",
+      "status_changes": "état",
+
     "update_profile": "Mettre à jour le profil",
     "fullname": "Nom complet",
     "username": "Nom d'utilisateur",

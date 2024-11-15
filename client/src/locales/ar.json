@@ -44,6 +44,9 @@
     "thisYear": "هذا العام",
     "inProgress": "قيد التنفيذ",
     "confirmed": "مؤكد",
+    "client_information": "معلومات الزبون",
+
+    "product_information": "معلومات المنتج",
     "cancelled": "ملغى",
     "pending": "معلق",
     "product_sku": "رمز المنتج",
@@ -70,18 +73,27 @@
     "searchOrders": "البحث",
     "filterByStatus": " حسب الحالة",
     "cancel_message": " هل أنت متاكد من أنك تريد الغاء هذا الطلب؟",
+  "order_details": "تفاصيل الطلب",
 
+  "no_notes": "لا توجد ملاحظات",
+  "status_changes": "الحالة",
     "confirm_modal": "هل أنت متأكد من أنك تريد تنفيذ هذا الإجراء؟",
     "confirmer": "تاكيد",
     "cancel": "الغاء",
-    "orderSummary": {
-      "title": "ملخص الطلب",
-      "clientName": "اسم العميل",
-      "quantity": "الكمية",
-      "pricePerItem": "السعر لكل وحدة",
-      "shippingPrice": "سعر الشحن",
-      "totalPrice": "السعر الإجمالي"
-    },
+    "orderSummary": "ملخص الطلب",
+    "productDetails": "تفاصيل المنتج",
+    "sku": "رمز المنتج",
+    "reference": "المرجع",
+    "pricePerUnit": "السعر لكل وحدة",
+    "deliveryDetails": "تفاصيل التسليم",
+    "shippingType": "نوع الشحن",
+    "shippingPrice": "تكلفة الشحن",
+    "invoiceDetails": "تفاصيل الفاتورة",
+    "phone1": "الهاتف 1",
+    "phone2": "الهاتف 2",
+    "totalPrice": "السعر الإجمالي",
+    "currency": "دج",
+
     "client_name": "اسم العميل",
     "primary_phone": "الهاتف الأساسي",
     "secondary_phone": "الهاتف الثانوي",
@@ -90,6 +102,7 @@
       "confirmedOrders": "الطلبات المؤكدة",
       "cancelledOrders": "الطلبات الملغاة"
     },
+    "date":"التاريخ",
     "addOrder": {
       "client": "اسم العميل",
       "phone1": "الهاتف الأساسي",
@@ -192,12 +205,16 @@
       "actions": "الإجراءات",
       "noUsersFound": "لم يتم العثور على مستخدمين."
     },
+    "Trash": "الطلبات المحذوفة",
+    "selectDateRange": "اختر التاريخ",
     "orderNumber": "رقم الطلب",
     "client": "العميل",
     "productSKU": "رمز المنتج",
     "phone": "الهاتف",
     "attempt": "المحاولة",
     "cancelledAt": "تم الإلغاء في",
+    "deletedAt": "تم الحذف في",
+
     "confirmedAt": "تم التأكيد في",
     "wilaya": "الولاية",
     "commune": "البلدية",
@@ -293,7 +310,16 @@
       },
       "confirm": {
         "success": "تم تأكيد الطلب بنجاح"
+      },
+      "trash": {
+        "cleared": "تم إفراغ المهملات بنجاح!",
+        "recovered": "تم استعادة الطلبات بنجاح!",
+        "moved": "تم نقل الطلبات إلى المهملات بنجاح!"
+      },
+      "status": {
+        "changed": "تم تحديث حالة الطلب بنجاح!"
       }
+
     }
   }
   

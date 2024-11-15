@@ -18,7 +18,7 @@ const AppLayout = () => {
       {/* Main content container */}
       <div className="flex flex-row flex-1 pt-16 dark:bg-gray-800">
          <Header toggleSidebar={toggleSidebar} />
-        <Sidebar isSidebarOpen={isSidebarOpen} />
+        <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         {/* Sidebar */}
 
         {/* Main content area */}

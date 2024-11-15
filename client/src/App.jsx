@@ -12,7 +12,6 @@ import Account from "./pages/Account";
 
 import Login from "./pages/Login";
 import { Toaster } from "react-hot-toast";
-import MyOrders from "./pages/MyOrders";
 import AddOrder from "./pages/AddOrder";
 import EditOrder from "./pages/EditOrder";
 import AddUser from "./pages/Admin/AddUser";
@@ -81,7 +80,6 @@ function App() {
               }>
                 <Route index element={<Navigate replace to="dashboard" />} />
                 <Route path="/dashboard" element={<UserDashboard />} />
-                <Route path="/my_orders" element={<MyOrders />} />
                 <Route path="/statistics" element={<StatisticsUser />} />
 
                 </Route>

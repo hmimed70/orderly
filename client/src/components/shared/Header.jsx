@@ -60,7 +60,7 @@ const handleLanguageChangge = (lang) => {
             {t('language')}
           </button>
           {isLanguageDropdownOpen && (
-            <ul className="absolute right-0 mt-2 bg-white dark:bg-gray-700 shadow-lg rounded-md py-2 w-40">
+            <ul onMouseLeave={toggleLanguageDropdown} className="absolute right-0 mt-2 bg-white dark:bg-gray-700 shadow-lg rounded-md py-2 w-40">
               <li>
                 <button
                   onClick={() => handleLanguageChangge("en")}
@@ -96,7 +96,7 @@ const handleLanguageChangge = (lang) => {
             <MdAccountCircle className="text-3xl" />
           </button>
           {isAccountDropdownOpen && (
-            <ul className="absolute right-0 mt-2 bg-white dark:bg-gray-700 shadow-lg rounded-md py-2 w-40">
+            <ul onMouseLeave={toggleAccountDropdown} className="absolute right-0 mt-2 bg-white dark:bg-gray-700 shadow-lg rounded-md py-2 w-40">
               <li>
                 <NavLink
                   to="/account/update-profile"

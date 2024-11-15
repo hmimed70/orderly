@@ -35,7 +35,7 @@ export function useClearTrash(){
   const { mutate: clearTrashAdmin, isLoading: isDeleting } = useMutation({
     mutationFn: clearFromTrash,
     onSuccess: () => {
-      toast.success(t("order.recover.recover"));
+      toast.success(t("order.trash.cleared"));
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (err) => toast.error(err.response.data.message),
@@ -50,7 +50,7 @@ export function UseRecoverFromTrash(){
   const { mutate: recoverMultipleOrder, isLoading: isRecovering } = useMutation({
     mutationFn: recoverFromTrash,
     onSuccess: () => {
-      toast.success(t("order.recover.recover"));
+      toast.success(t("order.trash.recovered"));
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (err) => toast.error(err.response.data.message),
@@ -126,7 +126,7 @@ export function useDeleteOrder() {
   const { isLoading: isDeleting, mutate: deleteOrder } = useMutation({
     mutationFn: deleteOrderFn,
     onSuccess: () => {
-      toast.success(t("order.delete.success"));
+      toast.success(t("order.trash.moved"));
       queryClient.invalidateQueries({
         queryKey: ["orders"],
       });
@@ -143,7 +143,7 @@ export function useDeleteMultipleOrder() {
   const { mutate: deleteMultipleOrder, isLoading: isDeletingsMultiple } = useMutation({
     mutationFn: MoveToTrashs,
     onSuccess: () => {
-      toast.success(t("order.create.success"));
+      toast.success(t("order.trash.moved"));
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (err) => toast.error(err.response.data.message),
@@ -186,13 +186,12 @@ export const useChangeStatus = () => {
   const { mutate: changeStat, isLoading: isChangingStatus } = useMutation({
     mutationFn:( {status, orderId} ) => changeStatus(status, orderId),
     onSuccess: () => {
-      toast.success(t("order.changeStatus.success"));
+      toast.success(t("order.status.changed"));
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (err) => toast.error(err.response.data.message),
   });
    return {changeStat, isChangingStatus}
-
 }
 
 

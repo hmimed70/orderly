@@ -14,7 +14,7 @@ export default function MainNav() {
   const { isAdmin, isUser } = useAuth(); // Get user role from custom hook
 const { t } = useTranslation();
   return (
-    <ul className="flex flex-col gap-y-4">
+    <ul className="flex flex-col gap-y-4 text-sm">
       {/* Conditionally render Home link for regular users */}
       {isUser && (
         <li>

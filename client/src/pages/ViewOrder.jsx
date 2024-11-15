@@ -3,6 +3,10 @@ import { useParams } from "react-router-dom";
 import { useGetSingleOrder } from "../hooks/useOrder";
 import { useTranslation } from "react-i18next";
 import { getWilayaName } from "../utils";
+import OrderTimeline from "../components/shared/OrderTimeLine";
+import Row from "../components/shared/Row";
+import FormInput from "../components/shared/FormInput";
+import TextArea from "../components/shared/TextArea";
 
 const ViewOrder = () => {
   const { id } = useParams();
@@ -14,83 +18,148 @@ const ViewOrder = () => {
 
   return (
     <Fragment>
-      <div className="flex flex-col items-center p-4 bg-gray-100 dark:bg-gray-900 min-h-screen">
-        {/* Summary Section */}
-        <div className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">
-            {t("order_summary")}
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex justify-between">
-              <span className="font-medium text-gray-600 dark:text-gray-300">{t("order_id")}:</span>
-              <span className="font-semibold text-gray-900 dark:text-gray-200">{id}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium text-gray-600 dark:text-gray-300">{t("status")}:</span>
-              <span className="font-semibold text-gray-900 dark:text-gray-200">
-                {order?.attempts[order?.attempts.length - 1]?.attempt || t("unknown")}
-              </span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium text-gray-600 dark:text-gray-300">{t("quantity")}:</span>
-              <span className="font-semibold text-gray-900 dark:text-gray-200">{order?.quantity}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="font-medium text-gray-600 dark:text-gray-300">{t("price")}:</span>
-              <span className="font-semibold text-gray-900 dark:text-gray-200">{order?.price}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Details Section */}
-        <div className="w-full max-w-4xl bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-          <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">
-            {t("order_details")}
-          </h2>
-
-          {/* Client Information */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">{t("client_information")}</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <DetailRow label={t("client_name")} value={order?.invoice_information.client} />
-              <DetailRow label={t("primary_phone")} value={order?.invoice_information.phone1} />
-              <DetailRow label={t("secondary_phone")} value={order?.invoice_information.phone2} />
-              <DetailRow label={t("address")} value={order?.invoice_information.address} />
-              <DetailRow label={t("wilaya")} value={getWilayaName(order?.invoice_information.wilaya)} />
-              <DetailRow label={t("commune")} value={order?.invoice_information.commune} />
-            </div>
-          </div>
-
-          {/* Product Information */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">{t("product_information")}</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <DetailRow label={t("product_sku")} value={order?.product_sku} />
-              <DetailRow label={t("product_name")} value={order?.product_name} />
-              <DetailRow label={t("quantity")} value={order?.quantity} />
-              <DetailRow label={t("price")} value={order?.price} />
-              <DetailRow label={t("shipping_price")} value={order?.shipping_price} />
-              <DetailRow label={t("shipping_type")} value={order?.shipping_type} />
-            </div>
+    <div className="orderContainer flex flex-col lg:flex-row justify-start items-start dark:bg-gray-900 pt-2"> {/* Add pt-16 */}
+      <div className="mainContainer bg-white dark:bg-gray-800 m-2 rounded-lg shadow-md p-4 w-full lg:w-2/3">
+        {/* Order Details Section */}
+            <h2 className="text-3xl mb-5 font-bold text-gray-800 dark:text-gray-100 p-2   inline-block text-center">
+              {t("order_details")}
+            </h2>
+  <h3 className="text-xl top-4 font-semibold text-gray-700 dark:text-gray-300 mb-2  px-2">
+    {t("client_information")}
+  </h3>
+  <div className="border border-orange-500 m-4 overflow-hidden rounded-md">
+  <Row>
+              <FormInput
+                type="text"
+                placeholder={t("client_name")}
+                name="client_name"
+                disabled={true}
+                value={order?.invoice_information.client}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+              <FormInput
+                type="text"
+                placeholder={t("primary_phone")}
+                name="primary_phone"
+                disabled={true}
+                value={order?.invoice_information.phone1}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+            </Row>
+            <Row>
+              <FormInput
+                type="text"
+                placeholder={t("secondary_phone")}
+                name="secondary_phone"
+                disabled={true}
+                value={order?.invoice_information.phone2}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+            </Row>
+            <Row>
+              <FormInput
+                type="text"
+                placeholder={t("wilaya")}
+                name="wilaya"
+                disabled={true}
+                value={getWilayaName(order?.invoice_information.wilaya)}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+              <FormInput
+                type="text"
+                placeholder={t("commune")}
+                name="commune"
+                disabled={true}
+                value={order?.invoice_information.commune}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+            </Row>
           </div>
 
-          {/* Notes */}
-          <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">{t("additional_information")}</h3>
-            <DetailRow label={t("note")} value={order?.note || t("no_notes")} />
+        {/* Product Information */}
+        <div className="mb-6">
+        <h3 className="text-xl   font-semibold text-gray-700 dark:text-gray-300 my-2 px-2">
+              {t("product_information")}
+            </h3>
+          <div className="border border-orange-500 m-4 overflow-hidden rounded-md">
+            <Row>
+              <FormInput
+                type="text"
+                placeholder={t("product_sku")}
+                name="product_sku"
+                disabled={true}
+                value={order?.product_sku}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+              <FormInput
+                type="text"
+                placeholder={t("product_name")}
+                name="product_name"
+                disabled={true}
+                value={order?.product_name}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+            </Row>
+            <Row>
+              <FormInput
+                type="text"
+                placeholder={t("quantity")}
+                name="quantity"
+                disabled={true}
+                value={order?.quantity}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+              <FormInput
+                type="text"
+                placeholder={t("price")}
+                name="price"
+                disabled={true}
+                value={order?.price}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+            </Row>
+            <Row>
+              <FormInput
+                type="text"
+                placeholder={t("shipping_price")}
+                name="shipping_price"
+                disabled={true}
+                value={order?.shipping_price}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+              <FormInput
+                type="text"
+                placeholder={t("shipping_type")}
+                name="shipping_type"
+                disabled={true}
+                value={order?.shipping_type}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+            </Row>
+            <Row>
+              <TextArea
+                type="text"
+                placeholder={t("note")}
+                name="note"
+                disabled={true}
+                value={order?.note || t("no_notes")}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+            </Row>
           </div>
         </div>
       </div>
-    </Fragment>
+
+      {/* Right Section: Status Timeline */}
+      <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 p-4 md:mb-0">
+        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-300 inline-block text-center mb-4">
+          {t("status_changes")}
+        </h2>
+        <OrderTimeline order={order} />
+      </div>
+    </div>
+  </Fragment>
   );
 };
-
-// Component for displaying a single row of label and value
-const DetailRow = ({ label, value }) => (
-  <div className="flex justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-    <span className="font-medium text-gray-600 dark:text-gray-300">{label}:</span>
-    <span className="font-semibold text-gray-900 dark:text-gray-200">{value}</span>
-  </div>
-);
 
 export default ViewOrder;

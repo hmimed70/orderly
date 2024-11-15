@@ -7,7 +7,6 @@ import Wilaya from "../data/Wilaya.json";
 import Communes from "../data/Communes.json";
 import Row from "../components/shared/Row";
 import { useGetSingleOrder, useEditOrder } from "../hooks/useOrder";
-import { useNavigate, useParams } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import SelectInput from "../components/shared/SelectInput";
 import RadioGroup from "../components/shared/RadioGroup";
@@ -15,7 +14,7 @@ import { HiBuildingOffice } from "react-icons/hi2";
 import { HiOutlineHome } from "react-icons/hi";
 import TextArea from "../components/shared/TextArea";
 
-const EditOrder = ({orderId, closeModal}) => {
+const EditOrder = ({orderId, onClose}) => {
   const { t } = useTranslation();
   const  id  = orderId;
   const [selectedWilaya, setSelectedWilaya] = useState("");
@@ -23,7 +22,6 @@ const EditOrder = ({orderId, closeModal}) => {
   const { isEditing, editOrder } = useEditOrder();
   const { data, isLoading } = useGetSingleOrder(id);
   const { order } = data || {};
-  const navigate = useNavigate();
   const [selectedCommune, setSelectedCommune] = useState("");
 
   const { register, handleSubmit,watch, reset, formState: { errors } } = useForm({
@@ -79,7 +77,7 @@ const EditOrder = ({orderId, closeModal}) => {
       { orderData: { ...orderData }, id },
       {
         onSuccess: () => {
-          closeModal();
+          onClose();
         },
         onError: (error) => {
           console.error("Order update failed", error);
@@ -221,7 +219,7 @@ const EditOrder = ({orderId, closeModal}) => {
               <button
                 type="button"
                 className="py-3 px-6 rounded-md bg-red-600 text-white text-sm"
-                onClick={closeModal}
+                onClick={onClose}
               >
                 {t('cancel')}
               </button>

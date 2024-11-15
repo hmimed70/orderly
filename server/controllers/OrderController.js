@@ -43,7 +43,9 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     total,
     product_name,
     nbr_order,
-    confirmatrice
+    confirmatrice,
+    attempts: [{ timestamp: new Date(), attempt: "pending" }] // Add pending attempt
+
   });
   if(order) {
     req.app.get('socketio').emit('newOrder', order);
@@ -249,7 +251,7 @@ exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
 
   exports.listOrders = catchAsyncError((req, res, next) => {
     console.log('listOrders');
-    getOrders(req, res, next, { confirmatrice: null, active: true });
+    getOrders(req, res, next, { confirmatrice: null,status: 'pending', active: true });
   });
   
   exports.inactiveOrders =catchAsyncError( (req, res, next) => {
@@ -362,7 +364,7 @@ exports.trashOrders = catchAsyncError(async (req, res, next) => {
   // Update all specified orders to set `active` to false (soft delete)
   const result = await Order.updateMany(
     { _id: { $in: orderIds } },
-    { $set: { active: false, deletedAt: Date.now(), confirmatrice: null } }
+    { $set: { active: false, deletedAt: new Date(), confirmatrice: null } }
   );
 
   if (result.matchedCount === 0) {
@@ -386,7 +388,9 @@ exports.trashOrders = catchAsyncError(async (req, res, next) => {
   // Update all specified orders to set `active` to false (soft delete)
   const result = await Order.updateMany(
     { _id: { $in: orderIds } },
-    { $set: { active: true, deletedAt: null, status: 'pending', confirmatrice: confirmatrice, createdAt: Date.now() } }
+    { $set: { active: true, deletedAt: null, status: 'pending', confirmatrice: confirmatrice, createdAt: Date.now() },
+    $push: { attempts: { timestamp: new Date(), attempt: "pending" } }
+  }
   );
 
   if (result.matchedCount === 0) {
@@ -437,10 +441,14 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler('No available pending orders to assign.', 400));
   }
 
-   await Order.updateMany(
-      { _id: { $in: ordersToAssign.map(order => order._id) } },
-      { confirmatrice: user._id, status: 'inProgress' }
+  await Order.updateMany(
+    { _id: { $in: ordersToAssign.map(order => order._id) } },
+    { 
+      $set: { confirmatrice: user._id, status: 'inProgress' },
+      $push: { attempts: { timestamp: new Date(), attempt: "inProgress" } }
+    }
   );
+  
     req.app.get('socketio').emit('orderUpdate');
 
   res.status(200).json({
@@ -479,6 +487,8 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
         });
       }
       if(status === 'pending') order.confirmatrice = null;
+      order.confirmedAt = status === 'confirmed' ? new Date() : null;
+      order.cancelledAt = status === 'cancelled' ? new Date() : null;
       // Update the order's main status
       order.status = status;
   

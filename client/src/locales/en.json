@@ -66,17 +66,28 @@
     "filteredOrders": "{{totalOrders}} filtered out of {{ordersCount}} total",
     "rows": "Rows",
     "all": "All",
+    "order_details": "Order Details",
+    "client_information": "Client Information",
 
+    "product_information": "Product Information",
+
+    "no_notes": "No Notes",
+    "status_changes": "Status",
     "searchOrders": "Search",
     "filterByStatus" : "status",
-        "orderSummary": {
-          "title": "Order Summary",
-          "clientName": "Client Name",
-          "quantity": "Quantity",
-          "pricePerItem": "Price per Item",
-          "shippingPrice": "Shipping Price",
-          "totalPrice": "Total Price"
-        },
+    "orderSummary": "Order Summary",
+    "productDetails": "Product Details",
+    "sku": "SKU",
+    "reference": "Reference",
+    "pricePerUnit": "Price per unit",
+    "deliveryDetails": "Delivery Details",
+    "shippingType": "Shipping Type",
+    "shippingPrice": "Shipping Price",
+    "invoiceDetails": "Invoice Details",
+    "phone1": "Phone 1",
+    "phone2": "Phone 2",
+    "totalPrice": "Total Price",
+    "currency": "DA",
         "usersOrderChart": {
             "title": "Orders by User",
             "confirmedOrders": "Confirmed Orders",
@@ -136,13 +147,18 @@
               "actions": "Actions",
               "noUsersFound": "No users found."
             },
-          
+            "Trash": "Trash",
+
+            "dateRange":"Date",
+            "selectDateRange": "Select Date Range",
             "orderNumber": "Order Number",
             "client": "Client",
             "productSKU": "Product SKU",
             "phone": "Phone",
             "attempt": "Attempt",
             "cancelledAt": "Cancelled At",
+            "deletedAt": "Deleted At",
+
             "confirmedAt": "Confirmed At",
             "wilaya": "Wilaya",
             "commune": "Commune",
@@ -294,6 +310,14 @@
                 },
                 "confirm": {
                   "success": "Order confirmed successfully"
+                },
+                "trash": {
+                  "cleared": "Trash cleared successfully!",
+                  "recovered": "Orders recovered successfully!",
+                  "moved": "Orders moved to trash successfully!"
+                },
+                "status": {
+                  "changed": "Order status updated successfully!"
                 }
               },
               "viewUser": {

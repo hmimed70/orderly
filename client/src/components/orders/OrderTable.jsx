@@ -43,10 +43,11 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
 
   // Handle modal open and close
   const handleEditClick = (orderId) => {
+    console.log("is edit click")
     setSelectedOrderId(orderId);
     setIsModalOpen(true);
   };
-
+  console.log(isModalOpen);
   const closeModal = () => {
     setIsModalOpen(false);
     setSelectedOrderId(null);
@@ -60,7 +61,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
       <table className="mt-5 w-full text-sm text-left text-gray-900 dark:text-gray-400">
         <thead className="sticky top-0 text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-800 dark:text-gray-200">
           <tr>
-            {isAdmin && (
+          {(isAdmin || isTrash)&& (
               <th className="px-4 py-3">
                 <input
                   type="checkbox"
@@ -75,6 +76,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
             {visibleColumns.phone && <th className="px-4 py-3">{t('phone')}</th>}
             {visibleColumns.status && <th className="px-4 py-3">{t('status')}</th>}
             {visibleColumns.cancelledAt && <th className="px-4 py-3">{t('cancelledAt')}</th>}
+            {visibleColumns.deletedAt && <th className="px-4 py-3">{t('deletedAt')}</th>}
             {visibleColumns.confirmedAt && <th className="px-4 py-3">{t('confirmedAt')}</th>}
             {visibleColumns.wilaya && <th className="px-4 py-3">{t('wilaya')}</th>}
             {visibleColumns.commune && <th className="px-4 py-3">{t('commune')}</th>}
@@ -92,7 +94,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                 className={` font-semibold bg-white  dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 
                   ${order?.status && statusStyles[order?.status]}`} // Corrected the style application
               >
-                {isAdmin && (
+                 {(isAdmin || isTrash)&& (
                   <td className="px-4 py-4">
                     <input
                       type="checkbox"
@@ -100,8 +102,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                       onChange={() => handleOrderSelection(order._id)}
                     />
                   </td>
-                )}
-
+                 )}
                 {visibleColumns.id && <td className="px-4 py-4">{order.nbr_order}</td>}
                 {visibleColumns.client && <td className="px-4 py-4">{order.invoice_information.client}</td>}
                 {visibleColumns.product_name && <td className="px-4 py-4">{order.product_name}</td>}
@@ -128,6 +129,8 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                   </td>
                 )}
                 {visibleColumns.cancelledAt && <td className="px-4 py-4">{order.cancelledAt ? formattedDate(order.cancelledAt) : 'N/A'}</td>}
+                {visibleColumns.deletedAt && <td className="px-4 py-4">{order.deletedAt ? formattedDate(order.deletedAt) : 'N/A'}</td>}
+
                 {visibleColumns.confirmedAt && <td className="px-4 py-4">{order.confirmedAt ? formattedDate(order.confirmedAt) : 'N/A'}</td>}
                 {visibleColumns.wilaya && <td className="px-4 py-4">{getWilayaName(order.invoice_information.wilaya)}</td>}
                 {visibleColumns.commune && <td className="px-4 py-4">{order.invoice_information.commune}</td>}
@@ -161,8 +164,8 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
         </tbody>
       </table>
 
-      <MyModal isOpen={isModalOpen} closeModal={closeModal}>
-        <EditOrder orderId={selectedOrderId} />
+      <MyModal isVisible={isModalOpen} onClose={closeModal}>
+        <EditOrder orderId={selectedOrderId} onClose={closeModal} />
       </MyModal>
     </div>
   );

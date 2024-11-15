@@ -66,6 +66,7 @@ const Orders = () => {
           actions: true,
           confirmedAt: false,
           cancelledAt: false,
+          deletedAt: false
         };
   });
 
@@ -140,7 +141,7 @@ const Orders = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold">{t("ordersPage.title")}</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-4 gap-2">
+      <div className=" items-center justify-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="flex justify-center">
           <SearchBar
             searchTerm={searchTerm}
@@ -169,6 +170,7 @@ const Orders = () => {
       </div>
 
       <div className="flex justify-end items-center gap-x-4">
+        { isAdmin &&(
         <button
           onClick={handleDeleteSelected}
           className={`bg-red-600 text-white py-3 px-6 rounded-md ${selectedOrders.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700"}`}
@@ -176,6 +178,7 @@ const Orders = () => {
         >
           <HiTrash />
         </button>
+        )}
           <NavLink    className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600" to="/orders/create"><HiPlus /></NavLink>
       </div>
 

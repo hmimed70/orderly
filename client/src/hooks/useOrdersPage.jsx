@@ -16,7 +16,7 @@ const useOrderPage = () => {
     return savedColumns ? JSON.parse(savedColumns) : {
       id: true, client: true, product_sku: true, wilaya: true, commune: true,
       confirmatrice: true, price: false, status: true, total: true, attempt: true,
-      phone: true, actions: true, confirmedAt: false, cancelledAt: false,
+      phone: true, actions: true, cancelledAt: false,
     };
   });
 
