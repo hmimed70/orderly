@@ -96,7 +96,8 @@ body {
         color: #ea580c ;
     }
   .rmdp-input{
-    padding: 20px !important;
+    padding-top: 20px !important;
+    padding-bottom: 20px !important;
   }
     .navlink svg {
       width: 2.4rem;

@@ -17,19 +17,21 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     product_sku, 
     quantity, 
     price, 
-    discount,
-    product_ref 
+    product_name 
   } = req.body;
-  if(!isNumber(shipping_price) || !isNumber(quantity) || !isNumber(price) || !isNumber(discount)) {
+  if(!isNumber(shipping_price) || !isNumber(quantity) || !isNumber(price) ) {
     return next(new ErrorHandler('Invalid input. Please ensure all fields are provided', 403));
   }
-  const total = (quantity * price) + shipping_price - (quantity * price * (discount / 100));
+  const total = (quantity * price) + shipping_price ;
   const lastOrder = await Order.findOne().sort({ createdAt: -1 });
   const nextOrderNumber = lastOrder 
     ? parseInt(lastOrder.nbr_order.slice(3)) + 1 
     : 1;
   const nbr_order = `ORD${String(nextOrderNumber).padStart(4, '0')}`;
-
+  let confirmatrice = null
+   if(req.user.role === 'confirmatrice') {
+     confirmatrice = req.user._id;
+   }
   const order = await Order.create({
     invoice_information,
     shipping_price, 
@@ -38,10 +40,10 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     product_sku,
     quantity,
     price,
-    discount,
     total,
-    product_ref,
+    product_name,
     nbr_order,
+    confirmatrice
   });
   if(order) {
     req.app.get('socketio').emit('newOrder', order);
@@ -330,6 +332,26 @@ exports.getOrderDetails = catchAsyncError(async (req, res, next) => {
   });
 });
 
+exports.clearTrash = catchAsyncError(async (req, res, next) => {
+  const { orderIds } = req.body; // Expect an array of order IDs
+  if (!Array.isArray(orderIds) || orderIds.length === 0) {
+    return next(new ErrorHandler('No order IDs provided', 400));
+  }
+
+  // Update all specified orders to set `active` to false (soft delete)
+  const result = await Order.deleteMany(
+    { _id: { $in: orderIds } }  );
+
+  if (result.matchedCount === 0) {
+    return next(new ErrorHandler('No matching orders found', 404));
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Orders deleted successfully',
+    updatedCount: result.modifiedCount,
+  });
+});
 exports.trashOrders = catchAsyncError(async (req, res, next) => {
   const { orderIds } = req.body; // Expect an array of order IDs
   console.log(req.body);
@@ -353,7 +375,6 @@ exports.trashOrders = catchAsyncError(async (req, res, next) => {
     updatedCount: result.modifiedCount,
   });
 });
-
  exports.recoverOrders = catchAsyncError(async (req, res, next) => {
   const { orderIds } = req.body; // Expect an array of order IDs
   console.log('dpsogjfophjpoih',req.body);
@@ -380,7 +401,7 @@ exports.trashOrders = catchAsyncError(async (req, res, next) => {
  })
 // DELETE ORDER
 exports.deleteOrder = catchAsyncError(async (req, res, next) => {
-  const order = await Order.findByIdAndDelete(req.params.id); // Use findByIdAndDelete
+  const order = await Order.findByIdAndUpdate(req.params.id,  {active: false, deletedAt: Date.now(), confirmatrice: null }); 
 
   if (!order) {
     return next(new ErrorHandler('Order not found', 404));
@@ -392,13 +413,10 @@ exports.deleteOrder = catchAsyncError(async (req, res, next) => {
   });
 });
 exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
-  // Fetch the user
   const user = await User.findById(req.user._id);
   if (!user) {
       return next(new ErrorHandler('User not found', 404));
   }
-
-  // Check if the user has active orders (pending or in-progress)
   const activeOrders = await Order.find({
       confirmatrice: user._id,
       status: { $in: ['pending', 'inProgress'] },
@@ -408,25 +426,18 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
       return next(new ErrorHandler('You must confirm or cancel all assigned orders before taking new ones.', 400));
   }
 
-  // Fetch the latest pending orders (sorted by `createdAt` descending) that are unassigned
   const ordersToAssign = await Order.find({
-      confirmatrice: null, // Only select orders without a confirmatrice
-      status: 'pending' // Only select pending orders
+      confirmatrice: null, 
+      status: 'pending' 
   })
-  .sort({ createdAt: -1 }) // Sort by creation date, latest first
-  .limit(user.handleLimit); // Limit to the user's handle limit
+  .sort({ createdAt: -1 }) 
+  .limit(user.handleLimit); 
 
   if (ordersToAssign.length === 0) {
       return next(new ErrorHandler('No available pending orders to assign.', 400));
   }
 
-  // Inform the user if fewer orders than their limit are being assigned
-  if (ordersToAssign.length < user.handleLimit) {
-      //(`Only ${ordersToAssign.length} orders available to assign. User limit is ${user.handleLimit}.`);
-  }
-
-  // Update the unassigned orders to assign them to the user and mark as 'in-progress'
-  await Order.updateMany(
+   await Order.updateMany(
       { _id: { $in: ordersToAssign.map(order => order._id) } },
       { confirmatrice: user._id, status: 'inProgress' }
   );
@@ -435,10 +446,59 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
       success: true,
       message: `Successfully assigned ${ordersToAssign.length} pending orders to ${user.fullname}.`,
+    });
   });
-});
-
-// Confirm an order and update user earnings
+  exports.changeStatus = catchAsyncError(async (req, res, next) => {
+    const orderId = req.params.id;
+    const { status } = req.body;
+    console.log('status', req.body.status, 'order id', orderId);
+    const validStatuses = [
+      'pending', 'inProgress', 'confirmed', 'cancelled', 
+      'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4', 
+      'phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder'
+    ];
+    console.log('validStatuses');
+    // Validate newStatus
+    if (!validStatuses.includes(status)) {
+      console.log('validStatuses');
+  
+      return next(new ErrorHandler('Invalid status value.', 400));
+    }
+      // Fetch the order by ID
+      const order = await Order.findById(orderId);
+      if (!order) {
+        return next(new ErrorHandler('Order not found', 400));
+      }
+  
+      // If the new status is the same as the current status, return without updating
+      if (order.status === status) {
+        return res.status(200).json({
+          success: true,
+          message: 'Order already has this status',
+          order,
+        });
+      }
+      if(status === 'pending') order.confirmatrice = null;
+      // Update the order's main status
+      order.status = status;
+  
+      // Add a new attempt to the attempts history with timestamp
+      order.attempts.push({
+        timestamp: new Date(),
+        attempt: status,
+      });
+      console.log('validStatuses');
+  
+      // Save the updated order
+      const newOrd = await order.save();  
+      console.log(newOrd);
+      return res.status(200).json({
+        success: true,
+        message: 'Order updated successfully',
+        newOrd,
+      });
+  })
+  /*
 exports.confirmOrder = catchAsyncError( async (req, res, next) => {
     const  orderId  = req.params.id;
 
@@ -502,64 +562,14 @@ exports.cancelOrder = catchAsyncError( async (req, res, next) => {
       },
     });
 });
-
-exports.changeStatus = catchAsyncError(async (req, res, next) => {
-  const orderId = req.params.id;
-  const { status } = req.body;
-  console.log('status', req.body.status, 'order id', orderId);
-  const validStatuses = [
-    'pending', 'inProgress', 'confirmed', 'cancelled', 
-    'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4', 
-    'phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder'
-  ];
-  console.log('validStatuses');
-  // Validate newStatus
-  if (!validStatuses.includes(status)) {
-    console.log('validStatuses');
-
-    return next(new ErrorHandler('Invalid status value.', 400));
-  }
-    // Fetch the order by ID
-    const order = await Order.findById(orderId);
-    if (!order) {
-      return next(new ErrorHandler('Order not found', 400));
-    }
-
-    // If the new status is the same as the current status, return without updating
-    if (order.status === status) {
-      return res.status(200).json({
-        success: true,
-        message: 'Order already has this status',
-        order,
-      });
-    }
-    if(status === 'pending') order.confirmatrice = null;
-    // Update the order's main status
-    order.status = status;
-
-    // Add a new attempt to the attempts history with timestamp
-    order.attempts.push({
-      timestamp: new Date(),
-      attempt: status,
-    });
-    console.log('validStatuses');
-
-    // Save the updated order
-    const newOrd = await order.save();  
-    console.log(newOrd);
-    return res.status(200).json({
-      success: true,
-      message: 'Order updated successfully',
-      newOrd,
-    });
-})
+*/
 
 
   // UPDATE ORDER
   exports.updateOrderAdmin = catchAsyncError(async (req, res, next) => {
     const updatedData = req.body;
-     const { quantity, price, discount, shipping_price } = updatedData;
-     const totalPrice = (quantity * price) + shipping_price - (quantity * price * (discount / 100));
+     const { quantity, price, shipping_price } = updatedData;
+     const totalPrice = (quantity * price) + shipping_price;
   
     let order = await Order.findById(req.params.id);
     if (!order) {

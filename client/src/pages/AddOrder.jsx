@@ -45,9 +45,8 @@ const AddOrder = () => {
         product_sku: data.product_sku,
         quantity: parseInt(data.quantity, 10),
         price: parseFloat(data.price), 
-        discount: parseFloat(data.discount) || 0,
         status: "pending",
-        product_ref: data.product_ref,
+        product_name: data.product_name,
       };
       createOrder(
         { ...orderData },
@@ -61,12 +60,11 @@ const AddOrder = () => {
   };
 
   const shippingPrice = watch("shipping_price") || 0;
-  const discount = watch("discount") || 0;
   const quantity = watch("quantity") || 0;
   const price = watch("price") || 0;
   const client = watch("client") || '';
 
-  const totalPrice = ((Number(quantity) * Number(price)) + Number(shippingPrice)) - (Number(quantity) * Number(price) * (Number(discount) / 100));
+  const totalPrice = (Number(quantity) * Number(price)) + Number(shippingPrice);
   return (
     <Fragment>
       <div className="orderContainer flex flex-col lg:flex-row justify-center items-center dark:bg-gray-900">
@@ -148,10 +146,10 @@ const AddOrder = () => {
               <FormInput
                 disabled={isCreating}
                 type="text"
-                placeholder={t('addOrder.productRef')}
-                name="product_ref"
+                placeholder={t('addOrder.productName')}
+                name="product_name"
                 register={register}
-                errors={errors.product_ref}
+                errors={errors.product_name}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
             </Row>
@@ -176,15 +174,7 @@ const AddOrder = () => {
               />
             </Row>
             <Row>
-              <FormInput
-                disabled={isCreating}
-                type="number"
-                placeholder={t('addOrder.discount')}
-                name="discount"
-                register={register}
-                errors={errors.discount}
-                className="dark:bg-gray-700 dark:text-gray-200"
-              />
+         
               <FormInput
                 disabled={isCreating}
                 type="number"
@@ -228,14 +218,13 @@ const AddOrder = () => {
        quantity={quantity}
        price={price}
        shippingPrice={shippingPrice}
-       discount={discount}
        shippingType={watch("shipping_type")}
        wilaya={selectedWilaya ? getWilayaName(selectedWilaya) : "Unknown"}
        commune={selectedCommune}
        phone1={watch("phone1")}
        phone2={watch("phone2")}
        productSku={watch("product_sku")}
-       productRef={watch("product_ref")}
+       productName={watch("product_name")}
           />
         </div>
       </div>

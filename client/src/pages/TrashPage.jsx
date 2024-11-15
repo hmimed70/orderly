@@ -1,20 +1,18 @@
-import { useEffect, useState } from "react";
-import {  useChangeStatus, useDeleteMultipleOrder, useDeleteOrder,UseRecoverFromTrash,useTrashOrder } from "../hooks/useOrder";
+import { useCallback, useEffect, useState } from "react";
+import {useClearTrash, UseRecoverFromTrash,useTrashOrder } from "../hooks/useOrder";
 
-import { NavLink } from "react-router-dom";
-import { io } from "socket.io-client";
 import { useTranslation } from "react-i18next"; // Importing the translation hook
-import { useQueryClient } from "@tanstack/react-query";
 import SearchBar from "../components/shared/SearchBar";
 import RowsPerPageSelector from "../components/shared/RowsPage";
 import DateFilter from "../components/shared/DateFilter";
 import StatusFilter from "../components/shared/StatusFilter";
 import Pagination from "../components/shared/Pagination";
-import ConfirmationModal from "../components/shared/ConfirmationModal";
 import { useAuth } from "../hooks/useAuth";
-import { BACKEND_URL } from "../utils";
 import ColumnVisibilityToggle from "../components/shared/ColumnVisibilty";
 import OrdersTable from "../components/orders/OrderTable";
+import { MdRecycling } from "react-icons/md";
+import { debounce } from "lodash";
+import { HiTrash } from "react-icons/hi";
 
 const TrashOrders = () => {
 
@@ -24,30 +22,27 @@ const TrashOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
-  const { isLoading, data, error } =  useTrashOrder(currentPage, rowsPerPage, status, dateRange);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [orderToDelete, setOrderToDelete] = useState(null);
-  const { isDeleting, deleteOrder } = useDeleteOrder();
+  const [sendedVal, setSendedVal] = useState("");
   const { isRecovering, recoverMultipleOrder } = UseRecoverFromTrash();
-  const socket = io(BACKEND_URL); // Replace with your server URL
-  const queryClient = useQueryClient(); // Initialize React Query client for manual query invalidation
-  const { changeStat, isChangingStatus } = useChangeStatus();
+  const { isDeleting, clearTrashAdmin } = useClearTrash();
+
   const [selectedOrders, setSelectedOrders] = useState([]);
-  
+
+  const { isLoading, data, error } =  useTrashOrder(currentPage, rowsPerPage, status, dateRange, sendedVal);
   const [visibleColumns, setVisibleColumns] = useState(() => {
     const savedColumns = localStorage.getItem("visibleColumnsOrder");
     return savedColumns ? JSON.parse(savedColumns) : {
       id: true,
       client: true,
-      product_sku: true,
+      product_name: true,
       wilaya: true,
       commune: true,
       confirmatrice: true,
       price: false,
       status: true,
+      quantity: true,
       total: true,
-      attempt: true,
       phone: true,
       actions: true,
       confirmedAt: false,
@@ -55,112 +50,113 @@ const TrashOrders = () => {
     };
   });
 
-  useEffect(() => {
-    socket.on("newOrder", () => {
-      // Invalidate the orders query to refetch the data
-      queryClient.invalidateQueries("orders");
-    });
+;
 
-    // Cleanup on component unmount
-    return () => socket.off("newOrder");
-  }, [queryClient, socket]);
+// Save column visibility to localStorage whenever it changes
+useEffect(() => {
+  localStorage.setItem("visibleColumnsOrder", JSON.stringify(visibleColumns));
+}, [visibleColumns]);
 
-  const handleOrderSelection = (orderId) => {
-    setSelectedOrders((prevSelectedOrders) => {
-      if (prevSelectedOrders.includes(orderId)) {
-        return prevSelectedOrders.filter(id => id !== orderId); // Deselect the order
-      }
-      return [...prevSelectedOrders, orderId]; // Select the order
-    });
-  };
+const handleRecoverSelected = () => {
+  recoverMultipleOrder({ orderIds: selectedOrders });
+  console.log(selectedOrders);
+};
+const handleClearTrash = () => {
+  clearTrashAdmin({ orderIds: selectedOrders });
+  console.log(selectedOrders);
+};
 
-  // Handle "select all" functionality
-  const handleSelectAll = () => {
-    if (selectedOrders.length === orders.length) {
-      setSelectedOrders([]); // Deselect all
-    } else {
-      setSelectedOrders(orders.map(order => order._id)); // Select all orders
-    }
-  };
+// Handle "select all" functionality
 
-  // Save column visibility to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("visibleColumnsOrder", JSON.stringify(visibleColumns));
-  }, [visibleColumns]);
+const debounceSearch = useCallback(
+  debounce((value) => {
+    setSendedVal(value);
+  }, 1000),
+  []
+);
+// Trigger the search with debounced value
+const handleSearch = (value) => {
+  setSearchTerm(value);
+  debounceSearch(value); // Use debounce to delay the search term update
+};
 
-  const handleRecoverSelected = () => {
-    recoverMultipleOrder({ orderIds: selectedOrders });
-    console.log(selectedOrders);
-  };
+const handleDateRangeChange = useCallback((dates) => {
+  setDateRange(dates);
+}, []);
+const { ordersCount, orders, filteredOrdersCount } = data || {};
+const handleSelectAll = useCallback(() => {
+  setSelectedOrders(
+    selectedOrders.length === orders.length ? [] : orders.map((order) => order._id)
+  );
+}, [selectedOrders.length, orders]);
 
-  const handleDeleteOrder = (orderId) => {
-    setOrderToDelete(orderId);
-    setIsModalOpen(true);
-  };
-  const handleDateRangeChange = (dates) => {
-    setDateRange(dates);
-    // Perform any additional filtering actions with the date range
-  };
-
-  const handleChangeStatus = (status, orderId) => {
-    changeStat({ status, orderId });
-  };
-
-  if (isLoading) return <p>{t('ordersPage.loadingOrders')}</p>;
+if (isLoading) return <p>{t('ordersPage.loadingOrders')}</p>;
   if (error) return <p>{t('ordersPage.error')}</p>;
 
-  const { ordersCount, orders, filteredOrdersCount } = data;
-  const filteredOrders = orders.filter(order => (
-    order.nbr_order.toString().includes(searchTerm) ||
-    order.invoice_information.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.product_sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order?.confirmatrice?.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-  ));
 
-  const totalOrders = searchTerm !== "" ? filteredOrders.length : filteredOrdersCount;
+  const totalOrders = filteredOrdersCount;
   const totalPages = Math.ceil(totalOrders / rowsPerPage) || 1;
 
   return (
-    <div>
+    <div className="flex flex-col">
       <h1 className="text-2xl font-bold">{t('ordersPage.title')}</h1>
-      <div className="flex flex-col space-y-4 mt-1 justify-center items-center lg:justify-around">
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        
-        {isAdmin && (
-          <div className="mb-4">
-            <button
-              onClick={handleRecoverSelected}
-              className={`bg-red-600 text-white px-4 py-2 rounded-md ${
-                selectedOrders.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
-              }`}
-              disabled={selectedOrders.length === 0} // Disable button if no orders are selected
-            >
-              {t('recoverSelectedOrders')}
-            </button>
-          </div>
-        )}
-        
-        <div className="flex flex-col md:flex-row  items-center justify-between gap-4 lg:gap-10">
-          <StatusFilter status={status} handleStatusChange={(e) => setStatus(e.target.value)} />
-          <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />;          <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))} ordersCount={ordersCount} />
-          <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))} ordersCount={ordersCount} />
-        </div>
-      </div>
+      <div className="justify-center items-center grid grid-cols-2  md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-4 gap-2">
+  {/* Search Bar */}
+  <div className="flex justify-center">
+        <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={handleSearch} // Using the new debounced search handler
+          />
+    </div>
 
-      <ColumnVisibilityToggle 
-        visibleColumns={visibleColumns} 
-        toggleColumnVisibility={(column) => setVisibleColumns(prev => ({ ...prev, [column]: !prev[column] }))} 
-      />
+  {/* Status Filter */}
+  <div className="flex justify-center">
+    <StatusFilter status={status} handleStatusChange={(e) => setStatus(e.target.value)} />
+  </div>
+
+  {/* Date Filter */}
+  <div className="flex justify-center">
+    <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />
+  </div>
+
+  {/* Rows Per Page Selector */}
+  <div className="flex justify-center">
+    <RowsPerPageSelector 
+      rowsPerPage={rowsPerPage} 
+      handleRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))} 
+      ordersCount={ordersCount} 
+    />
+  </div>
+
+  {/* Recover Selected Button (Admin Only) */}
+
+</div>
+
+{isAdmin && (
+    
+    <div className="flex justify-start items-center gap-x-4">
+      <button 
+        onClick={handleRecoverSelected}
+      
+        className={`flex items-center justify-center bg-green-600 text-white px-4 py-2 rounded-md 
+          ${selectedOrders.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-700'}`}
+        disabled={selectedOrders.length === 0 || isRecovering}
+      >
+        <MdRecycling className="mr-1" size={25} />
+      </button>
+      <button disabled={isDeleting || selectedOrders.length === 0} onClick={handleClearTrash}
+              className={`flex items-center justify-center bg-red-600 text-white px-4 py-2 rounded-md 
+                ${selectedOrders.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'}`}
+    
+      ><HiTrash className="mr-1" size={25}/> </button>
+    </div>
+  )}
       <OrdersTable 
         selectedOrders={selectedOrders}
         setSelectedOrders={setSelectedOrders}
-        handleOrderSelection={handleOrderSelection}
         handleSelectAll={handleSelectAll}
-        orders={filteredOrders} 
+        orders={orders} 
         visibleColumns={visibleColumns} 
-        isChangingStatus={isChangingStatus}
-        onDeleteOrder={handleDeleteOrder} 
-        onChangeStatus={handleChangeStatus}
       />
       <Pagination 
         currentPage={currentPage} 
@@ -169,18 +165,10 @@ const TrashOrders = () => {
         totalOrders={totalOrders} 
         ordersCount={ordersCount} 
       />
-
-      {isModalOpen && (
-        <ConfirmationModal 
-          disable={isDeleting}
-          message={t('ordersPage.deleteConfirmation')}
-          onConfirm={() => {
-            deleteOrder(orderToDelete);
-            setIsModalOpen(false);
-          }}
-          onCancel={() => setIsModalOpen(false)}
-        />
-      )}
+        <ColumnVisibilityToggle 
+          visibleColumns={visibleColumns} 
+          toggleColumnVisibility={(column) => setVisibleColumns(prev => ({ ...prev, [column]: !prev[column] }))} 
+          />
     </div>
   );
 };

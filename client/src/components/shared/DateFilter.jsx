@@ -18,9 +18,9 @@ const DateFilter = ({ dateRange, handleDateRangeChange }) => {
   };
 
   return (
-    <div className="relative flex items-center p-3">
+    <div className="w-[180px] relative flex flex-col items-start justify-start p-3">
       <span className="">{t("dateRange")}</span>
-
+      <div>
       <MultiDatePicker
         value={dateRange}                // The selected range of dates
         onChange={onDateChange}           // Handle date change
@@ -40,12 +40,8 @@ const DateFilter = ({ dateRange, handleDateRangeChange }) => {
       />
 
       {/* Clear Button to reset the date range */}
-      <button 
-        onClick={handleClear}
-        className="ml-2 p-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
-      >
-        {t("clear")}
-      </button>
+
+      </div>
     </div>
   );
 };

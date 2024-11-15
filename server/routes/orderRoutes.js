@@ -12,7 +12,8 @@ const { createOrder, getOrderDetails,
     changeStatus,
     trashOrders,
     inactiveOrders,
-    recoverOrders} = require('../controllers/OrderController');
+    recoverOrders,
+    clearTrash} = require('../controllers/OrderController');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
 orderRoutes.use(isAuthenticated);
 orderRoutes.get('/user', listOrders);
@@ -32,6 +33,7 @@ orderRoutes.put('/user/status/:id',checkOrderAssignment, changeStatus);
 orderRoutes.use(isAdmin);
 console.log("isAuthenticated")
 orderRoutes.post('/admin/trash', trashOrders);
+orderRoutes.post('/admin/clear', clearTrash);
 
 orderRoutes.get('/admin', getAllOrdersAdmin)
 orderRoutes.get('/admin/status-counts', getOrderCountsByStatusAdmin);

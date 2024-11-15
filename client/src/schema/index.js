@@ -10,7 +10,7 @@ export const orderSchema = z.object({
   wilaya: z.string().min(1, { message: "Wilaya is required" }),
   commune: z.string().min(1, { message: "Commune is required" }),
   product_sku: z.string().min(1, { message: "Product SKU is required" }),
-product_ref: z.string().min(1, { message: "Product ref is required" }),
+  product_name: z.string().min(1, { message: "Product ref is required" }),
         price: z
         .string() // Accept strings initially
         .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) > 0, {
@@ -22,13 +22,6 @@ product_ref: z.string().min(1, { message: "Product ref is required" }),
         .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) > 0, {
           message: 'Product quantity must be a positive number',
         }).transform((str) => parseFloat(str)),
-        discount: z
-        .string() // Accept strings initially
-        .optional() // Make it optional
-        .refine((str) => !str || (!isNaN(parseFloat(str)) && parseFloat(str) >= 0), { // If it exists, validate that it's a number and non-negative
-          message: 'Product discount must be a positive number',
-        })
-        .transform((str) => (str ? parseFloat(str) : undefined)),
         shipping_price: z
         .string() // Accept strings initially
         .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) >= 0, {

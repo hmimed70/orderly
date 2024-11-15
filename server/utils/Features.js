@@ -4,12 +4,26 @@ class ApiFeatures {
       this.queryStr = queryStr;
     }
     search() {
-      const keyword = this.queryStr.keyword ? {
-        nbr_order: {
-              $regex: this.queryStr.keyword,
-              $options: "i",
-          }
-      } : {};
+      console.log("ddsggd",this.queryStr.keyword)
+      const keyword = this.queryStr.keyword
+      ? {
+          $or: [
+            {
+              "invoice_information.client": {
+                $regex: this.queryStr.keyword,
+                $options: "i",
+              },
+            },
+            {
+              "invoice_information.phone1": {
+                $regex: this.queryStr.keyword,
+                $options: "i",
+              },
+            },
+          ],
+        }
+      : {};
+     
       const status = this.queryStr.status
       ? { status: this.queryStr.status }
       : {};

@@ -5,13 +5,19 @@ const StatusFilter = ({ status, handleStatusChange }) => {
   const { t } = useTranslation(); // Initialize the translation hook
 
   return (
-    <div className="flex items-center space-x-2">
-      <span className='px-1'>{t("filterByStatus")}</span>
+    <div className="w-[180px] my-1 py-1 flex flex-col justify-start items-start px-2">
+      <label 
+        htmlFor="status" 
+        className="text-slate-800 dark:text-gray-100 w-full text-left rtl:text-right"
+      >
+        {t("filterByStatus")}
+      </label>
       <select
-        aria-label="Filter by Status"
+        id="status"
+        aria-label={t("filterByStatus")}
         value={status}
         onChange={handleStatusChange}
-        className="p-2 bg-gray-50 border px-8 md:px-4 border-gray-300 rounded-md dark:bg-gray-700 dark:text-white dark:border-gray-600"
+        className="outline-none focus:border-orange-600 bg-white border border-gray-300 rounded-md py-2 px-2 w-full dark:bg-gray-700 dark:text-gray-200 rtl:text-right"
       >
         <option value="">{t("allStatuses")}</option>
         <option value="pending">{t("pending")}</option>
@@ -22,8 +28,10 @@ const StatusFilter = ({ status, handleStatusChange }) => {
     </div>
   );
 };
+
 StatusFilter.propTypes = {
   status: PropTypes.string.isRequired,
   handleStatusChange: PropTypes.func.isRequired 
-}
+};
+
 export default StatusFilter;

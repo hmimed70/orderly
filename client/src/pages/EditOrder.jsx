@@ -38,10 +38,9 @@ const EditOrder = ({orderId, closeModal}) => {
         wilaya: order.invoice_information.wilaya || "",
         commune: order.invoice_information.commune || "",
         product_sku: order.product_sku || "",
-        product_ref: order.product_ref || "PRD_10",
+        product_name: order.product_name || "PRD_10",
         quantity: order.quantity?.toString() || "0",
         price: order.price?.toString() || "0.0",
-        discount: order.discount?.toString() || "0.0",
         shipping_price: order.shipping_price?.toString() || "0.0",
         shipping_type: order.shipping_type || "home",
         note: order.note || "",
@@ -73,8 +72,7 @@ const EditOrder = ({orderId, closeModal}) => {
       product_sku: data.product_sku,
       quantity: parseInt(data.quantity, 10),
       price: parseFloat(data.price),
-      discount: parseFloat(data.discount),
-      product_ref: data.product_ref,
+      product_name: data.product_name,
     };
 
     editOrder(
@@ -160,11 +158,11 @@ const EditOrder = ({orderId, closeModal}) => {
               />
               <FormInput
                 type="text"
-                placeholder={t('editOrder1.productRefPlaceholder')}
-                name="product_ref"
+                placeholder={t('editOrder1.productNamePlaceholder')}
+                name="product_name"
                 disabled={isEditing}
                 register={register}
-                errors={errors.product_ref}
+                errors={errors.product_name}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
               <FormInput
@@ -187,15 +185,7 @@ const EditOrder = ({orderId, closeModal}) => {
                 errors={errors.price}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-              <FormInput
-                type="number"
-                placeholder={t('editOrder1.discountPlaceholder')}
-                name="discount"
-                disabled={isEditing}
-                register={register}
-                errors={errors.discount}
-                className="dark:bg-gray-700 dark:text-gray-200"
-              />
+       
               <FormInput
                 type="number"
                 placeholder={t('editOrder1.shippingPricePlaceholder')}

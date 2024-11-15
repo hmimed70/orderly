@@ -16,10 +16,9 @@ const orderSchema = new Schema({
     product_sku: { type: String, required: true },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
-    discount: { type: Number, default: 0 },
     total: { type: Number },
     nbr_order: { type: String, unique: true },
-    product_ref: { type: String, required: true },
+    product_name: { type: String, required: true },
     confirmedAt: { type: Date },
     cancelledAt: { type: Date },
     active: {

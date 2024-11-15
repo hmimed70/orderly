@@ -6,7 +6,7 @@ const productSchema = new Schema({
   name: { type: String, required: true },
   //category: {},
   price: { type: Number, required: true },
-  product_ref: { type: String, required: true , unique: true },
+  product_name: { type: String, required: true , unique: true },
   genderRestriction: { 
     type: String, 
     enum: ['male', 'female','all'], 

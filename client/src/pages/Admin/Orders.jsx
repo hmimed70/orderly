@@ -1,102 +1,97 @@
-import { useEffect, useState } from "react";
-import { useAdminOrder, useMyOrder, useChangeStatus, useDeleteMultipleOrder, useDeleteOrder } from '../../hooks/useOrder';
+import { useEffect, useState, useCallback } from "react";
+import { debounce } from "lodash";
+import {
+  useAdminOrder,
+  useMyOrder,
+  useChangeStatus,
+  useDeleteMultipleOrder,
+  useDeleteOrder,
+} from "../../hooks/useOrder";
 import SearchBar from "../../components/shared/SearchBar";
 import StatusFilter from "../../components/shared/StatusFilter";
 import RowsPerPageSelector from "../../components/shared/RowsPage";
-import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
 import OrdersTable from "../../components/orders/OrderTable";
 import Pagination from "../../components/shared/Pagination";
 import { NavLink } from "react-router-dom";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import DateFilter from "../../components/shared/DateFilter";
 import { io } from "socket.io-client";
-import { useTranslation } from "react-i18next"; // Importing the translation hook
+import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { BACKEND_URL } from "../../utils";
 import { useAuth } from "../../hooks/useAuth";
-import AddUser from "./AddUser";
+import { HiPlus, HiTrash } from "react-icons/hi";
+import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
 
 const Orders = () => {
-  const { t } = useTranslation(); // Initialize the translation hook
-   const { isAdmin } = useAuth();
+  const { t } = useTranslation();
+  const { isAdmin } = useAuth();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState("");
   const [dateRange, setDateRange] = useState([null, null]);
-  const { isLoading, data, error } = isAdmin  ? useAdminOrder(currentPage, rowsPerPage, status, dateRange)  : useMyOrder(currentPage, rowsPerPage, status, dateRange);
-   console.log(data)
   const [searchTerm, setSearchTerm] = useState("");
+  const [sendedVal, setSendedVal] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [orderToDelete, setOrderToDelete] = useState(null);
-  const { isDeleting, deleteOrder } = useDeleteOrder();
-  const { isDeletingsMultiple, deleteMultipleOrder } = useDeleteMultipleOrder();
-  const socket = io(BACKEND_URL); // Replace with your server URL
-  const queryClient = useQueryClient(); // Initialize React Query client for manual query invalidation
-  const { changeStat, isChangingStatus } = useChangeStatus();
   const [selectedOrders, setSelectedOrders] = useState([]);
+  const queryClient = useQueryClient();
+
+  const { isLoading, data, error } = isAdmin
+    ? useAdminOrder(currentPage, rowsPerPage, status, dateRange, sendedVal)
+    : useMyOrder(currentPage, rowsPerPage, status, dateRange, sendedVal);
+
+  const { isDeleting, deleteOrder } = useDeleteOrder();
+  const { deleteMultipleOrder } = useDeleteMultipleOrder();
+  const { changeStat, isChangingStatus } = useChangeStatus();
+
+  const socket = io(BACKEND_URL);
 
   const [visibleColumns, setVisibleColumns] = useState(() => {
     const savedColumns = localStorage.getItem("visibleColumnsOrder");
-    return savedColumns ? JSON.parse(savedColumns) : {
-      id: true,
-      client: true,
-      product_sku: true,
-      wilaya: true,
-      commune: true,
-      confirmatrice: true,
-      price: false,
-      status: true,
-      total: true,
-      attempt: true,
-      phone: true,
-      actions: true,
-      confirmedAt: false,
-      cancelledAt: false,
-    };
+    return savedColumns
+      ? JSON.parse(savedColumns)
+      : {
+          id: true,
+          client: true,
+          product_name: true,
+          wilaya: true,
+          commune: true,
+          confirmatrice: true,
+          price: false,
+          status: true,
+          quantity: true,
+          total: true,
+          phone: true,
+          actions: true,
+          confirmedAt: false,
+          cancelledAt: false,
+        };
   });
+
+  const toggleColumnVisibility = useCallback((column) => {
+    setVisibleColumns((prev) => ({ ...prev, [column]: !prev[column] }));
+  }, []);
 
   useEffect(() => {
     socket.on("newOrder", () => {
-      // Invalidate the orders query to refetch the data
       queryClient.invalidateQueries("orders");
     });
 
-    // Cleanup on component unmount
     return () => socket.off("newOrder");
   }, [queryClient, socket]);
 
-  const handleOrderSelection = (orderId) => {
-    setSelectedOrders((prevSelectedOrders) => {
-      if (prevSelectedOrders.includes(orderId)) {
-        return prevSelectedOrders.filter(id => id !== orderId); // Deselect the order
-      }
-      return [...prevSelectedOrders, orderId]; // Select the order
-    });
-  };
-
-  // Handle "select all" functionality
-  const handleSelectAll = () => {
-    if (selectedOrders.length === orders.length) {
-      setSelectedOrders([]); // Deselect all
-    } else {
-      setSelectedOrders(orders.map(order => order._id)); // Select all orders
-    }
-  };
-
-  // Save column visibility to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("visibleColumnsOrder", JSON.stringify(visibleColumns));
   }, [visibleColumns]);
 
   const handleDeleteSelected = () => {
     deleteMultipleOrder({ orderIds: selectedOrders });
-    console.log(selectedOrders);
   };
-
-  const handleDateRangeChange = (dates) => {
+ console.log("sendedVal", sendedVal);
+  const handleDateRangeChange = useCallback((dates) => {
     setDateRange(dates);
-    // Perform any additional filtering actions with the date range
-  };
+  }, []);
 
   const handleDeleteOrder = (orderId) => {
     setOrderToDelete(orderId);
@@ -107,76 +102,111 @@ const Orders = () => {
     changeStat({ status, orderId });
   };
 
-  if (isLoading) return <p>{t('ordersPage.loadingOrders')}</p>;
-  if (error) return <p>{t('ordersPage.error')}</p>;
+  const handleOrderSelection = useCallback((orderId) => {
+    setSelectedOrders((prev) =>
+      prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
+    );
+  }, []);
 
-  const { ordersCount, orders, filteredOrdersCount } = data;
-  const filteredOrders = orders.filter(order => (
-    order.nbr_order.toString().includes(searchTerm) ||
-    order.invoice_information.client.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.product_sku.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order?.confirmatrice?.fullname.toLowerCase().includes(searchTerm.toLowerCase())
-  ));
+  const { ordersCount, orders, filteredOrdersCount } = data || {};
 
-  const totalOrders = searchTerm !== "" ? filteredOrders.length : filteredOrdersCount;
+  const handleSelectAll = useCallback(() => {
+    setSelectedOrders(
+      selectedOrders.length === orders.length ? [] : orders.map((order) => order._id)
+    );
+  }, [selectedOrders.length, orders]);
+
+
+  // Debounced function to update the search term after 3 seconds of inactivity
+  const debounceSearch = useCallback(
+    debounce((value) => {
+      setSendedVal(value);
+    }, 1000),
+    []
+  );
+  // Trigger the search with debounced value
+  const handleSearch = (value) => {
+    setSearchTerm(value);
+    debounceSearch(value); // Use debounce to delay the search term update
+  };
+
+
+  if (isLoading) return <p>{t("ordersPage.loadingOrders")}</p>;
+  if (error) return <p>{t("ordersPage.error")}</p>;
+
+  const totalOrders = filteredOrdersCount;
   const totalPages = Math.ceil(totalOrders / rowsPerPage) || 1;
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{t('ordersPage.title')}</h1>
-      <div className="flex flex-col space-y-4 mt-1 justify-center items-center lg:justify-around">
-        <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-        
-        {isAdmin && (
-          <div className="mb-4">
-            <button
-              onClick={handleDeleteSelected}
-              className={`bg-red-600 text-white px-4 py-2 rounded-md ${
-                selectedOrders.length === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
-              }`}
-              disabled={selectedOrders.length === 0} // Disable button if no orders are selected
-            >
-              {t('deleteSelectedOrders')}
-            </button>
-          </div>
-        )}
-        
-        <div className="flex flex-col md:flex-row  items-center justify-between gap-4 lg:gap-10">
-          <StatusFilter status={status} handleStatusChange={(e) => setStatus(e.target.value)} />
-          <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />;          <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))} ordersCount={ordersCount} />
-            <button type="submit" className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600">
-              <NavLink to="/orders/create">{t('ordersPage.createOrderButton')}</NavLink>
-            </button>
+      <h1 className="text-2xl font-bold">{t("ordersPage.title")}</h1>
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-4 gap-2">
+        <div className="flex justify-center">
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={handleSearch} // Using the new debounced search handler
+          />
+        </div>
+
+        <div className="flex justify-center">
+          <StatusFilter
+            status={status}
+            handleStatusChange={(e) => setStatus(e.target.value)}
+          />
+        </div>
+
+        <div className="flex justify-center">
+          <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />
+        </div>
+
+        <div className="flex justify-center">
+          <RowsPerPageSelector
+            rowsPerPage={rowsPerPage}
+            handleRowsPerPageChange={(e) => setRowsPerPage(parseInt(e.target.value, 10))}
+            ordersCount={ordersCount}
+          />
         </div>
       </div>
 
-      <ColumnVisibilityToggle 
-        visibleColumns={visibleColumns} 
-        toggleColumnVisibility={(column) => setVisibleColumns(prev => ({ ...prev, [column]: !prev[column] }))} 
-      />
-      <OrdersTable 
+      <div className="flex justify-end items-center gap-x-4">
+        <button
+          onClick={handleDeleteSelected}
+          className={`bg-red-600 text-white py-3 px-6 rounded-md ${selectedOrders.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700"}`}
+          disabled={selectedOrders.length === 0}
+        >
+          <HiTrash />
+        </button>
+          <NavLink    className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600" to="/orders/create"><HiPlus /></NavLink>
+      </div>
+
+
+      <OrdersTable
+        orders={orders} // Using filtered orders for the table
         selectedOrders={selectedOrders}
-        setSelectedOrders={setSelectedOrders}
         handleOrderSelection={handleOrderSelection}
         handleSelectAll={handleSelectAll}
-        orders={filteredOrders} 
-        visibleColumns={visibleColumns} 
-        isChangingStatus={isChangingStatus}
-        onDeleteOrder={handleDeleteOrder} 
+        visibleColumns={visibleColumns}
+        toggleColumnVisibility={toggleColumnVisibility}
+        onDeleteOrder={handleDeleteOrder}
         onChangeStatus={handleChangeStatus}
       />
-      <Pagination 
-        currentPage={currentPage} 
-        totalPages={totalPages} 
-        handlePageChange={setCurrentPage} 
-        totalOrders={totalOrders} 
-        ordersCount={ordersCount} 
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={setCurrentPage}
+        totalOrders={totalOrders}
+        ordersCount={ordersCount}
       />
 
+<ColumnVisibilityToggle
+  visibleColumns={visibleColumns}
+  toggleColumnVisibility={toggleColumnVisibility}
+/>
       {isModalOpen && (
-        <ConfirmationModal 
+        <ConfirmationModal
           disable={isDeleting}
-          message={t('ordersPage.deleteConfirmation')}
+          message={t("ordersPage.deleteConfirmation")}
           onConfirm={() => {
             deleteOrder(orderToDelete);
             setIsModalOpen(false);
