@@ -37,6 +37,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrderId, setSelectedOrderId] = useState(null);
   const location = useLocation();
+  const isDashboard = location.pathname.includes('dashboard');
   const isTrash = location.pathname.includes('trash');
   const { t } = useTranslation(); // useTranslation hook
   const { isLoading, isAdmin, isUser } = useAuth();
@@ -93,7 +94,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                   ${order?.status && statusStyles[order?.status]}`} // Corrected the style application
               >
                  {(isAdmin || isTrash)&& (
-                  <td className="px-4 py-4">
+                  <td className="px-4 py-4 ">
                     <input
                       type="checkbox"
                       checked={selectedOrders?.includes(order._id)}
@@ -111,8 +112,8 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                     
                       onChange={(e) => onChangeStatus(e.target.value, order._id)}
                       value={order?.status}
-                      disabled={isChangingStatus || isTrash}
-                      className="outline-none border rounded-full py-2 px-2 w-full focus:ring-2 focus:ring-orange-500"
+                      disabled={isChangingStatus || isTrash || isDashboard}
+                      className="outline-none border rounded-full py-2 px-2 w-full focus:ring-2 focus:ring-orange-500 dark:bg-gray-800 "
                     >
                       {statuses.map((statusValue, index) => (
                         <option
@@ -155,7 +156,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
               </tr>
             ))
           ) : (
-            <tr className="bg-white border-b dark:border-gray-700">
+            <tr className="bg-white dark:bg-gray-800 dark:text-gray-100 border-b dark:border-gray-700">
               <td colSpan="12" className="text-center py-4">{t('noOrdersFound')}</td>
             </tr>
           )}

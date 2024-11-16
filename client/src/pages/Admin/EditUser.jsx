@@ -15,9 +15,11 @@ const EditUser = ({id, onClose}) => {
   const { t } = useTranslation(); // Initialize translation function
   const { data, isLoading } = useGetSingleUser(id); 
   const { user } = data || {};
-  const [userRole, setUserRole] = useState(user?.role || "confirmatrice"); // Initialize userRole with the user's role or default to "confirmatrice" if not available in the user datuser?.role || "confirmatrice";
+  console.log(user);
+
+  const [userRole, setUserRole] = useState(user?.role || "");
+  console.log(userRole); // Initialize userRole with the user's role or default to "confirmatrice" if not available in the user datuser?.role || "confirmatrice";
   const { isEditing, editUser } = useEditUser();
-  const navigate = useNavigate();
 
   const {
     register,
@@ -31,6 +33,7 @@ const EditUser = ({id, onClose}) => {
 
   useEffect(() => {
     if (user) {
+      setUserRole(user.role || "confirmatrice");
       reset({
         fullname: user.fullname || "",
         username: user.username || "",
@@ -38,13 +41,13 @@ const EditUser = ({id, onClose}) => {
         role: user.role || "confirmatrice",
         phone: user.phone || "",
         state: user.state || "",
-        gender: user.gender || "male", 
+        gender: user.gender || "male",
         handleLimit: user.handleLimit?.toString() || 0,
         orderConfirmedPrice: user.orderConfirmedPrice?.toString() || 0,
       });
     }
   }, [user, reset]);
-
+  
   const onSubmit = (data) => {
     const userData = {
       fullname: data.fullname,
@@ -103,11 +106,29 @@ const EditUser = ({id, onClose}) => {
                 errors={errors.username}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-              <SelectInput label={t('editUser.role')} name="role"  disabled={isEditing} value={userRole} onChange={(e) =>{ 
-                setUserRole(e.target.value)}} register={register} errors={errors.role}>
-                <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="confirmatrice">{t('editUser.confirmatrice')}</option>
-                <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" value="admin">{t('editUser.admin')}</option>
-              </SelectInput>
+       <SelectInput
+  label={t('editUser.role')}
+  name="role"
+  disabled={isEditing}
+  value={userRole}
+  onChange={(e) => setUserRole(e.target.value)}
+  register={register}
+  errors={errors.role}
+>
+  <option
+    className="dark:bg-gray-700 dark:text-gray-200 text-gray-700"
+    value="confirmatrice"
+  >
+    {t('editUser.confirmatrice')}
+  </option>
+  <option
+    className="dark:bg-gray-700 dark:text-gray-200 text-gray-700"
+    value="admin"
+  >
+    {t('editUser.admin')}
+  </option>
+</SelectInput>
+
               </Row>
               <Row>
               <FormInput

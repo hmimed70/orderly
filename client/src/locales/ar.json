@@ -71,7 +71,7 @@
     "rows": "اظهار",
     "all": "الكل",
     "searchOrders": "البحث",
-    "filterByStatus": " حسب الحالة",
+    "filterByStatus": "الحالة",
     "cancel_message": " هل أنت متاكد من أنك تريد الغاء هذا الطلب؟",
   "order_details": "تفاصيل الطلب",
 
@@ -125,11 +125,10 @@
       "message": "عذراً، الصفحة التي تبحث عنها غير موجودة.",
       "homeButton": "العودة إلى الصفحة الرئيسية"
     },
-      "didntAnswer1": "العميل لم يجب أو هاتفه مغلق مرة واحدة",
-      "didntAnswer2": "العميل لم يجب أو هاتفه مغلق مرتين",
-      "didntAnswer3": "العميل لم يجب أو هاتفه مغلق ثلاث مرات",
-      "didntAnswer4": "العميل لم يجب أو هاتفه مغلق أربع مرات",
-      "didntAnswer5": "العميل لم يجب أو هاتفه مغلق خمس مرات",
+      "didntAnswer2": "العميل لم يجب 2",
+      "didntAnswer1": "العميل لم يجب 1",
+      "didntAnswer3": "العميل لم يجب 3",
+      "didntAnswer4": "العميل لم يجب 4",
       "clientCanceled": "ألغى العميل الطلب",
       "chooseAttempt": "اختر محاولة",
       "phoneoff": "هاتف مغلق",
@@ -244,7 +243,7 @@
       "error": "خطأ: {{message}}",
       "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟"
     },
-    "allStatuses": "كل الحالات",
+    "allStatuses": "الكل",
     "update_profile": "تحديث الملف الشخصي",
     "fullname": "الاسم الكامل",
     "username": "اسم المستخدم",

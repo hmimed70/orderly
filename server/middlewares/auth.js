@@ -23,11 +23,6 @@ exports.isAuthenticated = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler('The user belonging to this token no longer exists.', 401));
   }
 
-  // Check if the user changed the password after the token was issued
-  if (currentUser.changedPasswordAfter(decoded.iat)) {
-    return next(new ErrorHandler('User recently changed password! Please log in again.', 401));
-  }
-
   // Grant access to protected route
   req.user = currentUser;
   res.locals.user = currentUser;

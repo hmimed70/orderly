@@ -23,10 +23,7 @@ export const orderSchema = z.object({
           message: 'Product quantity must be a positive number',
         }).transform((str) => parseFloat(str)),
         shipping_price: z
-        .string() // Accept strings initially
-        .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) >= 0, {
-          message: 'Product shipping  must be a positive number',
-        }).transform((str) => parseFloat(str)).default(0),
+        .string().default(0).optional(),
 
   shipping_type: z.enum(["home", "desk"]).optional().default("home"),
   note: z.string().max(500, { message: "Note cannot exceed 500 characters" }).optional(),

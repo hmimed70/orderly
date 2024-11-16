@@ -7,9 +7,11 @@ import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useState } from 'react';
 import EditUser from '../../pages/Admin/EditUser';
+import ViewUser from '../../pages/Admin/ViewUser';
 const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
   const { t } = useTranslation(); // Get the translation function
   const [isModalEditOpen, setIsModalEditOpen] = useState(false);
+  const [isModalViewOpen, setIsModalViewOpen] = useState(false);
 
   const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -22,7 +24,15 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
     setIsModalEditOpen(false);
     setSelectedUserId(null);
   };
+  const handleViewClick = (orderId) => {
+    setSelectedUserId(orderId);
+    setIsModalViewOpen(true);
+  };
 
+  const closeModalView = () => {
+    setIsModalViewOpen(false);
+    setSelectedUserId(null);
+  };
   return (
     <div className="max-h-[30rem] overflow-y-scroll custom-scrollbar mt-2">
       <table className=" mt-5 w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -61,9 +71,10 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
                 {visibleColumns.createdAt && <td className="px-4 py-4">{formattedDate(user.createdAt)}</td>}
                 {visibleColumns.actions && (
                   <td className="py-4 flex gap-4">
-                    <NavLink to={`/admin/users/view/${user._id}`} className="flex items-center text-xl text-orange-600 hover:text-orange-400 transition-colors duration-200">
+                    <button onClick={() => handleViewClick(user._id)} className="flex items-center text-xl text-orange-600 hover:text-orange-400 transition-colors duration-200">
                       <HiEye className="text-2xl" />
-                    </NavLink>
+                    </button>
+
                     <button onClick={() => handleEditClick(user._id)} className="flex items-center text-xl text-green-600 hover:text-green-400 transition-colors duration-200">
                       <HiRefresh className="text-2xl" />
                     </button>
@@ -87,6 +98,11 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
       {isModalEditOpen && 
       <MyModal isVisible={isModalEditOpen} onClose={closeModalEdit}>
       <EditUser id={selectedUserId} onClose={closeModalEdit} />
+      </MyModal>
+      }
+            {isModalViewOpen && 
+      <MyModal isVisible={isModalViewOpen} onClose={closeModalView}>
+      <ViewUser id={selectedUserId} onClose={closeModalView} />
       </MyModal>
       }
     </div>

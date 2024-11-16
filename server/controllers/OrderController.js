@@ -8,7 +8,7 @@ const { getDateRange } = require('../utils/dateHelper');
 const isNumber = (value) => typeof value === 'number' && !isNaN(value);
 
 exports.createOrder = catchAsyncError(async (req, res, next) => {
- 
+
   const { 
     invoice_information, 
     shipping_type, 
@@ -19,19 +19,24 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     price, 
     product_name 
   } = req.body;
-  if(!isNumber(shipping_price) || !isNumber(quantity) || !isNumber(price) ) {
+  const normalizedShippingPrice = isNumber(shipping_price) ? shipping_price : 0;
+
+  if (!isNumber(quantity) || !isNumber(price)) {
     return next(new ErrorHandler('Invalid input. Please ensure all fields are provided', 403));
   }
-  const total = (quantity * price) + shipping_price ;
+
+  const total = (quantity * price) + normalizedShippingPrice;
   const lastOrder = await Order.findOne().sort({ createdAt: -1 });
   const nextOrderNumber = lastOrder 
     ? parseInt(lastOrder.nbr_order.slice(3)) + 1 
     : 1;
+
   const nbr_order = `ORD${String(nextOrderNumber).padStart(4, '0')}`;
-  let confirmatrice = null
-   if(req.user.role === 'confirmatrice') {
-     confirmatrice = req.user._id;
-   }
+  let confirmatrice = null;
+  if (req.user.role === 'confirmatrice') {
+    confirmatrice = req.user._id;
+  }
+
   const order = await Order.create({
     invoice_information,
     shipping_price, 
@@ -379,13 +384,20 @@ exports.trashOrders = catchAsyncError(async (req, res, next) => {
   if (!Array.isArray(orderIds) || orderIds.length === 0) {
     return next(new ErrorHandler('No order IDs provided', 400));
   }
-  let confirmatrice = null
-   if(req.role === 'confirmatrice') confirmatrice = req.user._id
+  let confirmatrice = null;
+  let stat = 'pending';
+  console.log(req.user.role);
+   if(req.user.role === 'confirmatrice') {
+    console.log(req.user.role);
+
+    confirmatrice = req.user._id;
+   stat = 'inProgress'
+  }
   // Update all specified orders to set `active` to false (soft delete)
   const result = await Order.updateMany(
     { _id: { $in: orderIds } },
-    { $set: { active: true, deletedAt: null, status: 'pending', confirmatrice: confirmatrice, createdAt: Date.now() },
-    $push: { attempts: { timestamp: new Date(), attempt: "pending" } }
+    { $set: { active: true, deletedAt: null, status: stat, confirmatrice: confirmatrice, createdAt: Date.now() },
+    $push: { attempts: { timestamp: new Date(), attempt: stat } }
   }
   );
 

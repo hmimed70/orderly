@@ -91,9 +91,9 @@ body {
   
     /* This works because react-router places the active class on the active NavLink */
   
-      .active, .active svg {
+      .active, .dark, .active svg {
         border-radius: var(--border-radius-sm);
-        color: #ea580c ;
+        color: #ea580c !important;
     }
   .rmdp-input{
     padding-top: 20px !important;
