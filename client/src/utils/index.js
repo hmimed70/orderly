@@ -1,5 +1,5 @@
-export const BACKEND_URL=  "http://localhost:8000" 
-//export const BACKEND_URL = "https://orderly-9j1s.onrender.com"
+//export const BACKEND_URL=  "http://localhost:8000" 
+export const BACKEND_URL = "https://orderly-9j1s.onrender.com"
 
 // Assuming `user.createdAt` is the date field from MongoDB
 import wilayas from '../data/Wilaya.json';
