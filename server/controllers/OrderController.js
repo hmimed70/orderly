@@ -386,9 +386,7 @@ exports.trashOrders = catchAsyncError(async (req, res, next) => {
   }
   let confirmatrice = null;
   let stat = 'pending';
-  console.log(req.user.role);
    if(req.user.role === 'confirmatrice') {
-    console.log(req.user.role);
 
     confirmatrice = req.user._id;
    stat = 'inProgress'

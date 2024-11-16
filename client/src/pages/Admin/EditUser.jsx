@@ -15,10 +15,8 @@ const EditUser = ({id, onClose}) => {
   const { t } = useTranslation(); // Initialize translation function
   const { data, isLoading } = useGetSingleUser(id); 
   const { user } = data || {};
-  console.log(user);
 
   const [userRole, setUserRole] = useState(user?.role || "");
-  console.log(userRole); // Initialize userRole with the user's role or default to "confirmatrice" if not available in the user datuser?.role || "confirmatrice";
   const { isEditing, editUser } = useEditUser();
 
   const {
