@@ -67,7 +67,7 @@ const Header = ({ toggleSidebar }) => {
   }, []);
 
   return (
-    <header className="fixed top-0 z-20 left-0 lg:ltr:left-64 lg:rtl:right-64 mx-1 right-0 flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow-lg text-black dark:text-white">
+    <header className="fixed top-0 z-10 left-0 lg:ltr:left-64 lg:rtl:right-64 mx-1 right-0 flex justify-between items-center p-4 bg-white dark:bg-gray-800 shadow-lg text-black dark:text-white">
       <h1 className="text-xl font-bold">{t('header')}</h1>
       <div className="flex items-center gap-8">
         {/* Theme toggle button */}

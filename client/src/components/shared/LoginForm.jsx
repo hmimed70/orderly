@@ -65,7 +65,7 @@ function LoginForm() {
 
       <FormRowVertical>
         <button
-          className="py-3 rounded-md text-white my-2 bg-indigo-500 hover:bg-indigo-700 dark:bg-indigo-600 dark:hover:bg-indigo-800 disabled:opacity-50"
+          className="py-3 rounded-md text-white my-2 bg-orange-500 hover:bg-orange-700 dark:bg-orange-600 dark:hover:bg-orange-800 disabled:opacity-50"
           size="large"
           disabled={loading}
         >

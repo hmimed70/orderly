@@ -3,7 +3,7 @@ import PropTypes  from 'prop-types';
 const ConfirmationModal = ({ message, onConfirm, onCancel, disabled,  children}) => {
   const {t} = useTranslation();
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+    <div className="fixed  z-50 inset-0 bg-black bg-opacity-50 flex items-center justify-center">
       <div className="bg-white dark:bg-gray-800 p-6 rounded shadow-lg max-w-sm w-full text-center">
         <p className="text-lg mb-4 text-gray-950 dark:text-white">{message}</p>
         <div className="flex justify-center gap-4">
