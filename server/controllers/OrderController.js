@@ -243,7 +243,13 @@ exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
 
 
 
-
+exports.verifySecretKey = (req, res, next) => {
+  const secretKey = req.headers['x-secret-key'];
+  if (secretKey !== process.env.SECRET_KEY) {
+      return res.status(403).send('Unauthorized: Invalid secret key');
+  }
+  next();
+};
 
   exports.getAllOrdersAdmin = catchAsyncError((req, res, next) => {
     getOrders(req, res, next, {active: true});

@@ -13,8 +13,11 @@ const { createOrder, getOrderDetails,
     trashOrders,
     inactiveOrders,
     recoverOrders,
-    clearTrash} = require('../controllers/OrderController');
+    clearTrash,
+    verifySecretKey} = require('../controllers/OrderController');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
+const { createSecretKey } = require('crypto');
+orderRoutes.post(`/${process.env.HOOK_ROUTE}`, verifySecretKey, createOrder);
 orderRoutes.use(isAuthenticated);
 orderRoutes.get('/user', listOrders);
 orderRoutes.get('/user/current', getMyCurrentHandleOrder);
