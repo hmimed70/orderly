@@ -10,12 +10,12 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 
 //const productRoute = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 const userRoute = require('./routes/userRoutes');
 //const categoryRoutes = require('./routes/categoryRoutes');
 //const attemptRoutes = require('./routes/AttemptRoutes');
 
 //const reviewRoutes = require('./routes/reviewRoutes');
-const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
@@ -35,10 +35,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 
+app.use('/api/v1/orders/', orderRoutes)
 app.use('/api/v1/users/', userRoute)
 //app.use('/api/v1/products/', productRoute)
 //app.use('/api/v1/categories/', categoryRoutes)
-app.use('/api/v1/orders/', orderRoutes)
 //app.use('/api/v1/attempts/', attemptRoutes)
 
 https://224f-105-235-128-119.ngrok-free.app

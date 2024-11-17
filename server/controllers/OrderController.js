@@ -33,7 +33,7 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
 
   const nbr_order = `ORD${String(nextOrderNumber).padStart(4, '0')}`;
   let confirmatrice = null;
-  if (req.user.role === 'confirmatrice') {
+  if (req.user && req.user.role === 'confirmatrice') {
     confirmatrice = req.user._id;
   }
 
@@ -244,7 +244,10 @@ exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
 
 
 exports.verifySecretKey = (req, res, next) => {
+  console.log(req.headers);
   const secretKey = req.headers['x-secret-key'];
+  console.log(secretKey);
+  console.log(process.env.SECRET_KEY);
   if (secretKey !== process.env.SECRET_KEY) {
       return res.status(403).send('Unauthorized: Invalid secret key');
   }
