@@ -11,7 +11,7 @@ const orderSchema = new Schema({
       commune: { type: String, required: true },
     },
     shipping_price: { type: Number, default: 0 },
-    shipping_type: { type: String, enum: ['home', 'desk'], default: 'home' },
+    shipping_type: { type: String },
     note: { type: String },
     product_sku: { type: String },
     quantity: { type: Number, required: true },
