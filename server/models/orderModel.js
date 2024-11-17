@@ -13,7 +13,7 @@ const orderSchema = new Schema({
     shipping_price: { type: Number, default: 0 },
     shipping_type: { type: String, enum: ['home', 'desk'], default: 'home' },
     note: { type: String },
-    product_sku: { type: String, required: true },
+    product_sku: { type: String },
     quantity: { type: Number, required: true },
     price: { type: Number, required: true },
     total: { type: Number },

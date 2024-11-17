@@ -8,7 +8,7 @@ const { getDateRange } = require('../utils/dateHelper');
 const isNumber = (value) => typeof value === 'number' && !isNaN(value);
 
 exports.createOrder = catchAsyncError(async (req, res, next) => {
-
+   console.log("Order  : ", req.body)
   const { 
     invoice_information, 
     shipping_type, 
