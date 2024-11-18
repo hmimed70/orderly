@@ -23,6 +23,7 @@ import AppLayout from "./components/shared/AppLayout";
 import NotFound from "./components/shared/NotFound";
 import ViewOrder from "./pages/ViewOrder";
 import TrashOrders from "./pages/TrashPage";
+import Products from "./pages/Products/Products";
 
 
 const queryClient = new QueryClient({
@@ -67,6 +68,7 @@ function App() {
                 <Route path="/admin/users/create" element={<AddUser />} />
                 <Route path="/admin/users/edit/:id" element={<EditUser />} />
                 <Route path="/admin/users/view/:id" element={<ViewUser />} />
+                <Route path="/admin/products" element={<Products />} />
 
                 <Route path="/admin/users" element={<Users />} />
                 <Route path="/admin/statistics" element={<Statistics />} />

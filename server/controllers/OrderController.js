@@ -8,7 +8,6 @@ const { getDateRange } = require('../utils/dateHelper');
 const isNumber = (value) => typeof value === 'number' && !isNaN(value);
 
 exports.createOrder = catchAsyncError(async (req, res, next) => {
-   console.log("Order  : ", req.body)
   const { 
     invoice_information, 
     shipping_type, 
@@ -244,10 +243,7 @@ exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
 
 
 exports.verifySecretKey = (req, res, next) => {
-  console.log(req.headers);
   const secretKey = req.headers['x-secret-key'];
-  console.log(secretKey);
-  console.log(process.env.SECRET_KEY);
   if (secretKey !== process.env.SECRET_KEY) {
       return res.status(403).send('Unauthorized: Invalid secret key');
   }

@@ -1,4 +1,15 @@
 {
+  "product": {
+    "title": "Ajouter un produit",
+    "addButton": "Ajouter le produit",
+    "product_sku": "SKU du produit",
+    "name": "Nom du produit",
+    "quantity": "Quantité",
+    "selling_price": "Prix de vente",
+    "facebook_url": "URL Facebook",
+    "youtube_url": "URL YouTube",
+    "description": "Description du produit"
+  },
     "loginTitle": "Connexion",
     "loginText": "Connectez-vous à votre compte",
     "email": "E-mail",

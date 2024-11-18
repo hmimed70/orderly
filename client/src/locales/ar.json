@@ -1,4 +1,15 @@
 {
+  "product": {
+    "title": "إضافة منتج",
+    "addButton": "إضافة المنتج",
+    "product_sku": "رمز المنتج",
+    "name": "اسم المنتج",
+    "quantity": "الكمية",
+    "selling_price": "سعر البيع",
+    "facebook_url": "رابط الفيسبوك",
+    "youtube_url": "رابط يوتيوب",
+    "description": "وصف المنتج"
+  },
     "loginTitle": "تسجيل الدخول",
     "loginText": "تسجيل الدخول إلى حسابك",
     "email": "البريد الإلكتروني",

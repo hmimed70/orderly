@@ -8,7 +8,7 @@ import {
 
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../hooks/useAuth";
-import { HiTrash } from "react-icons/hi";
+import { HiOutlineShoppingCart, HiTrash } from "react-icons/hi";
 
 export default function MainNav() {
   const { isAdmin, isUser } = useAuth(); // Get user role from custom hook
@@ -57,6 +57,14 @@ const { t } = useTranslation();
           <NavLink to="/admin/users" className="navlink dark:text-gray-200 text-gray-900">
             <HiOutlineUsers />
             <span>{t("users")}</span>
+          </NavLink>
+        </li>
+      )}
+        {isAdmin && (
+        <li>
+          <NavLink to="/admin/products" className="navlink dark:text-gray-200 text-gray-900">
+            <HiOutlineShoppingCart />
+            <span>{t("products")}</span>
           </NavLink>
         </li>
       )}

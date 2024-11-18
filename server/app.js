@@ -8,8 +8,8 @@ const ErrorHandler = require('./utils/errorHandler');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
-
-//const productRoute = require('./routes/productRoutes');
+const path = require('path');
+const productRoute = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const userRoute = require('./routes/userRoutes');
 //const categoryRoutes = require('./routes/categoryRoutes');
@@ -19,6 +19,7 @@ const userRoute = require('./routes/userRoutes');
 
 const app = express();
 
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(cookieParser());
 app.use(cors({
   origin: process.env.FRONTEND_URL, // frontend URL
@@ -37,7 +38,7 @@ app.use(cookieParser());
 
 app.use('/api/v1/orders/', orderRoutes)
 app.use('/api/v1/users/', userRoute)
-//app.use('/api/v1/products/', productRoute)
+app.use('/api/v1/products/', productRoute)
 //app.use('/api/v1/categories/', categoryRoutes)
 //app.use('/api/v1/attempts/', attemptRoutes)
 

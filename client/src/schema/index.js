@@ -71,6 +71,7 @@ export const userSchema = z.object({
 
 })
 
+
 export const updatedUserSchema = z.object({
   fullname: z.string().min(1, { message: "fullname is required" }),
   phone: z
@@ -121,3 +122,29 @@ export const updatePasswordSchema = z
       });
     }
   });
+
+  export const productSchema = z.object({
+    name: z.string().min(1, { message: "Product Name is required" }),
+    selling_price: z
+    .string() // Accept strings initially
+    .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) > 0, {
+      message: 'Product price must be a positive number',
+    })
+    .transform((str) => parseFloat(str)), // Convert to number after validation
+    quantity: z
+    .string() // Accept strings initially
+    .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) > 0, {
+      message: 'Product quantity must be a positive number',
+    }).transform((str) => parseFloat(str)),
+    product_sku: z.string().min(1, { message: 'Product SKU is required' }),
+    facebook_url: z.string().optional(), 
+    youtube_url: z.string().optional(), 
+    description: z.string().optional(),
+    image: z
+    .instanceof(File)
+    .refine(file => file.size <= 2000000, {
+      message: `Max image size is 2MB`,
+    })
+    .or(z.literal(null))
+
+  })

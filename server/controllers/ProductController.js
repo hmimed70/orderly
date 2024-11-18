@@ -1,18 +1,28 @@
 const Product = require('../models/productModel'); // Import the Product model
 const catchAsyncError = require('../middlewares/catchAsyncError'); // Error handler middleware
+const ApiFeatures = require('../utils/Features');
 
-// CREATE PRODUCT
 exports.createProduct = catchAsyncError(async (req, res, next) => {
-  const { name, price, genderRestriction, product_ref, product_sku, description } = req.body;
+  // Handle the form fields and files using multer
+  const { name, selling_price, quantity, product_sku, description, youtube_url, facebook_url } = req.body;
+  const lastProduct = await Product.findOne().sort({ createdAt: -1 });
+  const nextProductNumber = lastProduct
+    ? parseInt(lastProduct.nbr_product.slice(3)) + 1 
+    : 1;
 
+  const nbr_product = `PRD${String(nextProductNumber).padStart(4, '0')}`;
   const product = await Product.create({
     name,
-   // category,
-    product_ref,
-    price,
-    genderRestriction,
+    selling_price,
+    quantity,
     product_sku,
     description,
+    youtube_url,
+    facebook_url,
+    nbr_product,
+    user: req.user._id ? req.user._id : null,
+    // Assuming 'image' is the file uploaded
+    image: req.file ? req.file.filename : null, // Save the image filename (timestamped)
   });
 
   res.status(201).json({
@@ -21,12 +31,14 @@ exports.createProduct = catchAsyncError(async (req, res, next) => {
     product,
   });
 });
+
+
 exports.getAllProducts = catchAsyncError(async (req, res, next) => {
     const resultPerPage = 8;
     const productsCount = await Product.countDocuments();
     
-    const apiFeature = new ApiFeatures(Product.find().populate('category'), req.query)
-      .search()
+    const apiFeature = new ApiFeatures(Product.find().populate('user', 'fullname'), req.query)
+      .searchPrd()
       .filter()
       .sort()
       .limitFields()
@@ -48,7 +60,7 @@ exports.getAllProducts = catchAsyncError(async (req, res, next) => {
 
 // GET SINGLE PRODUCT
 exports.getProductDetails = catchAsyncError(async (req, res, next) => {
-    const product = await Product.findById(req.params.id).populate('category');
+    const product = await Product.findById(req.params.id);
     if(!product) {
         return next(new ErrorHandler('no product found with this id',404)); 
     }
@@ -60,7 +72,6 @@ exports.getProductDetails = catchAsyncError(async (req, res, next) => {
   });
 // UPDATE PRODUCT
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
-  const { productName, category, sellingPrice, buyingPrice, genderRestriction, sku, description } = req.body;
 
   let product = await Product.findById(req.params.id);
 
@@ -69,9 +80,7 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
   }
 
   product = await Product.findByIdAndUpdate(
-    req.params.id,
-    { productName, category, sellingPrice, buyingPrice, genderRestriction, sku, description },
-    { new: true, runValidators: true }
+    req.params.id,req.body, { new: true, runValidators: true }
   );
 
   res.status(200).json({

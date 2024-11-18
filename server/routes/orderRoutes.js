@@ -16,9 +16,7 @@ const { createOrder, getOrderDetails,
     clearTrash,
     verifySecretKey} = require('../controllers/OrderController');
 const { isAuthenticated, isAdmin } = require('../middlewares/auth');
-console.log('hello');
 orderRoutes.post(`/${process.env.HOOK_ROUTE || 'ifodjoijDYFJOPDFFHYIJIOJEROGJFOJHAEZREFGTRYH'}`, verifySecretKey, createOrder);
-console.log(process.env.HOOK_ROUTE);
 orderRoutes.use(isAuthenticated);
 orderRoutes.get('/user', listOrders);
 orderRoutes.get('/user/current', getMyCurrentHandleOrder);

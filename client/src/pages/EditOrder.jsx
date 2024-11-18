@@ -23,7 +23,6 @@ const EditOrder = ({orderId, onClose}) => {
   const { data, isLoading } = useGetSingleOrder(id);
   const { order } = data || {};
   const [selectedCommune, setSelectedCommune] = useState("");
-  console.log("selected commune", selectedCommune);
 
   const { register, handleSubmit,watch, reset,setValue,   formState: { errors } } = useForm({
     resolver: zodResolver(orderSchema),
@@ -77,7 +76,6 @@ const EditOrder = ({orderId, onClose}) => {
   };
   
   if(isLoading) return <p>Loading...</p>;
-  console.log(order)
   const onSubmit = (data) => {
     const orderData = {
       invoice_information: {

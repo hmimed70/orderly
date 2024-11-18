@@ -12,7 +12,6 @@ const ViewOrder = () => {
   const { data, isLoading } = useGetSingleOrder(id);
   const { order } = data || {};
   const { t } = useTranslation();
-   console.log(order);
   if (isLoading) return <p className="text-center mt-10">{t("loading")}</p>;
 
   return (

@@ -1,4 +1,16 @@
 {
+  "product": {
+    "title": "Add Product",
+    "addButton": "Add Product",
+    "cancel": "Cancel",
+    "product_sku": "Product SKU",
+    "name": "Name",
+    "quantity": "Quantity",
+    "selling_price": "Selling Price",
+    "facebook_url": "Facebook URL",
+    "youtube_url": "YouTube URL",
+    "description": "Description"
+  },
     "loginTitle": "Login",
     "loginText": "Log in to your account",
     "email": "Email",

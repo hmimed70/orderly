@@ -3,6 +3,29 @@ class ApiFeatures {
       this.query = query;
       this.queryStr = queryStr;
     }
+    searchPrd() {
+      const keyword = this.queryStr.keyword
+      ? {
+          $or: [
+            {
+              "name": {
+                $regex: this.queryStr.keyword,
+                $options: "i",
+              },
+            },
+            {
+              "product_sku": {
+                $regex: this.queryStr.keyword,
+                $options: "i",
+              },
+            },
+          ],
+        }
+      : {};
+      this.query = this.query.find({ ...keyword });
+
+      return this;
+    }
     search() {
       const keyword = this.queryStr.keyword
       ? {
