@@ -23,11 +23,11 @@ const EditOrder = ({orderId, onClose}) => {
   const { data, isLoading } = useGetSingleOrder(id);
   const { order } = data || {};
   const [selectedCommune, setSelectedCommune] = useState("");
+  console.log("selected commune", selectedCommune);
 
-  const { register, handleSubmit,watch, reset, formState: { errors } } = useForm({
+  const { register, handleSubmit,watch, reset,setValue,   formState: { errors } } = useForm({
     resolver: zodResolver(orderSchema),
-  });
-  useEffect(() => {
+  });useEffect(() => {
     if (order) {
       reset({
         client: order.invoice_information.client || "",
@@ -43,18 +43,41 @@ const EditOrder = ({orderId, onClose}) => {
         shipping_type: order.shipping_type || "home",
         note: order.note || "",
       });
-      
+  
+      // Set initial Wilaya and Communes
+      const myWilaya = Wilaya.find((el) => el.nom === order.invoice_information.wilaya);
+      const wilayaId = myWilaya ? myWilaya.id : null;
+      const filteredCommunes = Communes.filter((commune) => commune.wilaya_id === wilayaId);
+      setMyCommunes(filteredCommunes);
       setSelectedWilaya(order.invoice_information.wilaya);
       setSelectedCommune(order.invoice_information.commune);
-      
-      const filteredCommunes = Communes.filter(
-        (commune) => commune.wilaya_id === order.invoice_information.wilaya
-      );
-      setMyCommunes(filteredCommunes);
     }
   }, [order, reset]);
+  
+  const handleWilayaChange = (event) => {
+    const selectedWilayaName = event.target.value;
+    setSelectedWilaya(selectedWilayaName);
+  
+    // Update form state
+    setValue("wilaya", selectedWilayaName);
+    setValue("commune", ""); // Reset commune when wilaya changes
+  
+    // Filter Communes
+    const selectedWilaya = Wilaya.find((wilaya) => wilaya.nom === selectedWilayaName);
+    const wilayaId = selectedWilaya ? selectedWilaya.id : null;
+    const filteredCommunes = Communes.filter((commune) => commune.wilaya_id === wilayaId);
+    setMyCommunes(filteredCommunes);
+    setSelectedCommune("");
+  };
+  
+  const handleCommuneChange = (event) => {
+    const value = event.target.value;
+    setSelectedCommune(value);
+    setValue("commune", value); // Update form field value
+  };
+  
   if(isLoading) return <p>Loading...</p>;
-
+  console.log(order)
   const onSubmit = (data) => {
     const orderData = {
       invoice_information: {
@@ -122,29 +145,48 @@ const EditOrder = ({orderId, onClose}) => {
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
               <SelectInput
-                name="wilaya"  onChange={(event) => {
-                  setSelectedWilaya(event.target.value);
-                  const filteredCommunes = Communes.filter(commune => commune.wilaya_id === event.target.value);
-                  setMyCommunes(filteredCommunes);
-                  setSelectedCommune('');
-                     }} 
-                label={t('editOrder1.wilayaLabel') } value={selectedWilaya} disabled={isEditing} register={register} errors={errors.wilaya}>
-                  {Wilaya.map((wilaya, index) => (
-                    <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={index} value={wilaya.code}>
+  name="wilaya"
+  onChange={handleWilayaChange}
+  label={t('editOrder1.wilayaLabel')}
+  value={selectedWilaya}
+  disabled={isEditing}
+  register={register}
+  errors={errors.wilaya}
+> {Wilaya.map((wilaya, index) => (
+                    <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={index} value={wilaya.nom}>
                       {wilaya.nom}
                     </option>
                   ))}
                 </SelectInput>
             </Row>
             <Row>
-                <SelectInput name="commune" label={t('editOrder1.communeLabel')} onChange={(event) => setSelectedCommune(event.target.value)} value={selectedCommune} disabled={isEditing} register={register} errors={errors.commune}>
-                  <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700"  value="" disabled>{t('editOrder1.chooseCommune')}</option>
-                   {myCommunes.map((commune, index) => (
-                    <option  className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={index} value={commune.code}>
-                      {commune.nom}
-                    </option>
-                   ))}
-                </SelectInput>
+            <SelectInput
+  name="commune"
+  onChange={handleCommuneChange}
+  label={t('editOrder1.communeLabel')}
+  value={selectedCommune}
+  disabled={isEditing}
+  register={register}
+  errors={errors.commune}
+>
+  <option
+    className="dark:bg-gray-700 dark:text-gray-200 text-gray-700"
+    value=""
+    disabled
+  >
+    {t('editOrder1.chooseCommune')}
+  </option>
+  {myCommunes.map((commune, index) => (
+    <option
+      className="dark:bg-gray-700 dark:text-gray-200 text-gray-700"
+      key={index}
+      value={commune.code}
+    >
+      {commune.nom}
+    </option>
+  ))}
+</SelectInput>
+
               <FormInput
                 type="text"
                 placeholder={t('editOrder1.productSkuPlaceholder')}

@@ -2,7 +2,7 @@ import { HiRefresh } from 'react-icons/hi';
 import { HiEye, HiTrash } from 'react-icons/hi2';
 import { NavLink, useLocation } from 'react-router-dom';
 import MyModal from '../shared/MyModal';
-import { formattedDate, getWilayaName } from '../../utils';
+import { formattedDate } from '../../utils';
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 import { useAuth } from '../../hooks/useAuth';
@@ -131,7 +131,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                 {visibleColumns.deletedAt && <td className="px-4 py-4">{order.deletedAt ? formattedDate(order.deletedAt) : 'N/A'}</td>}
 
                 {visibleColumns.confirmedAt && <td className="px-4 py-4">{order.confirmedAt ? formattedDate(order.confirmedAt) : 'N/A'}</td>}
-                {visibleColumns.wilaya && <td className="px-4 py-4">{getWilayaName(order.invoice_information.wilaya)}</td>}
+                {visibleColumns.wilaya && <td className="px-4 py-4">{order.invoice_information.wilaya}</td>}
                 {visibleColumns.commune && <td className="px-4 py-4">{order.invoice_information.commune}</td>}
                 {isAdmin && visibleColumns.confirmatrice && <td className="px-4 py-4">{order.confirmatrice ? order.confirmatrice.fullname : 'N/A'}</td>}
                 {visibleColumns.price && <td className="px-4 py-4">{order.price}</td>}

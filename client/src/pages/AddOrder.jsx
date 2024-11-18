@@ -14,7 +14,6 @@ import Row from "../components/shared/Row";
 import SelectInput from "../components/shared/SelectInput";
 import RadioGroup from "../components/shared/RadioGroup";
 import TextArea from "../components/shared/TextArea";
-import { getWilayaName } from "../utils";
 import { HiBuildingOffice } from "react-icons/hi2";
 import { HiOutlineHome } from "react-icons/hi";
 
@@ -108,13 +107,20 @@ const AddOrder = () => {
 
             <SelectInput label={t('addOrder.wilaya')} name="wilaya" value={selectedWilaya} 
                disabled={isCreating} register={register} errors={errors.wilaya} 
-               onChange={(event) =>   { setSelectedWilaya(event.target.value)
-                const filteredCommunes = Communes.filter(commune => commune.wilaya_id === event.target.value);
-                setMyCommunes(filteredCommunes);
-                setSelectedCommune('');} }>
+               onChange={(event) =>   { 
+                const selectedWilayaName = event.target.value; // Get the selected wilaya name
+                setSelectedWilaya(selectedWilayaName);
+               const selectedWilaya = Wilaya.find(wilaya => wilaya.nom === selectedWilayaName);
+               const wilayaId = selectedWilaya ? selectedWilaya.id : null;
+ 
+               // Filter communes based on the wilaya_id
+               const filteredCommunes = Communes.filter(commune => commune.wilaya_id === wilayaId);
+               setMyCommunes(filteredCommunes);
+                setSelectedCommune('');
+                       } }>
                     <option value="" disabled>{t('addOrder.wilaya')}</option>
                       {Wilaya.map((wilaya) => (
-                      <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={wilaya.code} value={wilaya.code}>
+                      <option className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={wilaya.code} value={wilaya.nom}>
                         {wilaya.nom}
                       </option>
                    ))}
@@ -219,7 +225,7 @@ const AddOrder = () => {
        price={price}
        shippingPrice={shippingPrice}
        shippingType={watch("shipping_type")}
-       wilaya={selectedWilaya ? getWilayaName(selectedWilaya) : "Unknown"}
+       wilaya={selectedWilaya}
        commune={selectedCommune}
        phone1={watch("phone1")}
        phone2={watch("phone2")}

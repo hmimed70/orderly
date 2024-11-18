@@ -2,7 +2,6 @@ import { Fragment } from "react";
 import { useParams } from "react-router-dom";
 import { useGetSingleOrder } from "../hooks/useOrder";
 import { useTranslation } from "react-i18next";
-import { getWilayaName } from "../utils";
 import OrderTimeline from "../components/shared/OrderTimeLine";
 import Row from "../components/shared/Row";
 import FormInput from "../components/shared/FormInput";
@@ -13,7 +12,7 @@ const ViewOrder = () => {
   const { data, isLoading } = useGetSingleOrder(id);
   const { order } = data || {};
   const { t } = useTranslation();
-
+   console.log(order);
   if (isLoading) return <p className="text-center mt-10">{t("loading")}</p>;
 
   return (
@@ -62,7 +61,7 @@ const ViewOrder = () => {
                 placeholder={t("wilaya")}
                 name="wilaya"
                 disabled={true}
-                value={getWilayaName(order?.invoice_information.wilaya)}
+                value={order?.invoice_information.wilaya}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
               <FormInput
