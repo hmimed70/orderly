@@ -137,14 +137,20 @@ export const updatePasswordSchema = z
       message: 'Product quantity must be a positive number',
     }).transform((str) => parseFloat(str)),
     product_sku: z.string().min(1, { message: 'Product SKU is required' }),
-    facebook_url: z.string().optional(), 
-    youtube_url: z.string().optional(), 
+    facebook_url: z
+    .string()
+    .optional(), // Make this field optional
+  youtube_url: z
+    .string()
+    .optional(), // Make this field optional
     description: z.string().optional(),
     image: z
-    .instanceof(File)
-    .refine(file => file.size <= 2000000, {
-      message: `Max image size is 2MB`,
-    })
-    .or(z.literal(null))
+    .union([
+      z.instanceof(File).refine((file) => file.size <= 2_000_000, {
+        message: "Max image size is 2MB",
+      }),
+      z.null(),
+      z.undefined(),
+    ]),
 
   })

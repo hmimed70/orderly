@@ -19,10 +19,9 @@ productRoutes.get('/', productController.getAllProducts);
 productRoutes.use(isAdmin);
 
 productRoutes.post('/',upload.single('image'), productController.createProduct);
-// Update a product by ID (requires authentication)
-productRoutes.put('/:id', productController.updateProduct);
 
-// Delete a product by ID (requires authentication)
+productRoutes.put('/:id',upload.single('image'), productController.updateProduct);
+
 productRoutes.delete('/:id', productController.deleteProduct);
 
 module.exports = productRoutes;

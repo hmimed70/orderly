@@ -83,8 +83,10 @@
     "rows": "Afficher",
     "all": "Tout",
     "client_information": "Information de Client",
-
+    "viewProduct": "Voir Produit",
+    "editProduct": "Modifier Produit",
     "product_information": "Information de Produit",
+    "addQuantity": "Ajouter quantité",
 
     "searchOrders": "Rechercher",
     "filterByStatus": "état",
@@ -108,6 +110,8 @@
       "cancelledOrders": "Commandes annulées"
     },
     "addOrder": {
+      "product": "Choisis Produit",
+
       "client": "Nom du client",
       "phone1": "Téléphone principal",
       "phone2": "Téléphone secondaire",

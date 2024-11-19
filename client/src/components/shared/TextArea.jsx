@@ -9,13 +9,14 @@ const TextArea = ({ disabled, placeholder, name,value,  register, errors }) => {
         {placeholder}
       </label>
       <textarea
+        
         disabled={disabled}
         placeholder={placeholder}
         name={name}
         value={value}
 
         {...(register ? register(name) : {})} // Only use register if it's passed
-        className={`outline-none focus:border-orange-600 bg-white border border-gray-300 rounded-md py-2 px-2 w-full h-20 dark:bg-gray-700 dark:text-gray-200 
+        className={`outline-none focus:border-orange-600 bg-white border border-gray-300 rounded-md py-2 px-2 w-full h-40 dark:bg-gray-700 dark:text-gray-200 
           ${errors ? 'border-red-600 bg-red-200' : ''} rtl:text-right`}
       />
       {errors && <div><p className="text-red-600">*{errors.message}</p></div>}

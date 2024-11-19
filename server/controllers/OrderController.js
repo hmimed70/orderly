@@ -4,7 +4,7 @@ const ErrorHandler = require('../utils/errorHandler'); // Custom error handler
 const User = require('../models/userModel');
 const ApiFeatures = require('../utils/Features');
 const { getDateRange } = require('../utils/dateHelper');
-
+const Product = require('../models/productModel');
 const isNumber = (value) => typeof value === 'number' && !isNaN(value);
 
 exports.createOrder = catchAsyncError(async (req, res, next) => {
@@ -35,7 +35,14 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
   if (req.user && req.user.role === 'confirmatrice') {
     confirmatrice = req.user._id;
   }
-
+  let productId = null
+   if(!req.body.product || req.body.product === null) {
+     
+     const product = await Product.findOne({ product_sku });
+        if (product) {
+       productId = product._id; // Assign the product ID if the product is found
+     }
+   }
   const order = await Order.create({
     invoice_information,
     shipping_price, 
@@ -48,8 +55,8 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     product_name,
     nbr_order,
     confirmatrice,
+    product: req.body.product || productId,
     attempts: [{ timestamp: new Date(), attempt: "pending" }] // Add pending attempt
-
   });
   if(order) {
     req.app.get('socketio').emit('newOrder', order);

@@ -42,9 +42,9 @@ const AddProduct = ({ onClose }) => {
       description: data.description,
       selling_price: data.selling_price,
       quantity: data.quantity,
-      product_sku: data.product_sku,
-      facebook_url: data.facebook_url,
-      youtube_url: data.youtube_url,
+      product_sku: data.product_sku, facebook_url: data.facebook_url || "", // Default empty string if undefined
+      youtube_url: data.youtube_url || "", // Default empty string if undefined
+      
       image: data.image, // Use the first file in the array
     };
     createProduct(

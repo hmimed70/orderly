@@ -10,6 +10,7 @@ const orderSchema = new Schema({
       wilaya: { type: String, required: true },
       commune: { type: String, required: true },
     },
+    product: {type: mongoose.Schema.Types.ObjectId, ref: 'Product',default: null},
     shipping_price: { type: Number, default: 0 },
     shipping_type: { type: String },
     note: { type: String },

@@ -45,6 +45,8 @@ const ProductTable = ({
             {visibleColumns.id && <th className="px-4 py-2">{t("ID")}</th>}
             {visibleColumns.name && <th className="px-4 py-2">{t("Name")}</th>}
             {visibleColumns.quantity && <th className="px-4 py-2">{t("Quantity")}</th>}
+            {visibleColumns.quantity_out && <th className="px-4 py-2">{t("quantity_out")}</th>}
+
             {visibleColumns.selling_price && (
               <th className="px-4 py-2">{t("Selling Price")}</th>
             )}
@@ -80,12 +82,16 @@ const ProductTable = ({
                 {visibleColumns.quantity && (
                   <td className="px-4 py-2">{product.quantity}</td>
                 )}
+                 {visibleColumns.quantity_out && (
+                  <td className="px-4 py-2">{product.quantity_out}</td>
+                )}
                 {visibleColumns.selling_price && (
                   <td className="px-4 py-2">{product.selling_price}</td>
                 )}
                 {visibleColumns.user && <td className="px-4 py-2">{product.user ? product.user.fullname : 'N/A' }</td>}
                 {visibleColumns.facebook_url && (
                   <td className="px-4 py-2">
+                    {product.facebook_url ?  (
                     <a
                       href={product.facebook_url}
                       target="_blank"
@@ -94,10 +100,14 @@ const ProductTable = ({
                     >
                       {t("View")}
                     </a>
+
+                    ): 'N/A'}
                   </td>
                 )}
                 {visibleColumns.youtube_url && (
                   <td className="px-4 py-2">
+                    {product.youtube_url ?  (
+
                     <a
                       href={product.youtube_url}
                       target="_blank"
@@ -106,6 +116,8 @@ const ProductTable = ({
                     >
                       {t("View")}
                     </a>
+                                        ): 'N/A'}
+
                   </td>
                 )}
                 {visibleColumns.product_sku && (

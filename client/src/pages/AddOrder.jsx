@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import FormInput from "../components/shared/FormInput";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -16,7 +16,8 @@ import RadioGroup from "../components/shared/RadioGroup";
 import TextArea from "../components/shared/TextArea";
 import { HiBuildingOffice } from "react-icons/hi2";
 import { HiOutlineHome } from "react-icons/hi";
-
+import { useProducts } from "../hooks/useProduct";
+import { BACKEND_URL } from "../utils";
 const AddOrder = () => {
   const { t } = useTranslation(); // Initialize translation hook
 
@@ -24,11 +25,24 @@ const AddOrder = () => {
   const [myCommunes, setMyCommunes] = useState([]);
   const { isCreating, createOrder } = useCreateOrder();
   const navigate = useNavigate();
+  const {data,isLoading } = useProducts(1, 1000, "", "");
   const [selectedCommune, setSelectedCommune] = useState("");
-
-  const { register, handleSubmit, reset , watch, formState: { errors } } = useForm({
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { register, handleSubmit, reset , setValue, watch, formState: { errors } } = useForm({
     resolver: zodResolver(orderSchema),
   });
+  const {  products } = data || {};
+  useEffect(() => {
+    if (selectedProduct) {
+      reset({
+        product_name: selectedProduct.name || "",
+        price: selectedProduct.selling_price?.toString() || "0",
+        product_sku: selectedProduct.product_sku || "",
+        quantity: "1".toString() || "",
+         });
+  }
+}, [selectedProduct, reset]);
+ if (isLoading) return <div>Loading...</div>;
   function onSubmit(data) {
       const orderData = {
         invoice_information: {
@@ -45,6 +59,7 @@ const AddOrder = () => {
         quantity: parseInt(data.quantity, 10),
         price: parseFloat(data.price), 
         status: "pending",
+        product: selectedProduct._id || null,
         product_name: data.product_name,
       };
       createOrder(
@@ -62,7 +77,15 @@ const AddOrder = () => {
   const quantity = watch("quantity") || 0;
   const price = watch("price") || 0;
   const client = watch("client") || '';
-
+const handleProductChange = (selectedOption) => {
+  const prd = products.find(prd => prd._id === selectedOption);
+   console.log(prd);
+  if (prd) {
+    setSelectedProduct(prd); // Set the selected product ID
+  }
+};
+// Inside your AddOrder component
+console.log(selectedProduct);
   const totalPrice = (Number(quantity) * Number(price)) + Number(shippingPrice);
   return (
     <Fragment>
@@ -140,6 +163,18 @@ const AddOrder = () => {
 
             {/* Other Inputs */}
             <Row>
+            <SelectInput label={t('addOrder.product')} name="product"
+                    value={selectedProduct ? { value: selectedProduct, label: selectedProduct } : null}
+                    
+               disabled={isCreating} register={register} errors={errors.product} 
+               onChange={(e) =>handleProductChange(e.target.value)}>
+                    <option value="" disabled>{t('addOrder.product')}</option>
+                      {products.map((prd) => (
+                      <option  className="dark:bg-gray-700 dark:text-gray-200  text-gray-700" key={prd._id} value={prd._id}>
+                        <span> {prd.name} - {prd.product_sku}</span>
+                      </option>
+                   ))}
+            </SelectInput>
               <FormInput
                 disabled={isCreating}
                 type="text"
@@ -149,7 +184,10 @@ const AddOrder = () => {
                 errors={errors.product_sku}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-              <FormInput
+      
+            </Row>
+            <Row>
+            <FormInput
                 disabled={isCreating}
                 type="text"
                 placeholder={t('addOrder.productName')}
@@ -158,8 +196,6 @@ const AddOrder = () => {
                 errors={errors.product_name}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-            </Row>
-            <Row>
               <FormInput
                 disabled={isCreating}
                 type="number"
@@ -168,8 +204,11 @@ const AddOrder = () => {
                 register={register}
                 errors={errors.quantity}
                 className="dark:bg-gray-700 dark:text-gray-200"
-              />
-              <FormInput
+                />
+                </Row>
+
+            <Row>
+            <FormInput
                 disabled={isCreating}
                 type="number"
                 placeholder={t('addOrder.price')}
@@ -178,9 +217,6 @@ const AddOrder = () => {
                 errors={errors.price}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-            </Row>
-            <Row>
-         
               <FormInput
                 disabled={isCreating}
                 type="number"

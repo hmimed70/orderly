@@ -2,6 +2,42 @@ const Product = require('../models/productModel'); // Import the Product model
 const catchAsyncError = require('../middlewares/catchAsyncError'); // Error handler middleware
 const ApiFeatures = require('../utils/Features');
 
+const fs = require('fs');
+const path = require('path');
+
+exports.updateProduct = catchAsyncError(async (req, res, next) => {
+  let product = await Product.findById(req.params.id);
+
+  if (!product) {
+    return next(new ErrorHandler('Product not found', 404));
+  }
+
+  // Check if a new image is uploaded
+  if (req.file) {
+    const previousImagePath = path.resolve(`uploads/${product.image}`); // Assuming images are stored in the 'uploads/' directory
+
+    // Delete the old image if it exists
+    if (product.image && fs.existsSync(previousImagePath)) {
+      fs.unlinkSync(previousImagePath);
+    }
+
+    // Update the image field with the new image's filename
+    req.body.image = req.file.filename;
+  }
+
+  // Update the product with new data
+  product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    message: 'Product updated successfully',
+    product,
+  });
+});
+
 exports.createProduct = catchAsyncError(async (req, res, next) => {
   // Handle the form fields and files using multer
   const { name, selling_price, quantity, product_sku, description, youtube_url, facebook_url } = req.body;
@@ -11,6 +47,7 @@ exports.createProduct = catchAsyncError(async (req, res, next) => {
     : 1;
 
   const nbr_product = `PRD${String(nextProductNumber).padStart(4, '0')}`;
+  
   const product = await Product.create({
     name,
     selling_price,
@@ -71,24 +108,6 @@ exports.getProductDetails = catchAsyncError(async (req, res, next) => {
   });
   });
 // UPDATE PRODUCT
-exports.updateProduct = catchAsyncError(async (req, res, next) => {
-
-  let product = await Product.findById(req.params.id);
-
-  if (!product) {
-    return next(new ErrorHandler("Product not found", 404));
-  }
-
-  product = await Product.findByIdAndUpdate(
-    req.params.id,req.body, { new: true, runValidators: true }
-  );
-
-  res.status(200).json({
-    success: true,
-    message: 'Product updated successfully',
-    product,
-  });
-});
 
 // DELETE PRODUCT
 exports.deleteProduct = catchAsyncError(async (req, res, next) => {

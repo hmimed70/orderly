@@ -9,7 +9,7 @@ const Sidebar = ({ isSidebarOpen , toggleSidebar}) => {
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } lg:relative lg:translate-x-0 md:block`}
     >
-      <div className="py-10 px-5 flex flex-col gap-16 h-full overflow-y-auto">
+      <div className="py-4 px-5 flex flex-col gap-8 h-full overflow-y-auto">
         <Logo />
         <MainNav />
       </div>

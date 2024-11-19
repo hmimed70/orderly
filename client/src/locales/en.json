@@ -82,6 +82,9 @@
     "client_information": "Client Information",
 
     "product_information": "Product Information",
+    "viewProduct": "View Product",
+    "editProduct": "Edit Product",
+    "addQuantity": "Add quantity",
 
     "no_notes": "No Notes",
     "status_changes": "Status",
@@ -120,6 +123,8 @@
             "note": "Note",
             "home": "Home",
             "desk": "Desk",
+            "product": "Choose Product",
+
             "addOrderBtn": "Add Order"
           },
           "addUser": {

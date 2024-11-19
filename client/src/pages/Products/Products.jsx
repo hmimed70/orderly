@@ -40,6 +40,7 @@ const Products = () => {
           name: true,
           quantity: true,
           selling_price: true,
+          quantity_out: true,
           user : true,
           facebook_url: true,
           youtube_url: true,

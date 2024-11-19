@@ -16,8 +16,8 @@ const ViewProduct = ({ onClose, id }) => {
 
   return (
     <Fragment>
-      <div className="mainContainer bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 w-full">
-        <h1 className="text-gray-950 dark:text-gray-100 font-semibold text-3xl mb-8">
+      <div className="mainContainer bg-white dark:bg-gray-800 rounded-lg shadow-md p-3 w-full">
+        <h1 className="text-gray-950 dark:text-gray-100 font-semibold text-3xl mb-2">
           {t("viewProduct")}
         </h1>
         <Row>
@@ -40,7 +40,7 @@ const ViewProduct = ({ onClose, id }) => {
           <FormInput
             value={product.selling_price}
             type="text"
-            placeholder={t("product.sellingPrice")}
+            placeholder={t("product.selling_price")}
             name="sellingPrice"
             disabled={true}
             className="dark:bg-gray-700 dark:text-gray-200"
@@ -74,31 +74,33 @@ const ViewProduct = ({ onClose, id }) => {
           <FormInput
             value={product.product_sku}
             type="text"
-            placeholder={t("product.productSku")}
+            placeholder={t("product.product_sku")}
             name="productSku"
             disabled={true}
             className="dark:bg-gray-700 dark:text-gray-200"
           />
         </Row>
-        <Row className="flex flex-col md:flex-row items-start mt-4">
+        <div className="flex flex-col md:flex-row items-start  justify-start mt-1">
           <TextArea
+           
             name="description"
             placeholder={t("product.description")}
             disabled={true}
             value={product.description}
             className="dark:bg-gray-700 dark:text-gray-200 w-full md:w-1/2"
           />
-          <div className="w-full md:w-1/2 flex justify-center mt-4 md:mt-0">
-            <div className="relative w-full max-w-md aspect-square rounded-lg overflow-hidden shadow-lg border dark:border-gray-700">
+          <div className="w-full md:w-1/2 flex flex-col justify-start items-start mt-4 md:mt-0">
+            <span>Image</span>
+            <div className="relative w-full max-w-xs aspect-square rounded-lg overflow-hidden ">
               <img
                 src={`${BACKEND_URL}/uploads/${product.image}`}
                 alt={product.name}
-                className="object-cover w-full h-full"
+                className="object-cover w-full max-h-64"
               />
             </div>
           </div>
-        </Row>
-        <div className="flex justify-center items-center gap-4 mt-6">
+        </div>
+        <div className="flex justify-center items-center gap-4 mt-2">
           <button
             type="button"
             className="py-3 px-6 rounded-md bg-red-600 text-white text-sm hover:bg-red-700"

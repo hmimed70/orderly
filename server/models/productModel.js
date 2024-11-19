@@ -7,6 +7,7 @@ const productSchema = new Schema({
   name: { type: String, required: true },
   selling_price: { type: Number, required: true },
   quantity: { type: Number, required: true },
+  quantity_out: { type: Number, default: 0 },
   product_sku: { type: String, required: true },
   description: { type: String },
   image: { type: String },
