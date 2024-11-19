@@ -8,8 +8,11 @@
     "selling_price": "سعر البيع",
     "facebook_url": "رابط الفيسبوك",
     "youtube_url": "رابط يوتيوب",
-    "description": "وصف المنتج"
+    "description": "وصف المنتج",
+    "image": "صورة المنتج"
+
   },
+  "products": "المخزون",
     "loginTitle": "تسجيل الدخول",
     "loginText": "تسجيل الدخول إلى حسابك",
     "email": "البريد الإلكتروني",

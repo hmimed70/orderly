@@ -9,8 +9,10 @@
     "selling_price": "Selling Price",
     "facebook_url": "Facebook URL",
     "youtube_url": "YouTube URL",
-    "description": "Description"
+    "description": "Description",
+    "image": "Product Image"
   },
+  "products": "Stock",
     "loginTitle": "Login",
     "loginText": "Log in to your account",
     "email": "Email",

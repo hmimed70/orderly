@@ -6,6 +6,7 @@ import OrderTimeline from "../components/shared/OrderTimeLine";
 import Row from "../components/shared/Row";
 import FormInput from "../components/shared/FormInput";
 import TextArea from "../components/shared/TextArea";
+import { BACKEND_URL } from "../utils";
 
 const ViewOrder = () => {
   const { id } = useParams();
@@ -134,8 +135,8 @@ const ViewOrder = () => {
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
             </Row>
-            <Row>
-              <TextArea
+            <div className="flex flex-col md:flex-row items-start  justify-start mt-1">
+            <TextArea
                 type="text"
                 placeholder={t("note")}
                 name="note"
@@ -143,11 +144,67 @@ const ViewOrder = () => {
                 value={order?.note || t("no_notes")}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
-            </Row>
+          <div className="w-full flex flex-col self-centerjustify-center items-center mt-4 md:mt-0">
+            <span>{t('product.image')}</span>
+             {  order.product.image ? (
+            <div className="relative max-w-xs max-h-44 flex justify-center items-center aspect-square rounded-lg overflow-hidden ">
+              <img
+                src={`${BACKEND_URL}/uploads/${order.product.image}`}
+                alt={order?.product_name}
+                className="object-cover w-full h-full"
+              />
+            </div>
+             ) : "No Image "}
+          </div>
+        </div>
+        <Row>
+  <div className="flex flex-col justify-start w-full items-start  px-2">
+    <label className="text-gray-700 dark:text-gray-300">{t("product.youtube_url")}</label>
+    {order?.product?.youtube_url ? (
+      <a className="bg-orange-500  max-w-40 dark:bg-orange-400 cursor-pointer text-white py-2 px-4 rounded-md outline-none"
+      href={order.product.youtube_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      >
+        <button >
+        {t("rows")}
+        </button>
+      </a>
+    ) : (
+      <p className="text-gray-500 dark:text-gray-400">{t("no_url")}</p>
+    )}
+  </div>
+  <div className="flex flex-col justify-start items-start w-full  px-2">
+    <label className="text-gray-700 dark:text-gray-300">{t("product.facebook_url")}</label>
+    {order?.product?.facebook_url ? (
+      <a className="bg-orange-500  max-w-40 dark:bg-orange-400 cursor-pointer text-white py-2 px-4 rounded-md outline-none"
+      href={order.product.facebook_url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+            <button >
+        {t("rows")}
+      </button>
+      </a>
+    ) : (
+      <p className="text-gray-500 dark:text-gray-400">{t("no_url")}</p>
+    )}
+  </div>
+</Row>
+
+            <Row>
+        <TextArea
+                type="text"
+                placeholder={t("product.description")}
+                name="description"
+                disabled={true}
+                value={order?.product?.description || t("description")}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+        </Row>
           </div>
         </div>
       </div>
-
       {/* Right Section: Status Timeline */}
       <div className="w-full md:w-1/3 bg-white dark:bg-gray-800 rounded-lg shadow-md border border-gray-300 dark:border-gray-700 p-4 md:mb-0">
         <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-300 inline-block text-center mb-4">

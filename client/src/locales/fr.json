@@ -8,8 +8,11 @@
     "selling_price": "Prix de vente",
     "facebook_url": "URL Facebook",
     "youtube_url": "URL YouTube",
-    "description": "Description du produit"
+    "description": "Description du produit",
+    "image": "Image du produit"
   },
+  "products": "Stock",
+
     "loginTitle": "Connexion",
     "loginText": "Connectez-vous à votre compte",
     "email": "E-mail",

@@ -278,7 +278,7 @@ exports.verifySecretKey = (req, res, next) => {
     const resultPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 8;
     const { date } = req.query;
     
-    let query = Order.find(filter).populate('confirmatrice', 'fullname');
+    let query = Order.find(filter).populate('confirmatrice', 'fullname').populate('product', 'image');
     
     // Apply date filtering if a date is provided
     if (date && date.trim()) {
@@ -338,7 +338,7 @@ exports.getOrderDetails = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler('Invalid order id', 400));
    }
   const order = req.order || await Order.findById(req.params.id)
-  .populate('confirmatrice', 'fullname');
+  .populate('confirmatrice', 'fullname').populate('product');
     if (!order) {
     return next(new ErrorHandler('Order not found', 404));
   }

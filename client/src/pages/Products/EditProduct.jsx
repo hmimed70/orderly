@@ -3,7 +3,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 import Row from "../../components/shared/Row";
 import { useTranslation } from "react-i18next";
-
 import TextArea from "../../components/shared/TextArea";
 import PropTypes from 'prop-types';
 import FormInput from "../../components/shared/FormInput";
@@ -17,16 +16,13 @@ const EditProduct = ({ id, onClose }) => {
   const { data, isLoading } = useGetSingleProduct(id);
   const { product } = data || {};
   const [imagePreview, setImagePreview] = useState('');
-  
+
   const { register, handleSubmit, control, watch, reset, formState: { errors } } = useForm({
     resolver: zodResolver(productSchema),
   });
 
-  const quantity = watch("quantity", 0); // Watch quantity
-  const addQuantity = watch("addQuantity", 0); // Watch addQuantity
-
-  // Calculate updated quantity
-  const updatedQuantity = parseInt(quantity, 10) + parseInt(addQuantity, 10);
+  const quantity = watch("quantity", 0); // Watch quantity directly from form
+  const addQuantity = watch("addQuantity", 0); // Watch addQuantity directly from form
 
   useEffect(() => {
     if (product) {
@@ -54,7 +50,7 @@ const EditProduct = ({ id, onClose }) => {
     formData.append("name", data.name);
     formData.append("description", data.description);
     formData.append("selling_price", data.selling_price);
-    formData.append("quantity", updatedQuantity.toString()); // Updated quantity
+    formData.append("quantity", (parseInt(quantity, 10) + parseInt(addQuantity, 10)).toString()); // Calculate total quantity
     formData.append("product_sku", data.product_sku);
     formData.append("facebook_url", data.facebook_url);
     formData.append("youtube_url", data.youtube_url);
@@ -67,7 +63,7 @@ const EditProduct = ({ id, onClose }) => {
       name: data.name,
       description: data.description,
       selling_price: data.selling_price,
-      quantity: updatedQuantity, // Updated quantity
+      quantity: (parseInt(quantity, 10) + parseInt(addQuantity, 10)), // Total updated quantity
       product_sku: data.product_sku,
       facebook_url: data.facebook_url,
       youtube_url: data.youtube_url,
@@ -112,7 +108,7 @@ const EditProduct = ({ id, onClose }) => {
               type="number"
               placeholder={t("product.quantity")}
               name="quantity"
-              value={updatedQuantity} // Dynamically set the updated quantity
+              value={quantity} // Directly use watched quantity
               disabled={isEditing}
               register={register}
               errors={errors.quantity}
