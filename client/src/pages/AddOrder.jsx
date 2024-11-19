@@ -164,7 +164,7 @@ console.log(selectedProduct);
             {/* Other Inputs */}
             <Row>
             <SelectInput label={t('addOrder.product')} name="product"
-                    value={selectedProduct ? { value: selectedProduct._id } : null}
+                    value={selectedProduct?._id || ''}
                     
                disabled={isCreating} register={register} errors={errors.product} 
                onChange={(e) =>handleProductChange(e.target.value)}>
