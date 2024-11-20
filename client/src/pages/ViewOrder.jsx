@@ -146,7 +146,7 @@ const ViewOrder = () => {
               />
           <div className="w-full flex flex-col self-centerjustify-center items-center mt-4 md:mt-0">
             <span>{t('product.image')}</span>
-             {  order.product.image ? (
+             {  order?.product?.image ? (
             <div className="relative max-w-xs max-h-44 flex justify-center items-center aspect-square rounded-lg overflow-hidden ">
               <img
                 src={`${BACKEND_URL}/uploads/${order.product.image}`}
