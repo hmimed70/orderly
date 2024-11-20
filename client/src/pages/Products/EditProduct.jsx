@@ -37,6 +37,7 @@ const EditProduct = ({ id, onClose }) => {
         description: product.description || "",
         user: product?.user?.name || "",
         image: null,
+        addQuantity: "0",
       });
       setImagePreview(`${BACKEND_URL}/uploads/${product.image}`);
     }
