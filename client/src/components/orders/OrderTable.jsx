@@ -1,4 +1,4 @@
-import { HiRefresh } from 'react-icons/hi';
+import { HiPencilAlt, HiTruck } from 'react-icons/hi';
 import { HiEye, HiTrash } from 'react-icons/hi2';
 import { NavLink, useLocation } from 'react-router-dom';
 import MyModal from '../shared/MyModal';
@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
 import EditOrder from '../../pages/EditOrder';
+import AddingTracking from '../../pages/AddingTracking';
 
 const statuses = [
   'pending', 'inProgress', 'confirmed', 'cancelled', 'didntAnswer1', 
@@ -41,7 +42,16 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
   const isTrash = location.pathname.includes('trash');
   const { t } = useTranslation(); // useTranslation hook
   const { isLoading, isAdmin, isUser } = useAuth();
+  const [isDelevry, setIsDelevry] = useState(false);
 
+  const onDelivryOrder = (orderId) => {
+    setSelectedOrderId(orderId);
+    setIsDelevry(true)
+}
+const closeModalDelivry = () => {
+  setIsDelevry(false);
+  setSelectedOrderId(null);
+}
   // Handle modal open and close
   const handleEditClick = (orderId) => {
     setSelectedOrderId(orderId);
@@ -74,6 +84,8 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
             {visibleColumns.product_name && <th className="px-4 py-3">{t('addOrder.productName')}</th>}
             {visibleColumns.phone && <th className="px-4 py-3">{t('phone')}</th>}
             {visibleColumns.status && <th className="px-4 py-3">{t('status')}</th>}
+            {visibleColumns.quantity && <th className="px-4 py-3">{t('quantity')}</th>}
+
             {visibleColumns.cancelledAt && <th className="px-4 py-3">{t('cancelledAt')}</th>}
             {visibleColumns.deletedAt && <th className="px-4 py-3">{t('deletedAt')}</th>}
             {visibleColumns.confirmedAt && <th className="px-4 py-3">{t('confirmedAt')}</th>}
@@ -82,6 +94,9 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
             {isAdmin && visibleColumns.confirmatrice && <th className="px-4 py-3">{t('confirmatrice')}</th>}
             {visibleColumns.price && <th className="px-4 py-3">{t('price')}</th>}
             {visibleColumns.total && <th className="px-4 py-3">{t('total')}</th>}
+            {(isAdmin || isUser) && visibleColumns.shippedAt && <th className="px-4 py-3">{t('shippedAt')}</th>}
+            {(isAdmin || isUser) && visibleColumns.livraison && <th className="px-4 py-3">{t('status_livraison')}</th>}
+
             {(isAdmin || isUser) && visibleColumns.actions && <th className="px-4 py-3">{t('actions')}</th>}
           </tr>
         </thead>
@@ -90,8 +105,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
             orders.map((order) => (
               <tr
                 key={order._id}
-                className={` font-semibold bg-white  dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 
-                  ${order?.status && statusStyles[order?.status]}`} // Corrected the style application
+                className={` font-semibold bg-white  dark:bg-gray-800 border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600  ${order?.status && statusStyles[order?.status]}`} // Corrected the style application
               >
                  {(isAdmin || isTrash)&& (
                   <td className="px-4 py-4 ">
@@ -112,7 +126,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                     
                       onChange={(e) => onChangeStatus(e.target.value, order._id)}
                       value={order?.status}
-                      disabled={isChangingStatus || isTrash || isDashboard}
+                      disabled={isChangingStatus || isTrash || isDashboard || order?.status_livraison}
                       className="outline-none border rounded-full py-2 px-2 w-full focus:ring-2 focus:ring-orange-500 dark:bg-gray-800 "
                     >
                       {statuses.map((statusValue, index) => (
@@ -126,7 +140,8 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                       ))}
                     </select>
                   </td>
-                )}
+                )}    
+                {visibleColumns.quantity && <td className="px-4 py-4">{order.quantity}</td>}
                 {visibleColumns.cancelledAt && <td className="px-4 py-4">{order.cancelledAt ? formattedDate(order.cancelledAt) : 'N/A'}</td>}
                 {visibleColumns.deletedAt && <td className="px-4 py-4">{order.deletedAt ? formattedDate(order.deletedAt) : 'N/A'}</td>}
 
@@ -136,18 +151,29 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
                 {isAdmin && visibleColumns.confirmatrice && <td className="px-4 py-4">{order.confirmatrice ? order.confirmatrice.fullname : 'N/A'}</td>}
                 {visibleColumns.price && <td className="px-4 py-4">{order.price}</td>}
                 {visibleColumns.total && <td className="px-4 py-4">{order.total.toFixed(2)}</td>}
+                {(isAdmin || isUser) && visibleColumns.shippedAt && <td className="px-4 py-4">{order?.shippedAt ? formattedDate(order.shippedAt): 'N/A'}</td>}
+                {(isAdmin || isUser) && visibleColumns.livraison && <td className="px-4 py-4">{order?.status_livraison ? order.status_livraison : 'N/A'}</td>}
                 {(isAdmin || isUser) && visibleColumns.actions && (
-                  <td className="py-4 flex gap-4">
+                  <td className="py-4 flex gap-2">
                     <NavLink to={`/orders/view/${order._id}`} className="text-orange-600 hover:text-orange-400">
-                      <HiEye className="text-2xl" />
+                      <HiEye size={25} />
                     </NavLink>
                     {!isTrash && (
                       <>
-                    <button onClick={() => handleEditClick(order._id)} className="text-green-600 hover:text-green-400">
-                      <HiRefresh className="text-2xl" />
+                 <button
+                    disabled={order?.status_livraison}
+                    onClick={() => onDelivryOrder(order._id)}
+                    
+                    className={`text-green-600 hover:text-green-400 disabled:cursor-not-allowed ${order?.status === 'confirmed' && !order?.status_livraison ? 'pulse-animation' : ''}`}
+                  >
+                    <HiTruck size={25} />
+                  </button>
+
+                    <button onClick={() => handleEditClick(order._id)} className="text-blue-600 hover:text-blue-400">
+                      <HiPencilAlt size={25}/>
                     </button>
                       <button onClick={() => onDeleteOrder(order._id)} className="text-red-600 hover:text-red-400">
-                        <HiTrash className="text-2xl" />
+                        <HiTrash size={25} />
                       </button>
                       </>
                     )}
@@ -157,7 +183,7 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
             ))
           ) : (
             <tr className="bg-white dark:bg-gray-800 dark:text-gray-100 border-b dark:border-gray-700">
-              <td colSpan="12" className="text-center py-4">{t('noOrdersFound')}</td>
+              <td colSpan="16" className="text-center py-4">{t('noOrdersFound')}</td>
             </tr>
           )}
         </tbody>
@@ -166,6 +192,11 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
       <MyModal isVisible={isModalOpen} onClose={closeModal}>
         <EditOrder orderId={selectedOrderId} onClose={closeModal} />
       </MyModal>
+      
+        <MyModal isVisible={isDelevry} onClose={closeModalDelivry}>
+           <AddingTracking onClose={closeModalDelivry} orderId={selectedOrderId} />
+        </MyModal>
+
     </div>
   );
 };

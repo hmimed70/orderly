@@ -22,6 +22,8 @@ const orderSchema = new Schema({
     product_name: { type: String, required: true },
     confirmedAt: { type: Date },
     cancelledAt: { type: Date },
+    tracking_number: {type: String},
+    shippedAt: {type: Date},
     active: {
       type: Boolean,
       default: true,
@@ -35,13 +37,15 @@ const orderSchema = new Schema({
           type: Date,
           required: true,
         },
+        user: { type: String},
         attempt: {
           type: String,
           enum: ['pending', 'inProgress', 'confirmed', 'cancelled', 'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4','phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder']
             },
       },
     ],
-    status: { type: String, enum: ['pending', 'inProgress', 'confirmed', 'cancelled', 'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4','phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder'], default: 'pending' },
+    status_livraison: { type: String, default: null },
+    status: { type: String, default: 'pending' },
   },
   { timestamps: true }
 );

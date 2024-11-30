@@ -1,4 +1,5 @@
 .env
+node_modules
 server/.env
 client/node_modules
 server/node_modules
@@ -35,3 +36,5 @@ server/random.js
 server/credentials.json
 server/invoices.json
 server/import.js
+server/node_modules
+client/node_modules

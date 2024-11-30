@@ -16,13 +16,13 @@ const AppLayout = () => {
         {/* Show burger icon button only on mobile */}
 
       {/* Main content container */}
-      <div className="flex flex-row flex-1 pt-16 dark:bg-gray-800">
+      <div className="flex flex-row flex-1  dark:bg-gray-800 relative">
          <Header toggleSidebar={toggleSidebar} />
         <Sidebar isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         {/* Sidebar */}
 
         {/* Main content area */}
-        <main className="flex-1 bg-gray-50 dark:bg-gray-900 p-4 overflow-y-auto h-screen">
+        <main className="flex-1 bg-gray-50 dark:bg-gray-900 px-4 pb-4 overflow-y-auto pt-16 h-screen">
           <div className="max-w-[120rem] my-0 mx-auto flex flex-col gap-8 h-full">
             <Outlet />
           </div>

@@ -11,7 +11,33 @@
     "description": "Description du produit",
     "image": "Image du produit"
   },
+  "productsPage": {
+    "title": "Produits",
+    "addUser": "Ajouter un produit",
+    "loading": "Chargement des produits...",
+    "error": "Erreur: {{message}}",
+    "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer ce produit?"
+  },
+  "productss": {
+    "create": {
+      "success": "Produit créé avec succes"
+    },
+    "edit": {
+      "success":"Produit modifié avec succes"
+    },
+    "delete": {
+      "success": "Produit supprimé avec succes"
+    }
+  },
+  "addTrackingNumber": {
+    "title": "Ajouter un numéro de suivi",
+    "delivry": "numéro de suivi ajouté ",
+    "saving": "Enregistrement en cours...",
+    "save": "Enregistrer",
+    "trackingPlaceholder":"N° de suivi"
+  },
   "products": "Stock",
+  "language": "Français",
 
     "loginTitle": "Connexion",
     "loginText": "Connectez-vous à votre compte",
@@ -42,7 +68,7 @@
     "myOrders": "Mes commandes",
     "users": "Utilisateurs",
     "statistics": "Statistiques",
-    "dailyorder": "Commandes confrimées par jour",
+    "dailyorder": "Commandes livrées par jour",
 
     "assignOrders": "Attribuer des commandes",
     "inProgressOrders": "Commandes en cours",

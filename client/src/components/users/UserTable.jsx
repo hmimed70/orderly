@@ -1,4 +1,4 @@
-import { HiRefresh } from 'react-icons/hi';
+import { HiPencilAlt, HiRefresh } from 'react-icons/hi';
 import { HiEye, HiTrash } from "react-icons/hi2";
 import { NavLink } from 'react-router-dom';
 import { formattedDate } from '../../utils';
@@ -75,8 +75,8 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
                       <HiEye className="text-2xl" />
                     </button>
 
-                    <button onClick={() => handleEditClick(user._id)} className="flex items-center text-xl text-green-600 hover:text-green-400 transition-colors duration-200">
-                      <HiRefresh className="text-2xl" />
+                    <button onClick={() => handleEditClick(user._id)} className="flex items-center text-xl text-blue-600 hover:text-blue-400 transition-colors duration-200">
+                      <HiPencilAlt className="text-2xl" />
                     </button>
                     <button
                       onClick={() => onDeleteUser && onDeleteUser(user._id)}

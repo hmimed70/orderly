@@ -77,7 +77,8 @@ const UsersPage = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{t('usersPage.title')}</h1>
+    <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
+
       <div className="flex flex-col lg:flex-row space-y-4 mt-4 justify-center items-center lg:justify-around">
         <div className="flex items-center space-x-2">
           <RowsPerPageSelector rowsPerPage={rowsPerPage} handleRowsPerPageChange={handleRowsPerPageChange} usersCount={usersCount} />
@@ -86,7 +87,7 @@ const UsersPage = () => {
           {t('usersPage.addUser')}
         </button>
       </div>
-
+      </div>
       <UsersTable onDeleteUser={handleDeleteUser} users={users} visibleColumns={visibleColumns} />
       <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={setCurrentPage} totalOrders={totalUsers} ordersCount={usersCount} />
       <ColumnVisibilityToggle visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />

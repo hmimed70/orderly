@@ -131,7 +131,7 @@ const ProductTable = ({
                 {visibleColumns.actions && (
                   <td className="px-4 py-2 flex gap-2">
                     <button
-                      className="text-blue-600 hover:text-blue-800"
+                      className="text-orange-600 hover:text-orange-800"
                       onClick={() => handleViewClick(product._id)}
                     >
                       <HiEye className="text-2xl" />
@@ -143,7 +143,7 @@ const ProductTable = ({
                       <HiTrash  className="text-2xl" />
                     </button>
                     <button
-                      className="text-green-600 hover:text-blue-800"
+                      className="text-blue-600 hover:text-blue-800"
                       onClick={() => handleEditClick(product._id)}
                     >
                       <HiPencilAlt className="text-2xl"/>

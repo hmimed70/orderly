@@ -13,14 +13,12 @@ function LoginForm() {
   const [password, setPassword] = useState("");
   const { login, isLoading: loading } = useLogin();
   const { t } = useTranslation();
-  useEffect(
-    function () {
-      if(user) navigate("/orders", { replace: true });
-  
-    },
-    [user, navigate]
-  );
-  function handleSubmit(e) {
+
+  useEffect(() => {
+    if (user) navigate("/orders", { replace: true });
+  }, [user, navigate]);
+
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!email || !password) return;
     login(
@@ -32,16 +30,20 @@ function LoginForm() {
         },
       }
     );
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 bg-white dark:bg-gray-800 rounded-md shadow-md w-full md:w-2/3 lg:w-1/2">
-      <h2 className="text-2xl font-semibold text-gray-950 dark:text-gray-200 mb-4">{t("loginTitle")}</h2>
-      <p className="text-gray-700 dark:text-gray-300 mb-6">{t("loginText")}</p>
+    <form
+      onSubmit={handleSubmit}
+      className="p-6 max-w-sm w-full bg-white dark:bg-gray-800 rounded-md shadow-md"
+    >
+      <h2 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-6">
+        {t("loginText")}
+      </h2>
 
       <FormRowVertical label={t("email")}>
         <input
-          className="border border-solid border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-950 dark:text-gray-200 px-4 py-2 rounded-sm shadow-md"
+          className="outline-none focus:ring-2 focus:ring-orange-500 bg-white border border-gray-300 rounded-md py-2 px-3 w-full dark:bg-gray-700 dark:text-gray-200"
           type="email"
           id="email"
           autoComplete="username"
@@ -53,7 +55,7 @@ function LoginForm() {
 
       <FormRowVertical label={t("password")}>
         <input
-          className="border border-solid border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-950 dark:text-gray-200 px-4 py-2 rounded-sm shadow-md"
+          className="outline-none focus:ring-2 focus:ring-orange-500 bg-white border border-gray-300 rounded-md py-2 px-3 w-full dark:bg-gray-700 dark:text-gray-200"
           type="password"
           id="password"
           autoComplete="current-password"
@@ -63,15 +65,15 @@ function LoginForm() {
         />
       </FormRowVertical>
 
-      <FormRowVertical>
+      <div className="mt-6">
         <button
-          className="py-3 rounded-md text-white my-2 bg-orange-500 hover:bg-orange-700 dark:bg-orange-600 dark:hover:bg-orange-800 disabled:opacity-50"
-          size="large"
+          className="w-full px-5 py-3 rounded-md text-white bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 disabled:opacity-50"
+          type="submit"
           disabled={loading}
         >
           {!loading ? t("btnLogin") : <BiLoaderAlt className="w-6 h-6 animate-spin" />}
         </button>
-      </FormRowVertical>
+      </div>
     </form>
   );
 }

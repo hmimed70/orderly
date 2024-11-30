@@ -28,7 +28,6 @@ export const getSingleProduct = async (id) => {
   };
 
 export const editProductData = async (newOrderData, id) => {
-     console.log("ezefjuàçsgud",newOrderData);
     const response = await API.put(`/products/${id}`, newOrderData, {
       headers: {
           'Content-Type': 'multipart/form-data',

@@ -39,7 +39,7 @@ export function useDeleteProduct() {
   const { isLoading: isDeleting, mutate: deleteProduct } = useMutation({
     mutationFn: deleteProductFn,
     onSuccess: () => {
-      toast.success(t("product.delete.success"));
+      toast.success(t("productss.delete.success"));
       queryClient.invalidateQueries({
         queryKey: ["products"],
       });
@@ -56,7 +56,7 @@ export function useCreateProduct() {
   const { mutate: createProduct, isLoading: isCreating } = useMutation({
     mutationFn: newProduct,
     onSuccess: () => {
-      toast.success(t("product.create.success"));
+      toast.success(t("productss.create.success"));
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
     onError: (err) => toast.error(err.response.data.message),
@@ -70,7 +70,7 @@ export function useEditProduct() {
   const { mutate: editProduct, isLoading: isEditing } = useMutation({
     mutationFn: ({ productData, id }) => editProductData({...productData}, id),
     onSuccess: () => {
-      toast.success(t("product.edit.success"));
+      toast.success(t("productss.edit.success"));
       queryClient.invalidateQueries({ queryKey: ["products"] });
     },
     onError: (err) => toast.error(err.response.data.message),

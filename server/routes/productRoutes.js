@@ -8,7 +8,6 @@ const { upload } = require('../middlewares/Storage');
 
 productRoutes.use(isAuthenticated);
 productRoutes.get('/:id', productController.getProductDetails);
-//productRoutes.use(isAdmin)
 // Create a new product (requires authentication)
 
 // Get all products (public access)

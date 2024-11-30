@@ -11,9 +11,9 @@ const path = require('path');
 const productRoute = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const userRoute = require('./routes/userRoutes');
-
+const deliveryRoute = require('./routes/delivryRoute');
 const app = express();
-
+const orderTracking = require('./middlewares/OrderTracking');  // Import the cron job
 // Set up EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -44,7 +44,7 @@ app.get('/', (req, res) => {
 app.use('/api/v1/orders/', orderRoutes);
 app.use('/api/v1/users/', userRoute);
 app.use('/api/v1/products/', productRoute);
-
+app.use('/api/v1/delivry/', deliveryRoute );
 // Handle 404 errors for undefined routes
 app.all('*', (req, res, next) => {
   next(new ErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404));

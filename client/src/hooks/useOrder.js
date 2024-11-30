@@ -1,29 +1,29 @@
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { changeStatus, getOrderCountByStatusAdmin, getSingleOrder, newOrder, userStatistics, MoveToTrashs, getTrashOrders, recoverFromTrash } from "../services/OrderApi";
-import { getAllOrders,clearFromTrash, getMyOrders ,getPendingOrders, editOrderData,deleteOrderFn,assignOrders,getOrderCountByStatusUser } from "../services/OrderApi";
+import { AddToDelivry, getAllOrders,clearFromTrash, getMyOrders ,getPendingOrders, editOrderData,deleteOrderFn,assignOrders,getOrderCountByStatusUser } from "../services/OrderApi";
 import { useTranslation } from 'react-i18next';
 
-export function useAdminOrder(page, limit, status, date, search) {
+export function useAdminOrder(page, limit, status, date, search, myfilter) {
   const {
     isLoading,
     data,
     error,
   } = useQuery({
-    queryKey: ["orders",page, limit, status, date,search],
-    queryFn: () => getAllOrders(page, limit, status, date,search),
+    queryKey: ["orders",page, limit, status, date,search, myfilter],
+    queryFn: () => getAllOrders(page, limit, status, date,search, myfilter),
   });
 
   return { isLoading, error, data };
 }
-export function useMyOrder(page, limit, status,date, search) {
+export function useMyOrder(page, limit, status,date, search,myfilter) {
   const {
     isLoading,
     data,
     error,
   } = useQuery({
-    queryKey: ["orders",page, limit, status, date,search],
-    queryFn: () => getMyOrders(page, limit, status, date,search),
+    queryKey: ["orders",page, limit, status, date,search, myfilter],
+    queryFn: () => getMyOrders(page, limit, status, date,search,myfilter),
   });
 
   return { isLoading, error, data };
@@ -58,14 +58,16 @@ export function UseRecoverFromTrash(){
 
   return { isRecovering, recoverMultipleOrder };
 }
-export function useTrashOrder (page, limit, status,date, search) {
+
+
+export function useTrashOrder (page, limit, status,date, search, filter_status) {
   const {
     isLoading,
     data,
     error,
   } = useQuery({
-    queryKey: ["orders",page, limit, status, date, search],
-    queryFn: () => getTrashOrders(page, limit, status, date, search),
+    queryKey: ["orders",page, limit, status, date, search, filter_status],
+    queryFn: () => getTrashOrders(page, limit, status, date, search, filter_status),
   });
 
   return { isLoading, error, data };
@@ -135,6 +137,20 @@ export function useDeleteOrder() {
   });
 
   return { isDeleting, deleteOrder };
+}
+export function useAddOrderstoDelivry() {
+  const queryClient = useQueryClient();
+  const { t } = useTranslation();
+  const { mutate: addOrderstoDelivry, isLoading: isDelevryMultiple } = useMutation({
+    mutationFn: AddToDelivry,
+    onSuccess: () => {
+      toast.success(t("addTrackingNumber.delivry"));
+      queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+    onError: (err) => toast.error(err.response.data.message),
+  });
+
+  return { isDelevryMultiple, addOrderstoDelivry };
 }
 
 export function useDeleteMultipleOrder() {

@@ -1,11 +1,12 @@
+
 {
+  "language": "العربية",
   "product": {
     "title": "إضافة منتج",
     "addButton": "إضافة المنتج",
     "product_sku": "رمز المنتج",
     "name": "اسم المنتج",
     "quantity": "الكمية",
-    
     "selling_price": "سعر البيع",
     "facebook_url": "رابط الفيسبوك",
     "youtube_url": "رابط يوتيوب",
@@ -31,7 +32,7 @@
     "communeRequired": "البلدية مطلوبة",
     "header": "نظام إدارة الطلبات",
     "myOrders": "طلباتي",
-    "dailyorder": "الطلبات اليومية المؤكدة",
+    "dailyorder": "طلبات يومية تم توصيلها",
     "updateProfile": "تحديث الملف الشخصي",
     "updatePassword": "تغيير كلمة المرور",
     "logout": "تسجيل الخروج",
@@ -255,6 +256,13 @@
       "error": "خطأ: حدث شيء غير متوقع",
       "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا الطلب؟"
     },
+    "productsPage": {
+      "title": "المنتجات",
+      "addUser": "إضافة منتج",
+      "loading": "جاري تحميل المنتجات...",
+      "error": "خطأ: {{message}}",
+      "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المنتج؟"
+    },
     "usersPage": {
       "title": "المستخدمون",
       "addUser": "إضافة مستخدم",
@@ -338,6 +346,24 @@
         "changed": "تم تحديث حالة الطلب بنجاح!"
       }
 
+    },
+    "addTrackingNumber": {
+  "title": "إضافة رقم تتبع",
+  "delivry": "تمت إضافة رقم التتبع",
+  "saving": "جاري الحفظ...",
+  "save": "حفظ",
+  "trackingPlaceholder": "رقم التتبع"
+},
+    "productss": {
+      "create": {
+        "success": "تم إنشاء المنتج بنجاح"
+      },
+      "edit": {
+        "success": "تم تعديل المنتج بنجاح"
+      },
+      "delete": {
+        "success": "تم حذف المنتج بنجاح"
+      }
     }
   }
   

@@ -6,13 +6,14 @@ import {
   useChangeStatus,
   useDeleteMultipleOrder,
   useDeleteOrder,
+  useAddOrderstoDelivry
 } from "../../hooks/useOrder";
 import SearchBar from "../../components/shared/SearchBar";
 import StatusFilter from "../../components/shared/StatusFilter";
 import RowsPerPageSelector from "../../components/shared/RowsPage";
 import OrdersTable from "../../components/orders/OrderTable";
 import Pagination from "../../components/shared/Pagination";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import DateFilter from "../../components/shared/DateFilter";
 import { io } from "socket.io-client";
@@ -20,12 +21,16 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { BACKEND_URL } from "../../utils";
 import { useAuth } from "../../hooks/useAuth";
-import { HiPlus, HiTrash } from "react-icons/hi";
+import { HiPlus, HiRefresh, HiTrash, HiTruck } from "react-icons/hi";
 import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
+import { useSearchParams } from "react-router-dom";
 
 const Orders = () => {
   const { t } = useTranslation();
   const { isAdmin } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+    const filter_status = searchParams.get("filter_status"); // Get the filter_status query parameter
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [status, setStatus] = useState("");
@@ -36,13 +41,13 @@ const Orders = () => {
   const [orderToDelete, setOrderToDelete] = useState(null);
   const [selectedOrders, setSelectedOrders] = useState([]);
   const queryClient = useQueryClient();
-
   const { isLoading, data, error } = isAdmin
-    ? useAdminOrder(currentPage, rowsPerPage, status, dateRange, sendedVal)
-    : useMyOrder(currentPage, rowsPerPage, status, dateRange, sendedVal);
+    ? useAdminOrder(currentPage, rowsPerPage, status, dateRange, sendedVal,filter_status)
+    : useMyOrder(currentPage, rowsPerPage, status, dateRange, sendedVal,filter_status);
 
   const { isDeleting, deleteOrder } = useDeleteOrder();
   const { deleteMultipleOrder } = useDeleteMultipleOrder();
+
   const { changeStat, isChangingStatus } = useChangeStatus();
 
   const socket = io(BACKEND_URL);
@@ -66,7 +71,9 @@ const Orders = () => {
           actions: true,
           confirmedAt: false,
           cancelledAt: false,
-          deletedAt: false
+          deletedAt: false,
+          livraison: false,
+          shippedAt: false
         };
   });
 
@@ -97,7 +104,11 @@ const Orders = () => {
     setOrderToDelete(orderId);
     setIsModalOpen(true);
   };
-
+  const resetFilters = () => {
+    searchParams.delete("filter_status"); // Remove the filter_status query param
+    setSearchParams(searchParams); // Update the search params
+    navigate("/orders"); // Navigate to the orders page without query params
+  };
   const handleChangeStatus = (status, orderId) => {
     changeStat({ status, orderId });
   };
@@ -140,7 +151,9 @@ const Orders = () => {
   return (
     <div>
       <h1 className="text-2xl font-bold">{t("ordersPage.title")}</h1>
-      <div className=" items-center justify-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+      <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
+
+      <div className=" items-center justify-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 ">
         <div className="flex justify-center">
           <SearchBar
             searchTerm={searchTerm}
@@ -175,10 +188,27 @@ const Orders = () => {
           className={`bg-red-600 text-white py-3 px-6 rounded-md ${selectedOrders.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700"}`}
           disabled={selectedOrders.length === 0}
         >
-          <HiTrash />
+          <HiTrash  size={25}/>
         </button>
         )}
-          <NavLink    className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600" to="/orders/create"><HiPlus /></NavLink>
+        { /*
+        <button
+          className={`bg-green-600 text-white py-3 px-6 rounded-md ${selectedOrders.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-green-700"}`}
+          disabled={selectedOrders.length === 0}
+        >
+          <HiTruck size={25} />
+        </button>
+         */
+        }
+          <NavLink  className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600" to="/orders/create"><HiPlus size={25} /></NavLink>
+     
+          <button
+            onClick={resetFilters}
+            className="py-3 px-6 rounded-md bg-blue-600 cursor-pointer text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-600"
+          >
+            <HiRefresh size={25} />
+          </button>
+      </div>
       </div>
 
 
@@ -190,7 +220,9 @@ const Orders = () => {
         visibleColumns={visibleColumns}
         toggleColumnVisibility={toggleColumnVisibility}
         onDeleteOrder={handleDeleteOrder}
+        isChangingStatus={isChangingStatus}
         onChangeStatus={handleChangeStatus}
+      //  onDelivryOrder={onDelivryOrder}
       />
 
       <Pagination
@@ -216,6 +248,7 @@ const Orders = () => {
           onCancel={() => setIsModalOpen(false)}
         />
       )}
+
     </div>
   );
 };

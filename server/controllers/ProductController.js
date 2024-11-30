@@ -112,7 +112,11 @@ exports.getProductDetails = catchAsyncError(async (req, res, next) => {
 // DELETE PRODUCT
 exports.deleteProduct = catchAsyncError(async (req, res, next) => {
   const product = await Product.findById(req.params.id);
+  const imagePath = path.resolve(`uploads/${product.image}`); // Assuming images are stored in the 'uploads/' directory
 
+  if (fs.existsSync(imagePath)) {
+    fs.unlinkSync(imagePath);
+  }
   if (!product) {
     return next(new ErrorHandler("Product not found", 404));
   }

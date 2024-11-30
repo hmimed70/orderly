@@ -127,21 +127,34 @@ exports.createUser = catchAsyncError(async (req, res, next) => {
   };
   
 
+  const bcrypt = require('bcryptjs');
+
   exports.updateUser = catchAsyncError(async (req, res, next) => {
+  
+    // Check if the password exists in the request body
     if (req.body.password) {
-      delete req.body.password; // Remove password from userData if not provided
+      if(req.body.password.length < 6){
+        return next(new ErrorHandler('Password must be at least 6 characters', 400));
+      }
+      const salt = await bcrypt.genSalt(10);
+      req.body.password = await bcrypt.hash(req.body.password, salt);
+  
+      req.body.passwordChangedAt = Date.now() - 1000;
     }
+    else delete req.body.password;
+  
     const user = await User.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
-      runValidators: true
+      runValidators: true,
     });
-
+  
     if (!user) {
       return next(new ErrorHandler('No user found with that ID', 404));
     }
-
+  
     res.status(200).json({
       success: true,
-      user
+      user,
     });
   });
+  

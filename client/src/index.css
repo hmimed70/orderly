@@ -7,14 +7,59 @@
   overflow-y: auto;     /* Disable vertical scrolling */
   scrollbar-width: thin;  /* For Firefox */
 }
+.custom-timeline .vertical-timeline-element {
+  margin-bottom: 10px !important;  /* Reduce margin between elements */
+}
 
 .custom-scrollbar::-webkit-scrollbar {
   height: 8px;            /* Adjust the height of the horizontal scrollbar */
 }
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* Set the width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Track color */
+  border-radius: 10px;
+}
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #888; /* Style for the scrollbar thumb */
+  background: #888; /* Thumb color */
   border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #f8a01c; /* Hover effect for the thumb */
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin; /* Firefox support for thin scrollbar */
+  scrollbar-color: #f8a01c #f1f1f1; /* Firefox support for thumb and track color */
+}
+
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #f8a01c; /* Style for the scrollbar thumb */
+  border-radius: 10px;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.pulse-animation {
+  animation: pulse 1s infinite;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {

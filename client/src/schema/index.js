@@ -83,6 +83,7 @@ username: z.string().min(3, {message: "username is required"}),
 gender: z.enum(["male", "female"]),
 state: z.string().optional(),
 role: z.enum(['admin', 'confirmatrice']),
+password: z.string().optional(),
 orderConfirmedPrice: z
 .string() // Accept strings initially
 .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) >= 0, {

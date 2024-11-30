@@ -100,7 +100,8 @@ const Products = () => {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">{t("ordersPage.title")}</h1>
+        <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
+
       <div className=" items-center justify-center grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         <div className="flex justify-center">
           <SearchBar
@@ -127,7 +128,7 @@ const Products = () => {
           <HiPlus />
         </button>
       </div>
-
+     </div>
 
       <ProductTable
         products={products} // Using filtered orders for the table

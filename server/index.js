@@ -8,16 +8,14 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin:process.env.FRONTEND_URL,//'http://localhost:5173',//  // // , // Allow requests from your frontend's origin
+    origin: process.env.FRONTEND_URL, // frontend URL
     methods: ["GET", "POST"]
   }
 });
+
 app.set('socketio', io);
-
-
 conncectDB();
 io.on('connection', (socket) => {
-
   socket.on('disconnect', () => {
   });
 });

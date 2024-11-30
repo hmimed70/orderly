@@ -15,37 +15,50 @@ export const MoveToTrashs = async (data) => {
   const response = await API.post('/orders/admin/trash', data);
   return response.data;
 }
+export const AddToDelivry = async (data) => {
+  const response = await API.post('/delivry/user/add-to-delivery', data);
+  return response.data;
+}
 export const recoverFromTrash = async (data) => {
   const response = await API.post('/orders/user/recover', data);
   return response.data;
 }
 
-export const getAllOrders = async (page, limit, status, date,search) => {
+export const getAllOrders = async (page, limit, status, date,search, myfilter) => {
   let query = `/orders/admin?page=${page}&limit=${limit}`
-  if(status!=="") query += `&status=${status}`
+  if (status) {
+    query += `&status=${status}`;
+  } else if (myfilter) {
+    const isStatus = ['inProgress', 'pending', 'confirmed', 'cancelled'].includes(myfilter);
+    query += isStatus ? `&status=${myfilter}` : `&status_livraison=${myfilter}`;
+  }
   if(date) query += `&date=${date}`
   if(search) query+=`&keyword=${search}`
 
-  const response = await API.get(query); // Update the endpoint as necessary
+  const response = await API.get(query);
 
   return response.data;
 };
-export const getTrashOrders  = async (page, limit, status, date, search) => {
+export const getTrashOrders  = async (page, limit, status, date, search, filter_status) => {
   let query = `/orders/user/inactive?page=${page}&limit=${limit}`
  if(status!=="") query += `&status=${status}`
  if(date!=="" ) query += `&date=${date}`
  if(search!=="") query+=`&keyword=${search}`
-
+ if(filter_status) query+=`&status_livraison=${filter_status}`
  const response = await API.get(query); // Update the endpoint as necessary
  
  return response.data;
 };
-export const getMyOrders = async (page, limit, status, date, search) => {
+export const getMyOrders = async (page, limit, status,date, search, myfilter) => {
   let query = `/orders/user/current?page=${page}&limit=${limit}`
-  if(status!=="") query += `&status=${status}`
+  if (status) {
+    query += `&status=${status}`;
+  } else if (myfilter) {
+    const isStatus = ['inProgress', 'pending', 'confirmed', 'cancelled'].includes(myfilter);
+    query += isStatus ? `&status=${myfilter}` : `&status_livraison=${myfilter}`;
+  }
   if(date!=="" ) query += `&date=${date}`
   if(search!=="") query+=`&keyword=${search}`
-
   const response = await API.get(query); // Update the endpoint as necessary
 
   return response.data;

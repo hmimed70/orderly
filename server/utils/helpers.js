@@ -1,4 +1,4 @@
-
+const wilayas = require('./Wilaya.json');
 
 exports.filterBody = (reqBody, allowedFields) => {
     const filteredBody = {};
@@ -9,6 +9,11 @@ exports.filterBody = (reqBody, allowedFields) => {
     }
     return filteredBody;
   }
+  exports.getWilayaCode = (wilayaName) => {
+    const wilaya = wilayas.find((w) => w.nom === wilayaName);
+    return wilaya ? wilaya.code : "Unknown";
+  };
+  
   /*
   async function isProductPurchased(userId, productId) {
     // Find the order containing the product

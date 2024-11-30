@@ -1,0 +1,10 @@
+sending confirmed orders add-colis  , 
+suivis les collis , chaque 2hour par exemple,
+if collier in bureau set Time, so after 2 days if . they dont livrée .
+it will removed from confirmatrice and be in suivi table 
+suivi table contient command annuler . en livraison . retour etttc . 
+
+if commande is in retour dispatch => moved to trash . 
+suivis tous les commands que est confirmed and dispatched and no livrée and no supprime by tracking number 
+
+

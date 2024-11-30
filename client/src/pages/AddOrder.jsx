@@ -79,13 +79,11 @@ const AddOrder = () => {
   const client = watch("client") || '';
 const handleProductChange = (selectedOption) => {
   const prd = products.find(prd => prd._id === selectedOption);
-   console.log(prd);
   if (prd) {
     setSelectedProduct(prd); // Set the selected product ID
   }
 };
 // Inside your AddOrder component
-console.log(selectedProduct);
   const totalPrice = (Number(quantity) * Number(price)) + Number(shippingPrice);
   return (
     <Fragment>

@@ -13,6 +13,7 @@ import ConfirmationModal from "../components/shared/ConfirmationModal";
 import { MdRecycling } from "react-icons/md";
 import { debounce } from "lodash";
 import { HiTrash } from "react-icons/hi";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const TrashOrders = () => {
   const { t } = useTranslation(); 
@@ -25,11 +26,14 @@ const TrashOrders = () => {
   const [sendedVal, setSendedVal] = useState("");
   const [modalContext, setModalContext] = useState(null); // Context for the modal (delete or recover)
   const [isModalOpen, setIsModalOpen] = useState(false); // Modal visibility
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const { isRecovering, recoverMultipleOrder } = UseRecoverFromTrash();
   const { isDeleting, clearTrashAdmin } = useClearTrash();
   const [selectedOrders, setSelectedOrders] = useState([]);
-  const { isLoading, data, error } = useTrashOrder(currentPage, rowsPerPage, status, dateRange, sendedVal);
+  const filter_status = searchParams.get("filter_status"); // Get the filter_status query parameter
+  const navigate = useNavigate();
+  const { isLoading, data, error } = useTrashOrder(currentPage, rowsPerPage, status, dateRange, sendedVal, filter_status);
   const [visibleColumns, setVisibleColumns] = useState(() => {
     const savedColumns = localStorage.getItem("visibleColumnsOrder");
     return savedColumns ? JSON.parse(savedColumns) : {
@@ -69,7 +73,11 @@ const TrashOrders = () => {
     setSearchTerm(value);
     debounceSearch(value); 
   };
-
+  const resetFilters = () => {
+    searchParams.delete("filter_status"); // Remove the filter_status query param
+    setSearchParams(searchParams); // Update the search params
+    navigate("/orders"); // Navigate to the orders page without query params
+  };
   const handleDateRangeChange = useCallback((dates) => {
     setDateRange(dates);
   }, []);
@@ -113,8 +121,8 @@ const TrashOrders = () => {
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-2xl font-bold">{t("ordersPage.title")}</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+    <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
         <SearchBar searchTerm={searchTerm} onSearchChange={handleSearch} />
         <StatusFilter status={status} handleStatusChange={(e) => setStatus(e.target.value)} />
         <DateFilter dateRange={dateRange} handleDateRangeChange={handleDateRangeChange} />
@@ -145,7 +153,7 @@ const TrashOrders = () => {
           </button>
       )}
         </div>
-
+      </div>
       <OrdersTable 
        handleOrderSelection={handleOrderSelection}
         selectedOrders={selectedOrders}

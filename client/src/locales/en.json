@@ -12,6 +12,33 @@
     "description": "Description",
     "image": "Product Image"
   },
+  "addTrackingNumber": {
+    "title": "Add Tracking Number",
+    "delivry": "Tracking added successfully",
+    "saving": "Saving...",
+    "save": "Save",
+    "trackingPlaceholder":"Tracking number"
+  },
+  "productsPage": {
+    "title": "Products",
+    "addUser": "Add Product",
+    "loading": "Loading products...",
+    "error": "Error: {{message}}",
+    "deleteConfirmation": "Are you sure you want to delete this product?"
+  },
+  "productss": {
+    "create": {
+      "success": "Product created successfully"
+    },
+    "edit": {
+      "success":"Product edited successfully"
+    },
+    "delete": {
+      "success": "Product deleted successfully"
+    }
+  },
+  "language": "English",
+
   "products": "Stock",
     "loginTitle": "Login",
     "loginText": "Log in to your account",
@@ -32,7 +59,7 @@
     "updateProfile": "Update Profile",
     "updatePassword": "Update Password",
     "logout": "Logout",
-    "dailyorder": "Daily Confirmed Orders",
+    "dailyorder": "Daily Delivred Orders",
     "title": "Dashboard",
     "home": "Home",
     "orders": "Orders",

@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { updatedUserSchema } from "../../schema/index"; 
 import Row from "../../components/shared/Row";
-import { useNavigate, useParams } from "react-router-dom";
 import { useEditUser, useGetSingleUser } from "../../hooks/useUser";
 import SelectInput from "../../components/shared/SelectInput";
 import RadioGroup from "../../components/shared/RadioGroup";
@@ -40,6 +39,7 @@ const EditUser = ({id, onClose}) => {
         phone: user.phone || "",
         state: user.state || "",
         gender: user.gender || "male",
+
         handleLimit: user.handleLimit?.toString() || 0,
         orderConfirmedPrice: user.orderConfirmedPrice?.toString() || 0,
       });
@@ -55,6 +55,7 @@ const EditUser = ({id, onClose}) => {
       phone: data.phone,
       state: data.state,
       gender: data.gender,
+      password: data.password,
       handleLimit: data.handleLimit,
       orderConfirmedPrice: data.orderConfirmedPrice,
     };
@@ -104,6 +105,17 @@ const EditUser = ({id, onClose}) => {
                 errors={errors.username}
                 className="dark:bg-gray-700 dark:text-gray-200"
               />
+              <FormInput
+                type="text"
+                placeholder={t('editUser.password')}
+                name="password"
+                disabled={isEditing}
+                register={register}
+                errors={errors.password}
+                className="dark:bg-gray-700 dark:text-gray-200"
+              />
+                </Row>
+                <Row>
        <SelectInput
   label={t('editUser.role')}
   name="role"
@@ -126,9 +138,6 @@ const EditUser = ({id, onClose}) => {
     {t('editUser.admin')}
   </option>
 </SelectInput>
-
-              </Row>
-              <Row>
               <FormInput
                 disabled={isEditing}
                 type="text"
