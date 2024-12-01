@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useAdminOrder, useChangeStatus, useDeleteOrder, useDeleteMultipleOrder } from '../../hooks/useOrder';
 import { useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
-import { BACKEND_URL } from "../../utils";
+import { SOCKET_URL } from "../utils";
 
 const useOrderPage = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -25,7 +25,7 @@ const useOrderPage = () => {
   const { deleteMultipleOrder, isDeletingMultiple } = useDeleteMultipleOrder();
   const { changeStat, isChangingStatus } = useChangeStatus();
   const queryClient = useQueryClient();
-  const socket = io(BACKEND_URL);
+  const socket = io(SOCKET_URL);
 
   useEffect(() => {
     socket.on("newOrder", () => queryClient.invalidateQueries("orders"));

@@ -26,7 +26,7 @@ const Dashboard = () => {
   const chartData = data.orders.map((order) => ({
     fullname: order.fullname,
     confirmedOrders: order.confirmedOrders,
-    cancelledOrders: order.cancelledOrders,
+    shippedOrders: order.shippedOrders,
   }));
 
   return (

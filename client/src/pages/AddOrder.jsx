@@ -17,7 +17,7 @@ import TextArea from "../components/shared/TextArea";
 import { HiBuildingOffice } from "react-icons/hi2";
 import { HiOutlineHome } from "react-icons/hi";
 import { useProducts } from "../hooks/useProduct";
-import { BACKEND_URL } from "../utils";
+
 const AddOrder = () => {
   const { t } = useTranslation(); // Initialize translation hook
 

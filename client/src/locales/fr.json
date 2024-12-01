@@ -136,7 +136,7 @@
     "usersOrderChart": {
       "title": "Commandes par utilisateur",
       "confirmedOrders": "Commandes confirmées",
-      "cancelledOrders": "Commandes annulées"
+      "cancelledOrders": "Commandes livrées"
     },
     "addOrder": {
       "product": "Choisis Produit",

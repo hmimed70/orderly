@@ -17,14 +17,14 @@ const UsersOrderChart = ({ chartData }) => {
       {
         label: t('usersOrderChart.confirmedOrders'), // Translated label
         data: chartData.map(user => user.confirmedOrders),
-        borderColor: isDarkMode ? '#34d399' : 'green', // Light green for light mode, dark green for dark mode
-        backgroundColor: isDarkMode ? 'rgba(52, 211, 153, 0.6)' : 'rgba(0,255,0,0.6)', // Light green background for dark mode
+        borderColor: isDarkMode ? '#2674d3' : 'blue', // Light green for light mode, dark green for dark mode
+        backgroundColor: isDarkMode ? 'rgba(0, 89, 255, 0.981)':  'rgba(33, 137, 255, 0.6)'  // Light green background for dark mode
       },
       {
         label: t('usersOrderChart.cancelledOrders'), // Translated label
-        data: chartData.map(user => user.cancelledOrders),
-        borderColor: isDarkMode ? '#ef4444' : 'red', // Red for light mode, dark red for dark mode
-        backgroundColor: isDarkMode ? 'rgba(239, 68, 68, 0.6)' : 'rgba(255,0,0,0.6)', // Light red background for dark mode
+        data: chartData.map(user => user.shippedOrders),
+        borderColor: isDarkMode ? '#4ddf30' : 'green', // Red for light mode, dark red for dark mode
+        backgroundColor: isDarkMode ? 'rgba(6, 235, 86, 0.6)' : 'rgba(9, 252, 102, 0.6)' , // Light red background for dark mode
       }
     ],
   };

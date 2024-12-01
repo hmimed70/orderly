@@ -3,7 +3,7 @@ import { BACKEND_URL } from '../utils';
 
 // Create an Axios instance
 const API = axios.create({
-  baseURL: `${BACKEND_URL}/api/v1`,
+  baseURL: `${BACKEND_URL}/v1`,
   withCredentials: true,
 });
 

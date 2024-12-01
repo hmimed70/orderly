@@ -10,10 +10,10 @@ import ColumnVisibilityToggle from "../components/shared/ColumnVisibilty";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
-import { BACKEND_URL } from "../utils";
+import { SOCKET_URL } from "../utils";
 
 const Dashboard = () => {
-  const socket = io(BACKEND_URL); 
+  const socket = io(SOCKET_URL); 
   const queryClient = useQueryClient(); // Initialize React Query client for manual query invalidation
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);

@@ -22,12 +22,13 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
   }
 
   const aggregation = [
-    { $match: dateFilter }, // This will match all documents if dateFilter is {}
+    { $match: dateFilter }, // Match documents based on dateFilter
     { 
       $group: {
         _id: '$confirmatrice', // Group by confirmatrice ID
         confirmedOrders: { $sum: { $cond: [{ $eq: ['$status', 'confirmed'] }, 1, 0] } },
-        cancelledOrders: { $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] } }
+        cancelledOrders: { $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] } },
+        shippedOrders: { $sum: { $cond: [{ $ifNull: ['$shippedAt', false] }, 1, 0] } }
       }
     },
     { 
@@ -44,6 +45,7 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
         _id: 1,
         confirmedOrders: 1,
         cancelledOrders: 1,
+        shippedOrders: 1, // Include shippedOrders in the output
         fullname: '$confirmatriceDetails.fullname' // Add confirmatrice's fullname
       }
     }

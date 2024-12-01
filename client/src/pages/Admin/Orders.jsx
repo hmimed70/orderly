@@ -13,15 +13,15 @@ import StatusFilter from "../../components/shared/StatusFilter";
 import RowsPerPageSelector from "../../components/shared/RowsPage";
 import OrdersTable from "../../components/orders/OrderTable";
 import Pagination from "../../components/shared/Pagination";
-import { NavLink, useNavigate, useParams } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import DateFilter from "../../components/shared/DateFilter";
 import { io } from "socket.io-client";
 import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
-import { BACKEND_URL } from "../../utils";
+import { SOCKET_URL } from "../../utils";
 import { useAuth } from "../../hooks/useAuth";
-import { HiPlus, HiRefresh, HiTrash, HiTruck } from "react-icons/hi";
+import { HiPlus, HiRefresh, HiTrash } from "react-icons/hi";
 import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
 import { useSearchParams } from "react-router-dom";
 
@@ -50,7 +50,7 @@ const Orders = () => {
 
   const { changeStat, isChangingStatus } = useChangeStatus();
 
-  const socket = io(BACKEND_URL);
+  const socket = io(SOCKET_URL);
 
   const [visibleColumns, setVisibleColumns] = useState(() => {
     const savedColumns = localStorage.getItem("visibleColumnsOrder");

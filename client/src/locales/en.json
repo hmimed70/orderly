@@ -135,7 +135,7 @@
         "usersOrderChart": {
             "title": "Orders by User",
             "confirmedOrders": "Confirmed Orders",
-            "cancelledOrders": "Cancelled Orders"
+            "cancelledOrders": "Shipped Orders"
           },
           "addOrder": {
             "client": "Client Name",

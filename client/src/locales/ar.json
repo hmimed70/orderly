@@ -116,7 +116,7 @@
     "usersOrderChart": {
       "title": "الطلبات حسب المستخدم",
       "confirmedOrders": "الطلبات المؤكدة",
-      "cancelledOrders": "الطلبات الملغاة"
+      "cancelledOrders": "طلبات تم توصيلها"
     },
     "date":"التاريخ",
     "addOrder": {
