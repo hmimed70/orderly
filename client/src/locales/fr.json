@@ -18,6 +18,18 @@
     "error": "Erreur: {{message}}",
     "deleteConfirmation": "Êtes-vous sûr de vouloir supprimer ce produit?"
   },
+  "addPayment": {
+    "title": "demande un paiement",
+    "AmountPlaceholder": "Montant",
+    "method": "Méthode de paiement",
+    "cash": "Espèces",
+    "baridi": "Compte postal",
+    "ccp": "Numéro de compte postal",
+    "note": "Notes",
+    "notePlaceholder": "Ajoutez vos notes ici...",
+    "addButton": "Envoyer",
+    "cancel": "Annuler"
+  },
   "productss": {
     "create": {
       "success": "Produit créé avec succes"
@@ -134,6 +146,7 @@
   "totalPrice": "Prix total",
   "currency": "DA",
     "usersOrderChart": {
+      "retourOrders": "Commandes retournées",
       "title": "Commandes par utilisateur",
       "confirmedOrders": "Commandes confirmées",
       "cancelledOrders": "Commandes livrées"
@@ -192,8 +205,83 @@
       "handleLimit": "Limite de commandes",
       "createdAt": "Date de création",
       "actions": "Actions",
-      "noUsersFound": "Aucun utilisateur trouvé."
+      "noUsersFound": "Aucun utilisateur trouvé.",
+      "paidAmount": "Montant payé",
+      "availableAmount": "Montant disponible",
+      "pendingAmount": "Montant en attente"
     },
+    "finance":"Paiements",
+    "payments": "paiements",
+    "editPayment": {
+      "title": "Modifier le Paiement",
+      "amount": "Montant",
+      "method": "Méthode de Paiement",
+      "status": "Statut du Paiement",
+      "note": "Note",
+      "save": "Enregistrer",
+      "saving": "Enregistrement...",
+      "cancel": "Annuler",
+      "Cash": "Espèces",
+      "baridi": "Baridi",
+      "accepted": "Accepté",
+      "refused": "Refusé",
+      "image": "Preuve de Paiement (RIB)",
+      "editPayment.title": "Modifier les Détails du Paiement",
+      "viewPayment.userID": "Utilisateur",
+      "viewPayment.paymentHandle": "Responsable du Paiement"
+    },
+    "viewPayment": {
+      "title": "Détails du Paiement",
+      "loading": "Chargement...",
+      "userId": "l'utilisateur",
+      "paymentHandle": "Gestionnaire de Paiement",
+      "amount": "Montant",
+      "method": "Méthode de Paiement",
+      "cash": "Espèces",
+      "baridi": "RIB",
+      "note": "Note",
+      "ccp": "CCP",
+      "cancel": "Annuler"
+    },
+    "payment": {
+      "create": {
+        "success": "Demande de paiement créée avec succès."
+      },
+      "edit": {
+        "success": "Paiement traité avec succès."
+      }
+    },
+    "titles": {
+      "connexion": "Connexion",
+      "payments": "Paiements",
+      "orders": "Commandes",
+      "trash": "Corbeille",
+      "viewOrder": "Voir la commande",
+      "addOrder": "Ajouter une commande",
+      "controlPanel": "Panneau de contrôle",
+      "products": "Produits",
+      "statistics": "Statistiques",
+      "users": "Utilisateurs",
+      "updatePassword": "Mettre à jour le mot de passe",
+      "account": "Compte"
+    },
+    "paymentsPage": {
+      "addPayment": "demande de paiement",
+      "title": "Historique des paiements",
+      "loadingPayments": "Chargement des paiements...",
+      "allAvailableAmount": "Montant total disponible",
+      "allPendingAmount": "Montant total en attente",
+      "allPaidAmount": "Montant total payé"
+    },
+    "ID": "ID",
+    "User": "Utilisateur",
+    "Amount": "Montant",
+    "Method": "Méthode",
+    "Status": "Statut",
+    "Handled By": "Géré par",
+    "Created At": "Créé à",
+    "Actions": "Actions",
+    "No payments found": "Aucun paiement trouvé",
     "dateRange":"Date",
     "selectDateRange": "Sélectionner la plage de dates",
     "Trash": "Corbeille",

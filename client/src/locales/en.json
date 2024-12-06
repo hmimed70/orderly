@@ -19,6 +19,18 @@
     "save": "Save",
     "trackingPlaceholder":"Tracking number"
   },
+  "addPayment": {
+    "title": "Request Payment",
+    "AmountPlaceholder": "Amount",
+    "method": "Payment Method",
+    "cash": "Cash",
+    "baridi": "Postal Account",
+    "ccp": "Postal Account Number",
+    "note": "Notes",
+    "notePlaceholder": "Add your notes here...",
+    "addButton": "Send",
+    "cancel": "Cancel"
+  },
   "productsPage": {
     "title": "Products",
     "addUser": "Add Product",
@@ -65,6 +77,9 @@
     "orders": "Orders",
     "myOrders": "My Orders",
     "users": "Users",
+    "finance":"Payments",
+
+    "payments": "payments",
     "statistics": "Statistics",
     "assignOrders": "Assign Orders",
     "inProgressOrders": "In Progress Orders",
@@ -133,6 +148,7 @@
     "totalPrice": "Total Price",
     "currency": "DA",
         "usersOrderChart": {
+          "retourOrders": "Return Orders",
             "title": "Orders by User",
             "confirmedOrders": "Confirmed Orders",
             "cancelledOrders": "Shipped Orders"
@@ -177,6 +193,77 @@
     "genderRequired": "Gender is required",
     "addButton": "Add User"
   },
+  "ID": "ID",
+  "User": "User",
+  "Amount": "Amount",
+  "Method": "Method",
+  "Status": "Status",
+  "Handled By": "Handled By",
+  "Created At": "Created At",
+  "Actions": "Actions",
+  "viewPayment": {
+    "title": "Payment Details",
+    "loading": "Loading...",
+    "userId": "User",
+    "paymentHandle": "Payment Handler",
+    "amount": "Amount",
+    "method": "Payment Method",
+    "cash": "Cash",
+    "baridi": "RIB",
+    "note": "Note",
+    "ccp": "CCP",
+    "cancel": "Cancel"
+  },
+  "payment": {
+    "create": {
+      "success": "Demande de paiement créée avec succès."
+    },
+    "edit": {
+      "success": "Paiement traité avec succès."
+    }
+  },
+  "titles": {
+    "connexion": "Login",
+    "payments": "Payments",
+    "orders": "Orders",
+    "trash": "Trash",
+    "viewOrder": "View Order",
+    "addOrder": "Add Order",
+    "controlPanel": "Control Panel",
+    "products": "Products",
+    "statistics": "Statistics",
+    "users": "Users",
+    "updatePassword": "Update Password",
+    "account": "Account"
+  },
+  "editPayment": {
+    "title": "Edit Payment",
+    "amount": "Amount",
+    "method": "Payment Method",
+    "status": "Payment Status",
+    "note": "Note",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "Cash": "Cash",
+    "baridi": "Baridi",
+    "accepted": "Accepted",
+    "refused": "Refused",
+    "image": "Payment Proof (RIB)",
+    "editPayment.title": "Edit Payment Details",
+    "viewPayment.userID": "User",
+    "viewPayment.paymentHandle": "Payment Handler"
+  },
+  "paymentsPage": {
+    "addPayment": "request payment",
+    "title": "Payment History",
+    "loadingPayments": "Loading payments...",
+    "allAvailableAmount": "Total Available Amount",
+    "allPendingAmount": "Total Pending Amount",
+    "allPaidAmount": "Total Paid Amount"
+  },
+  
+  "No payments found": "No payments found",
             "usersTable": {
               "userId": "User ID",
               "fullname": "Full Name",
@@ -191,7 +278,10 @@
               "handleLimit": "Limit Order",
               "createdAt": "Created Date",
               "actions": "Actions",
-              "noUsersFound": "No users found."
+              "noUsersFound": "No users found.",
+              "paidAmount": "Paid Amount",
+              "availableAmount": "Available Amount",
+              "pendingAmount": "Pending Amount"
             },
             "Trash": "Trash",
 

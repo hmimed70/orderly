@@ -8,6 +8,7 @@ import {
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../hooks/useAuth";
 import { HiOutlineShoppingCart, HiTrash } from "react-icons/hi";
+import { BiMoney } from "react-icons/bi";
 
 export default function MainNav() {
   const { isAdmin, isUser } = useAuth(); // Get user role from custom hook
@@ -119,8 +120,29 @@ export default function MainNav() {
         </li>
       )}
 
-      {/* Trash link for both user and admin */}
-      {(isUser || isAdmin) && (
+      {isAdmin && 
+            <li className="group flex items-center justify-start gap-2">
+            <NavLink
+              to="/admin/payment"
+              className="navlink dark:text-gray-200 text-gray-900 flex items-center justify-center gap-2"
+            >
+              <BiMoney />
+              <span className="text-sm md:hidden group-hover:inline">{t("finance")}</span>
+            </NavLink>
+          </li> 
+      }
+            {isUser && 
+            <li className="group flex items-center justify-start gap-2">
+            <NavLink
+              to="/payment"
+              className="navlink dark:text-gray-200 text-gray-900 flex items-center justify-center gap-2"
+            >
+              <BiMoney />
+              <span className="text-sm md:hidden group-hover:inline">{t("finance")}</span>
+            </NavLink>
+          </li> 
+      }
+      {(isAdmin || isUser) && 
         <li className="group flex items-center justify-start gap-2">
           <NavLink
             to="/trash"
@@ -130,7 +152,7 @@ export default function MainNav() {
             <span className="text-sm md:hidden group-hover:inline">{t("Trash")}</span>
           </NavLink>
         </li>
-      )}
+      }
     </ul>
   );
 }

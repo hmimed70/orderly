@@ -6,7 +6,8 @@ import OrderTimeline from "../components/shared/OrderTimeLine";
 import Row from "../components/shared/Row";
 import FormInput from "../components/shared/FormInput";
 import TextArea from "../components/shared/TextArea";
-import { BACKEND_URL } from "../utils";
+import { SOCKET_URL } from "../utils";
+import MetaData from "../components/MetaData";
 
 const ViewOrder = () => {
   const { id } = useParams();
@@ -17,6 +18,7 @@ const ViewOrder = () => {
 
   return (
     <Fragment>
+      <MetaData  title={t('titles.viewOrder')}/>
     <div className="orderContainer flex flex-col lg:flex-row justify-start items-start dark:bg-gray-900 pt-2"> {/* Add pt-16 */}
       <div className="mainContainer bg-white dark:bg-gray-800 m-2 rounded-lg shadow-md p-4 w-full lg:w-2/3">
         {/* Order Details Section */}
@@ -148,11 +150,13 @@ const ViewOrder = () => {
             <span>{t('product.image')}</span>
              {  order?.product?.image ? (
             <div className="relative max-w-xs max-h-44 flex justify-center items-center aspect-square rounded-lg overflow-hidden ">
+               {order.product.image &&
               <img
-                src={`${BACKEND_URL}/uploads/${order.product.image}`}
+                src={`${SOCKET_URL}/uploads/${order.product.image}`}
                 alt={order?.product_name}
                 className="object-cover w-full h-full"
               />
+               }
             </div>
              ) : "No Image "}
           </div>

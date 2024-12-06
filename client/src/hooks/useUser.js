@@ -4,10 +4,10 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next"; // Import t
 
-export function useUser(page, limit) {
+export function useUser(page, limit, role) {
   const { isLoading, data, error } = useQuery({
-    queryKey: ["users", page, limit],
-    queryFn: () => getAllUsers(page, limit),
+    queryKey: ["users", page, limit, role],
+    queryFn: () => getAllUsers(page, limit, role),
   });
   
   return { isLoading, error, data };

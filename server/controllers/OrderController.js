@@ -5,7 +5,57 @@ const User = require('../models/userModel');
 const ApiFeatures = require('../utils/Features');
 const { getDateRange } = require('../utils/dateHelper');
 const Product = require('../models/productModel');
+
 const isNumber = (value) => typeof value === 'number' && !isNaN(value);
+
+
+
+
+const validateInput = (inputData, requiredFields) => {
+  const missingFields = [];
+  
+  requiredFields.forEach(field => {
+    if (!inputData[field] || (typeof inputData[field] === 'string' && inputData[field].trim() === '')) {
+      missingFields.push(field);
+    }
+  });
+
+  return missingFields;
+};
+
+// Define required fields for the main payload and nested `invoice_information`
+const requiredFields = [
+  'invoice_information',
+  'shipping_type',
+  'product_sku',
+  'quantity',
+  'price',
+  'product_name'
+];
+const requiredInvoiceFields = ['client', 'phone1', 'wilaya', 'commune'];
+
+// Function to validate the payload
+const validatePayload = (payload) => {
+  // Validate top-level fields
+  const missingFields = validateInput(payload, requiredFields);
+
+  // Validate nested `invoice_information`
+  const missingInvoiceFields = payload.invoice_information
+    ? validateInput(payload.invoice_information, requiredInvoiceFields)
+    : requiredInvoiceFields.map(field => `invoice_information.${field}`);
+
+  // Combine all missing fields
+  const allMissingFields = [
+    ...missingFields,
+    ...missingInvoiceFields.map(field => `invoice_information.${field}`)
+  ];
+
+  return allMissingFields;
+};
+
+
+
+
 
 exports.getStatistics = catchAsyncError(async (req, res, next) => {
   const resultPerPage = req.query.limit ? parseInt(req.query.limit, 10) : 8;
@@ -28,7 +78,8 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
         _id: '$confirmatrice', // Group by confirmatrice ID
         confirmedOrders: { $sum: { $cond: [{ $eq: ['$status', 'confirmed'] }, 1, 0] } },
         cancelledOrders: { $sum: { $cond: [{ $eq: ['$status', 'cancelled'] }, 1, 0] } },
-        shippedOrders: { $sum: { $cond: [{ $ifNull: ['$shippedAt', false] }, 1, 0] } }
+        shippedOrders: { $sum: { $cond: [{ $ifNull: ['$shippedAt', false] }, 1, 0] } },
+        retourOrders: { $sum: { $cond: [{ $eq: ['$status_livraison', 'Retour'] }, 1, 0] } },
       }
     },
     { 
@@ -45,6 +96,7 @@ exports.getStatistics = catchAsyncError(async (req, res, next) => {
         _id: 1,
         confirmedOrders: 1,
         cancelledOrders: 1,
+        retourOrders: 1,
         shippedOrders: 1, // Include shippedOrders in the output
         fullname: '$confirmatriceDetails.fullname' // Add confirmatrice's fullname
       }
@@ -116,6 +168,7 @@ exports.getOrderCountsByStatusAdmin = catchAsyncError(async (req, res, next) => 
 
 const moment = require('moment'); 
 const { default: mongoose } = require('mongoose');
+const { fetchTrackingDetails } = require('./DelivryController');
 
 
 
@@ -250,12 +303,19 @@ exports.getOrderCountsByStatusUser = catchAsyncError(async (req, res, next) => {
 
 exports.verifySecretKey = (req, res, next) => {
   const secretKey = req.headers['x-secret-key'];
+
   if (secretKey !== process.env.SECRET_KEY) {
       return res.status(403).send('Unauthorized: Invalid secret key');
   }
   next();
 };
 exports.createOrder = catchAsyncError(async (req, res, next) => {
+  // Validate the payload
+const allMissingFields = validatePayload(req.body);
+
+if (allMissingFields.length > 0) {
+  return next(new ErrorHandler(`missing fields : ${allMissingFields.join(', ')}`, 400));
+  };
   const { 
     invoice_information, 
     shipping_type, 
@@ -299,6 +359,7 @@ exports.createOrder = catchAsyncError(async (req, res, next) => {
     product_sku,
     quantity,
     price,
+    status: 'pending',
     total,
     product_name,
     nbr_order,
@@ -446,7 +507,10 @@ exports.getOrderDetails = catchAsyncError(async (req, res, next) => {
     if (!order) {
     return next(new ErrorHandler('Order not found', 404));
   }
-
+  const finalStatuses = ['Livrée', 'Retour', 'Supprimee'];
+  if (!finalStatuses.includes(order.status_livraison) && order.tracking_number) {
+    await fetchTrackingDetails([{ Tracking: order.tracking_number }]);
+  }
   res.status(200).json({
     success: true,
     order,
@@ -589,77 +653,14 @@ exports.assignOrdersToUser = catchAsyncError(async (req, res, next) => {
     });
   });
 
-
-  /*
-exports.confirmOrder = catchAsyncError( async (req, res, next) => {
-    const  orderId  = req.params.id;
-
-
-    const order = await Order.findById(orderId);
-    if (!order) {
-        return next(new ErrorHandler( 'Order not found.', 400));
-    }
-
-    if (order.status === 'confirmed' || order.status === 'cancelled') {
-
-      return next(new ErrorHandler( 'This order has already been processed.', 400));
-
-    }
-
-    const user = await User.findById(order.confirmatrice);
-    order.status = 'confirmed';
-    order.confirmedAt = Date.now();
-    await order.save();
-
-    user.confirmedOrders += 1;
-    user.earnings += user.orderConfirmedPrice;
-    await user.save();
-
-    res.status(200).json({
-      success: true,
-      message: `Order ${orderId} confirmed successfully.`,
-      user: {
-        fullname: user.fullname,
-        confirmedOrders: user.confirmedOrders,
-        earnings: user.earnings,
-      },
-    });
-
-});
-
-exports.cancelOrder = catchAsyncError( async (req, res, next) => {
-  const  orderId  = req.params.id;
-   const order = await Order.findById(orderId);
-    if (!order) {
-        return next(new ErrorHandler( 'Order not found.', 404));
-    }
-
-    if (order.status === 'confirmed' || order.status === 'cancelled') {
-        return next(new ErrorHandler( 'This order has already been processed.', 400));
-    }
-    if (order && order.attempts.length < 3 ) {
-      return next(new ErrorHandler( 'you must be added at least 3 attempt before canceling order', 404));
-  }
-  
-    order.status = 'cancelled';
-    order.cancelledAt = Date.now();
-    await order.save();
-     
-    res.status(200).json({
-      message: `Order ${orderId} has been cancelled.`,
-      user: {
-        fullname: req.user.fullname,
-        confirmedOrders: req.user.confirmedOrders,
-        earnings: req.user.earnings,
-      },
-    });
-});
-*/
-
-
   // UPDATE ORDER
   exports.updateOrderAdmin = catchAsyncError(async (req, res, next) => {
     const updatedData = req.body;
+    const allMissingFields = validatePayload(req.body);
+
+if (allMissingFields.length > 0) {
+  return next(new ErrorHandler(`missing fields : ${allMissingFields.join(', ')}`, 400));
+  };
      const { quantity, price, shipping_price } = updatedData;
      const totalPrice = (quantity * price) + shipping_price;
   

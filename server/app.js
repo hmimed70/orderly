@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
@@ -12,14 +13,18 @@ const productRoute = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const userRoute = require('./routes/userRoutes');
 const deliveryRoute = require('./routes/delivryRoute');
+const paymentRoutes = require('./routes/PaymentRoutes');
+
 const app = express();
 const orderTracking = require('./middlewares/OrderTracking');  // Import the cron job
+const AvailableAmount = require('./middlewares/AvailableAmount');  // Import the cron job
+
 // Set up EJS as the view engine
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Serve uploads
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Middleware setup
 app.use(cookieParser());
@@ -45,6 +50,7 @@ app.use('/api/v1/orders/', orderRoutes);
 app.use('/api/v1/users/', userRoute);
 app.use('/api/v1/products/', productRoute);
 app.use('/api/v1/delivry/', deliveryRoute );
+app.use('/api/v1/payments/', paymentRoutes);
 // Handle 404 errors for undefined routes
 app.all('*', (req, res, next) => {
   next(new ErrorHandler(`Can't find ${req.originalUrl} on this server!`, 404));

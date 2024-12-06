@@ -13,8 +13,10 @@ export const logoutUser = async (data) => {
 
 
 
-export const getAllUsers = async (page, limit) => {
-  const response = await API.get(`/users?page=${page}&limit=${limit}`); // Update the endpoint as necessary
+export const getAllUsers = async (page, limit, role) => {
+  let query = `/users?page=${page}&limit=${limit}`
+  if(role && role!== null ) query +=`&role=${role}`
+  const response = await API.get(query); // Update the endpoint as necessary
 
   return response.data;
 };

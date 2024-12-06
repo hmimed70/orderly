@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import FormInput from "../../components/shared/FormInput";
 import { productSchema } from "../../schema";
 import { useEditProduct, useGetSingleProduct } from "../../hooks/useProduct";
-import { BACKEND_URL } from "../../utils";
+import { SOCKET_URL } from "../../utils";
 
 const EditProduct = ({ id, onClose }) => {
   const { t } = useTranslation();
@@ -39,7 +39,7 @@ const EditProduct = ({ id, onClose }) => {
         image: null,
         addQuantity: "0",
       });
-      setImagePreview(`${BACKEND_URL}/uploads/${product.image}`);
+      product.image &&   setImagePreview(`${SOCKET_URL}/uploads/${product.image}`);
     }
   }, [product, reset]);
 
@@ -182,7 +182,7 @@ const EditProduct = ({ id, onClose }) => {
                 )}
               />
               {errors.image && <p className="text-red-600">{errors.image.message}</p>}
-              {imagePreview && (
+              {imagePreview &&product.image && (
                 <div className="my-4">
                   <img src={imagePreview} alt="Image Preview" className="max-w-64 max-h-64" />
                 </div>

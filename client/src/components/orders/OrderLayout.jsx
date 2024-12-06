@@ -84,7 +84,9 @@ const OrderLayout = ({
         onDeleteOrder={handleDeleteOrder}
         onChangeStatus={handleChangeStatus}
       />
-      <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={setCurrentPage} />
+      <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={setCurrentPage}
+              text={t("orders")}
+              />
       {isModalOpen && (
         <ConfirmationModal
           disable={isDeleting}

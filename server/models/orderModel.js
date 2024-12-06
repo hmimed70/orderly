@@ -40,7 +40,6 @@ const orderSchema = new Schema({
         user: { type: String},
         attempt: {
           type: String,
-          enum: ['pending', 'inProgress', 'confirmed', 'cancelled', 'didntAnswer1', 'didntAnswer2', 'didntAnswer3', 'didntAnswer4','phoneOff', 'duplicate', 'wrongNumber', 'wrongOrder']
             },
       },
     ],
@@ -52,8 +51,7 @@ const orderSchema = new Schema({
 orderSchema.index({ createdAt: 1 });
 orderSchema.index({ confirmatrice: 1 });
 orderSchema.index({ confirmatrice: 1, status: 1 });
-orderSchema.index({ nbr_order: -1 });
-//OrderSchema.index({ product_sku: "text", note: "text" });
+orderSchema.index({ nbr_order: 1 });
 orderSchema.index({ createdAt: 1, status: 1 });
 
 /*

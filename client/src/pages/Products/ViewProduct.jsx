@@ -5,7 +5,7 @@ import FormInput from "../../components/shared/FormInput";
 import Row from "../../components/shared/Row";
 import PropTypes from "prop-types";
 import TextArea from "../../components/shared/TextArea";
-import { BACKEND_URL } from "../../utils";
+import {  SOCKET_URL } from "../../utils";
 
 const ViewProduct = ({ onClose, id }) => {
   const { data, isLoading } = useGetSingleProduct(id); // Fetching the product data
@@ -92,11 +92,14 @@ const ViewProduct = ({ onClose, id }) => {
           <div className="w-full md:w-1/2 flex flex-col justify-start items-start mt-4 md:mt-0">
             <span>Image</span>
             <div className="relative w-full max-w-xs aspect-square rounded-lg overflow-hidden ">
-              <img
-                src={`${BACKEND_URL}/uploads/${product.image}`}
-                alt={product.name}
-                className="object-cover w-full max-h-64"
-              />
+              { product.image &&
+                <img
+                  src={`${SOCKET_URL}/uploads/${product.image}`}
+                  alt={product.name}
+                  className="object-cover w-full max-h-64"
+                />
+
+              }
             </div>
           </div>
         </div>

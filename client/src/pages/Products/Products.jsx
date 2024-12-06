@@ -15,6 +15,7 @@ import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import AddProduct from "./AddProduct";
 import Modal from "../../components/shared/MyModal";
+import MetaData from "../../components/MetaData";
 
 const Products = () => {
   const { t } = useTranslation();
@@ -99,6 +100,8 @@ const Products = () => {
   const totalPages = Math.ceil(totalOrders / rowsPerPage) || 1;
 
   return (
+    <>
+    <MetaData title={t('titles.products')} />
     <div>
         <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
 
@@ -143,6 +146,8 @@ const Products = () => {
         handlePageChange={setCurrentPage}
         totalOrders={totalOrders}
         ordersCount={productsCount}
+        text={t("products")}
+
       />
 
 <ColumnVisibilityToggle
@@ -151,8 +156,8 @@ const Products = () => {
 />
       {isModalOpen && (
         <ConfirmationModal
-          disable={isDeleting}
-          message={t("productsPage.deleteConfirmation")}
+        disable={isDeleting}
+        message={t("productsPage.deleteConfirmation")}
           onConfirm={() => {
             deleteProduct(productToDelete);
             setIsModalOpen(false);
@@ -166,6 +171,7 @@ const Products = () => {
           </Modal>
           }
     </div>
+  </>
   );
 };
 

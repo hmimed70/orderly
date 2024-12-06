@@ -17,6 +17,7 @@ import TextArea from "../components/shared/TextArea";
 import { HiBuildingOffice } from "react-icons/hi2";
 import { HiOutlineHome } from "react-icons/hi";
 import { useProducts } from "../hooks/useProduct";
+import MetaData from "../components/MetaData";
 
 const AddOrder = () => {
   const { t } = useTranslation(); // Initialize translation hook
@@ -87,6 +88,7 @@ const handleProductChange = (selectedOption) => {
   const totalPrice = (Number(quantity) * Number(price)) + Number(shippingPrice);
   return (
     <Fragment>
+      <MetaData title={t('titles.addOrder')} />
       <div className="orderContainer flex flex-col lg:flex-row justify-center items-center dark:bg-gray-900">
         <div className="mainContainer bg-white dark:bg-gray-800 m-2 rounded-lg shadow-md p-4 w-full lg:w-2/3">
           <h1 className="text-gray-950 dark:text-gray-100 font-semibold text-3xl mb-8">{t('addOrder.addOrderBtn')}</h1>

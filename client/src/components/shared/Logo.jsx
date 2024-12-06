@@ -8,7 +8,7 @@ function Logo({ text }) {
         className="w-40 md:w-48 lg:w-56 mb-6"
         src={logo}
         alt="Company Logo"
-      /> : <img className="h-32 w-32" src={logo} alt="Company Logo" />
+      /> : <img className="h-24 w-32" src={logo} alt="Company Logo" />
       }
       {/* Text Title */}
       {text && (

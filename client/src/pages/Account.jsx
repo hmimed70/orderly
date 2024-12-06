@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import Row from "../components/shared/Row";
 import { useAuth } from "../hooks/useAuth";
+import MetaData from "../components/MetaData";
 
 const Account = () => {
   const { t } = useTranslation();
@@ -55,6 +56,8 @@ const Account = () => {
   }
 
   return (
+    <>
+    <MetaData  title={t('titles.account')}/>
     <div className="orderContainer flex flex-col lg:flex-row justify-center items-center dark:bg-gray-900">
       <div className="mainContainer bg-white dark:bg-gray-800 m-2 rounded-lg shadow-md p-4 w-full">
         <h1 className="text-gray-950 dark:text-gray-100 font-semibold text-3xl mb-8">{t('update_profile')}</h1>
@@ -118,6 +121,7 @@ const Account = () => {
         </form>
       </div>
     </div>
+    </>
   );
 };
 

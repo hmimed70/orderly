@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useQueryClient } from "@tanstack/react-query";
 import { io } from "socket.io-client";
 import { SOCKET_URL } from "../utils";
+import MetaData from "../components/MetaData";
 
 const Dashboard = () => {
   const socket = io(SOCKET_URL); 
@@ -87,6 +88,8 @@ const Dashboard = () => {
   };
 
   return (
+    <>
+    <MetaData  title={t('titles.controlPanel')}/>
     <div>
       <h1 className="text-2xl font-bold">{t("orders")}</h1>
       <div className="flex flex-col lg:flex-row space-y-4 mt-4 justify-center items-center lg:justify-around">
@@ -114,6 +117,7 @@ const Dashboard = () => {
         handlePageChange={setCurrentPage}
         totalOrders={totalOrders}
         ordersCount={ordersCount}
+        text={t("orders")}
       />
       {isModalOpen && (
         <ConfirmationModal
@@ -124,6 +128,7 @@ const Dashboard = () => {
         />
       )}
     </div>
+      </>
   );
 };
 

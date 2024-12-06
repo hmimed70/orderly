@@ -7,6 +7,7 @@ import CardStat from '../../components/orders/CardStat';
 import { useMemo } from 'react';
 import { getCurrentMonthRange } from '../../utils';
 import { useNavigate } from 'react-router-dom';
+import MetaData from '../../components/MetaData';
 
 const Dashboard = () => {
   const { t } = useTranslation(); // Initialize the `t` function
@@ -35,6 +36,7 @@ const Dashboard = () => {
   };
   return (
     <>
+      <MetaData  title={t('titles.controlPanel')}/>
       <div className="dashboard grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Displaying status counts for orders */}
         <CardStat  onClick={() => handleNavigate('inProgress')} statut={inProgress} statutText={t('inProgressOrders')} statutColor="#3b82f6" />

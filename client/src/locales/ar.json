@@ -14,6 +14,18 @@
     "image": "صورة المنتج"
 
   },
+  "addPayment": {
+    "title": "طلب دفعة",
+    "AmountPlaceholder": "المبلغ",
+    "method": "طريقة الدفع",
+    "cash": "نقداً",
+    "baridi": "الحساب البريدي",
+    "ccp": "رقم الحساب البريدي",
+    "note": "ملاحظات",
+    "notePlaceholder": "أضف ملاحظاتك هنا...",
+    "addButton": "ارسال",
+    "cancel": "إلغاء"
+  },
   "products": "المخزون",
     "loginTitle": "تسجيل الدخول",
     "loginText": "تسجيل الدخول إلى حسابك",
@@ -116,7 +128,8 @@
     "usersOrderChart": {
       "title": "الطلبات حسب المستخدم",
       "confirmedOrders": "الطلبات المؤكدة",
-      "cancelledOrders": "طلبات تم توصيلها"
+      "cancelledOrders": "طلبات تم توصيلها",
+      "retourOrders": "طلبات تم رجوعها"
     },
     "date":"التاريخ",
     "addOrder": {
@@ -209,6 +222,7 @@
       "addButton": "إضافة مستخدم"
     },
     "usersTable": {
+
       "userId": "معرف المستخدم",
       "fullname": "الاسم الكامل",
       "email": "البريد الإلكتروني",
@@ -222,8 +236,84 @@
       "handleLimit": "حد التعامل",
       "createdAt": "تاريخ الإنشاء",
       "actions": "الإجراءات",
-      "noUsersFound": "لم يتم العثور على مستخدمين."
+      "noUsersFound": "لم يتم العثور على مستخدمين.",
+      "paidAmount": "المبلغ المدفوع",
+      "availableAmount": "المبلغ المتاح",
+      "pendingAmount": "المبلغ المعلق"
     },
+    "payments": "المدفوعات",
+    "editPayment": {
+      "title": "تعديل الدفع",
+      "amount": "المبلغ",
+      "method": "طريقة الدفع",
+      "status": "حالة الدفع",
+      "note": "ملاحظة",
+      "save": "حفظ",
+      "saving": "جارٍ الحفظ...",
+      "cancel": "إلغاء",
+      "Cash": "نقدًا",
+      "baridi": "بريدي",
+      "accepted": "مقبول",
+      "refused": "مرفوض",
+      "image": "إثبات الدفع (RIB)",
+      "editPayment.title": "تعديل تفاصيل الدفع",
+      "viewPayment.userID": "المستخدم",
+      "viewPayment.paymentHandle": "معالج الدفع"
+    },
+    "viewPayment": {
+      "title": "تفاصيل الدفع",
+      "loading": "جار التحميل...",
+      "userId": "المستخدم",
+      "paymentHandle": "مُعالج الدفع",
+      "amount": "المبلغ",
+      "method": "طريقة الدفع",
+      "cash": "نقدًا",
+      "baridi": "RIB",
+      "note": "ملاحظة",
+      "ccp": "CCP",
+      "cancel": "إلغاء"
+    },
+    "payment": {
+      "create": {
+        "success": "تم إنشاء طلب الدفع بنجاح."
+      },
+      "edit": {
+        "success": "تم معالجة الدفع بنجاح."
+      }
+    },
+    "titles": {
+      "connexion": "تسجيل الدخول",
+      "payments": "المدفوعات",
+      "orders": "الطلبات",
+      "trash": "الطلبات المحذوفة",
+      "viewOrder": "عرض الطلب",
+      "addOrder": "إضافة طلب",
+      "controlPanel": "لوحة التحكم",
+      "products": "المخزون",
+      "statistics": "الإحصائيات",
+      "users": "المستخدمون",
+      "updatePassword": "تحديث كلمة المرور",
+      "account": "الحساب"
+    },
+    "paymentsPage": {
+      "addPayment": "طلب مبلغ",
+      "title": "سجل المدفوعات",
+      "loadingPayments": "جار تحميل المدفوعات...",
+      "allAvailableAmount": "إجمالي المبلغ المتاح",
+      "allPendingAmount": "إجمالي المبلغ المعلق",
+      "allPaidAmount": "إجمالي المبلغ المدفوع"
+    },
+    "finance":"المدفوعات",
+    "ID": "المعرف",
+    "User": "المستخدم",
+    "Amount": "المبلغ",
+    "Method": "الطريقة",
+    "Status": "الحالة",
+    "Handled By": "تمت المعالجة بواسطة",
+    "Created At": "تم الإنشاء في",
+    "Actions": "الإجراءات",
+    "No payments found": "لا توجد مدفوعات",
+
     "Trash": "الطلبات المحذوفة",
     "selectDateRange": "اختر التاريخ",
     "orderNumber": "رقم الطلب",

@@ -1,6 +1,5 @@
-import { HiPencilAlt, HiRefresh } from 'react-icons/hi';
+import { HiPencilAlt, } from 'react-icons/hi';
 import { HiEye, HiTrash } from "react-icons/hi2";
-import { NavLink } from 'react-router-dom';
 import { formattedDate } from '../../utils';
 import MyModal from '../shared/MyModal';
 import { useTranslation } from 'react-i18next';
@@ -43,7 +42,9 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
             {visibleColumns.email && <th className="px-4 py-3">{t('usersTable.email')}</th>}
             {visibleColumns.username && <th className="px-4 py-3">{t('usersTable.username')}</th>}
             {visibleColumns.gender && <th className="px-4 py-3">{t('usersTable.gender')}</th>}
-            {visibleColumns.earnings && <th className="px-4 py-3">{t('usersTable.earnings')}</th>}
+            {visibleColumns.pendingAmount && <th className="px-4 py-3">{t('usersTable.pendingAmount')}</th>}
+            {visibleColumns.availableAmount && <th className="px-4 py-3">{t('usersTable.availableAmount')}</th>}
+            {visibleColumns.paidAmount && <th className="px-4 py-3">{t('usersTable.paidAmount')}</th>}
             {visibleColumns.role && <th className="px-4 py-3">{t('usersTable.role')}</th>}
             {visibleColumns.confirmedOrders && <th className="px-4 py-3">{t('usersTable.confirmedOrders')}</th>}
             {visibleColumns.orderConfirmedPrice && <th className="px-4 py-3">{t('usersTable.orderConfirmedPrice')}</th>}
@@ -62,7 +63,10 @@ const UsersTable = ({ users, visibleColumns, onDeleteUser }) => {
                 {visibleColumns.email && <td className="px-4 py-4">{user.email}</td>}
                 {visibleColumns.username && <td className="px-4 py-4">{user.username}</td>}
                 {visibleColumns.gender && <td className="px-4 py-4">{user.gender}</td>}
-                {visibleColumns.earnings && <td className="px-4 py-4">{user.earnings}</td>}
+                {visibleColumns.pendingAmount && <td className="px-4 py-4">{user.pendingAmount}</td>}
+                {visibleColumns.availableAmount && <td className="px-4 py-4">{user.availableAmount}</td>}
+                {visibleColumns.paidAmount && <td className="px-4 py-4">{user.paidAmount}</td>}
+
                 {visibleColumns.role && <td className="px-4 py-4">{user.role}</td>}
                 {visibleColumns.confirmedOrders && <td className="px-4 py-3">{user.confirmedOrders}</td>}
                 {visibleColumns.orderConfirmedPrice && <td className="px-4 py-3">{user.orderConfirmedPrice}</td>}

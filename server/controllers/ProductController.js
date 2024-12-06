@@ -1,11 +1,24 @@
 const Product = require('../models/productModel'); // Import the Product model
 const catchAsyncError = require('../middlewares/catchAsyncError'); // Error handler middleware
 const ApiFeatures = require('../utils/Features');
-
+const ErrorHandler = require('../utils/errorHandler');
 const fs = require('fs');
 const path = require('path');
+const { validateInput } = require('../utils/ValidateInput');
 
 exports.updateProduct = catchAsyncError(async (req, res, next) => {
+  const requiredFields = ['name', 'selling_price', 'quantity', 'product_sku'];
+  const missingFields = validateInput(req.body, requiredFields);
+  if (missingFields.length > 0) {
+    return next(new ErrorHandler(`Missing required fields: ${missingFields.join(', ')}`, 400));
+  }
+  if (req.body.selling_price && (req.body.selling_price <= 0 || isNaN(req.body.selling_price) )) {
+    return next(new ErrorHandler('selling_price must be greater than 0', 400));
+  }
+  if (req.body.quantity && (req.body.quantity <= 0 || isNaN(req.body.quantity) )) {
+    return next(new ErrorHandler('quantity must be greater than 0', 400));
+  }
+
   let product = await Product.findById(req.params.id);
 
   if (!product) {
@@ -39,8 +52,19 @@ exports.updateProduct = catchAsyncError(async (req, res, next) => {
 });
 
 exports.createProduct = catchAsyncError(async (req, res, next) => {
-  // Handle the form fields and files using multer
   const { name, selling_price, quantity, product_sku, description, youtube_url, facebook_url } = req.body;
+  const requiredFields = ['name', 'selling_price', 'quantity', 'product_sku'];
+  const missingFields = validateInput(req.body, requiredFields);
+  if (missingFields.length > 0) {
+    return next(new ErrorHandler(`Missing required fields: ${missingFields.join(', ')}`, 400));
+  }
+  if (selling_price <= 0 || isNaN(selling_price)) {
+    return next(new ErrorHandler('selling_price must be greater than 0', 400));
+  }
+  if (quantity <= 0 || isNaN(quantity)) {
+    return next(new ErrorHandler('quantity must be greater than 0', 400));
+  }
+  // Handle the form fields and files using multer
   const lastProduct = await Product.findOne().sort({ createdAt: -1 });
   const nextProductNumber = lastProduct
     ? parseInt(lastProduct.nbr_product.slice(3)) + 1 

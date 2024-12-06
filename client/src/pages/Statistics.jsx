@@ -3,6 +3,7 @@ import EarningsChart from '../components/users/EarningsChart';
 import { useTranslation } from 'react-i18next';
 import CardStat from '../components/orders/CardStat';
 import { useNavigate } from 'react-router-dom';
+import MetaData from '../components/MetaData';
 
 const StatisticsUser = () => {
   const { t } = useTranslation(); // Hook for translations
@@ -22,6 +23,7 @@ const StatisticsUser = () => {
   };
   return (
     <>
+       <MetaData  title={t('titles.statistics')} /> 
        <div className="dashboard grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Displaying status counts for orders */}
         <CardStat

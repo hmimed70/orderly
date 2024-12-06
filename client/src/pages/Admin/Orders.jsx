@@ -24,6 +24,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { HiPlus, HiRefresh, HiTrash } from "react-icons/hi";
 import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
 import { useSearchParams } from "react-router-dom";
+import { HiTruck } from "react-icons/hi2";
+import MetaData from "../../components/MetaData";
 
 const Orders = () => {
   const { t } = useTranslation();
@@ -41,12 +43,14 @@ const Orders = () => {
   const [orderToDelete, setOrderToDelete] = useState(null);
   const [selectedOrders, setSelectedOrders] = useState([]);
   const queryClient = useQueryClient();
+  const { addOrderstoDelivry, isDelevryMultiple } = useAddOrderstoDelivry();
+
   const { isLoading, data, error } = isAdmin
     ? useAdminOrder(currentPage, rowsPerPage, status, dateRange, sendedVal,filter_status)
     : useMyOrder(currentPage, rowsPerPage, status, dateRange, sendedVal,filter_status);
 
   const { isDeleting, deleteOrder } = useDeleteOrder();
-  const { deleteMultipleOrder } = useDeleteMultipleOrder();
+  const { deleteMultipleOrder, isDeletingsMultiple } = useDeleteMultipleOrder();
 
   const { changeStat, isChangingStatus } = useChangeStatus();
 
@@ -96,6 +100,9 @@ const Orders = () => {
   const handleDeleteSelected = () => {
     deleteMultipleOrder({ orderIds: selectedOrders });
   };
+  const handleDelivrySelected = () => {
+    addOrderstoDelivry({ orderIds: selectedOrders });
+  }
   const handleDateRangeChange = useCallback((dates) => {
     setDateRange(dates);
   }, []);
@@ -149,6 +156,8 @@ const Orders = () => {
   const totalPages = Math.ceil(totalOrders / rowsPerPage) || 1;
 
   return (
+    <>
+     <MetaData title={t('titles.orders')} />
     <div>
       <h1 className="text-2xl font-bold">{t("ordersPage.title")}</h1>
       <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
@@ -186,20 +195,20 @@ const Orders = () => {
         <button
           onClick={handleDeleteSelected}
           className={`bg-red-600 text-white py-3 px-6 rounded-md ${selectedOrders.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-red-700"}`}
-          disabled={selectedOrders.length === 0}
+          disabled={selectedOrders.length === 0 || isDeletingsMultiple}
         >
           <HiTrash  size={25}/>
         </button>
         )}
-        { /*
+        
         <button
+        onClick={handleDelivrySelected}
           className={`bg-green-600 text-white py-3 px-6 rounded-md ${selectedOrders.length === 0 ? "opacity-50 cursor-not-allowed" : "hover:bg-green-700"}`}
-          disabled={selectedOrders.length === 0}
+          disabled={selectedOrders.length === 0 || isDelevryMultiple}
         >
           <HiTruck size={25} />
         </button>
-         */
-        }
+         
           <NavLink  className="py-3 px-6 rounded-md bg-orange-600 cursor-pointer text-white hover:bg-orange-700 dark:bg-orange-700 dark:hover:bg-orange-600" to="/orders/create"><HiPlus size={25} /></NavLink>
      
           <button
@@ -231,6 +240,7 @@ const Orders = () => {
         handlePageChange={setCurrentPage}
         totalOrders={totalOrders}
         ordersCount={ordersCount}
+        text={t("orders")}
       />
 
 <ColumnVisibilityToggle
@@ -250,6 +260,7 @@ const Orders = () => {
       )}
 
     </div>
+    </>
   );
 };
 

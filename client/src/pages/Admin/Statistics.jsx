@@ -3,6 +3,7 @@ import { useGetUserStatistics } from '../../hooks/useOrder';
 import DateFilter from '../../components/shared/DateFilter';
 import UsersOrderChart from '../../components/users/UserOrderChart';
 import { useTranslation } from 'react-i18next';
+import MetaData from '../../components/MetaData';
 
 const Dashboard = () => {
   const [dateRange, setDateRange] = useState([null, null]);
@@ -27,10 +28,13 @@ const Dashboard = () => {
     fullname: order.fullname,
     confirmedOrders: order.confirmedOrders,
     shippedOrders: order.shippedOrders,
+    retourOrders: order.retourOrders,
   }));
 
   return (
 <>
+<MetaData title={t('titles.statistics')} />
+
   <div className="chart-page-container">
     <div className="chart-container">
       <div className='mx-auto w-1/2 flex items-center justify-center'>

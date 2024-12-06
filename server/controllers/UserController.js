@@ -1,5 +1,10 @@
+const bcrypt = require('bcryptjs');
+const { validateInput } = require("../utils/ValidateInput");
 const catchAsyncError =  require("../middlewares/catchAsyncError");
 const User =  require("../models/userModel");
+const Payment =  require("../models/PaymentModel");
+const fs = require('fs');
+const path = require('path');
 const ErrorHandler = require("../utils/errorHandler");
 const ApiFeatures = require("../utils/Features");
 const { filterBody } = require("../utils/helpers");
@@ -12,7 +17,7 @@ exports.updateMe = catchAsyncError(async (req, res, next) => {
         new ErrorHandler(  'This route is not for password updates.  use /updateMyPassword for updating your password.',400)
       );
     }
-     const filterdData = filterBody(req.body, ['fullname', 'username', 'email', 'state', 'type', 'gender']);
+     const filterdData = filterBody(req.body, ['fullname', 'username', 'email', 'state', 'role', 'gender']);
   
     const user = await User.findByIdAndUpdate(req.user.id, filterdData, {
       new: true,
@@ -25,20 +30,41 @@ exports.updateMe = catchAsyncError(async (req, res, next) => {
     });
   });
 
-  exports.deleteUser = catchAsyncError(async (req, res, next) => {
-
-    const deletedUser = await User.findByIdAndDelete(req.params.id);
   
-    if (!deletedUser) {
-      return next(new ErrorHandler('User not found',404)); 
+  exports.deleteUser = catchAsyncError(async (req, res, next) => {
+    const userId = req.params.id;
+  
+    // Check if user exists
+    const user = await User.findById(userId);
+    if (!user) {
+      return next(new ErrorHandler('User not found', 404));
     }
+  
+    // Fetch associated payments before deletion
+    const payments = await Payment.find({ userId });
+  
+    // Delete payment images if they exist
+    payments.forEach((payment) => {
+      if (payment.image) {
+        const imagePath = path.resolve(`uploads/${payment.image}`); // Assuming images are stored in the 'uploads/' directory
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      }
+    });
+  
+    // Delete associated payments
+    await Payment.deleteMany({ userId });
+  
+    // Delete the user
+    await User.findByIdAndDelete(userId);
   
     res.status(200).json({
       success: true,
-      message: "User Delete Successfully",
+      message: "User and associated payments (with images) deleted successfully",
     });
-  })
-
+  });
+  
   /*
   exports.deleteMe = catchAsyncError(async (req, res, next) => {
     await User.findByIdAndUpdate(req.user.id, { active: false });
@@ -50,7 +76,12 @@ exports.updateMe = catchAsyncError(async (req, res, next) => {
   });
 */
 exports.createUser = catchAsyncError(async (req, res, next) => {
-
+  const requiredFields = ['fullname', 'phone', 'username', 'email', 'password', 'role', 'gender'];
+  const missingFields = validateInput(req.body, requiredFields);
+  
+  if (missingFields.length > 0) {
+    return next(new ErrorHandler(`Missing required fields: ${missingFields.join(', ')}`, 400));
+  }
     const { fullname,phone, username, role, email, password, state, type, orderConfirmedPrice, handleLimit, gender} = req.body;
     const lastUser = await User.findOne().sort({ createdAt: -1 });
     const nextUserNumber = lastUser 
@@ -127,10 +158,14 @@ exports.createUser = catchAsyncError(async (req, res, next) => {
   };
   
 
-  const bcrypt = require('bcryptjs');
 
   exports.updateUser = catchAsyncError(async (req, res, next) => {
+    const requiredFields = ['fullname', 'phone', 'username', 'email', 'role', 'gender'];
+  const missingFields = validateInput(req.body, requiredFields);
   
+  if (missingFields.length > 0) {
+    return next(new ErrorHandler(`Missing required fields: ${missingFields.join(', ')}`, 400));
+  }
     // Check if the password exists in the request body
     if (req.body.password) {
       if(req.body.password.length < 6){
@@ -157,4 +192,6 @@ exports.createUser = catchAsyncError(async (req, res, next) => {
       user,
     });
   });
+  
+
   

@@ -2,6 +2,8 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
+
 
 const userSchema = new mongoose.Schema({
   userId: {
@@ -57,8 +59,10 @@ const userSchema = new mongoose.Schema({
   
   confirmedOrders: { type: Number, default: 0 },
   orderConfirmedPrice: { type: Number, default: 20 },
-  earnings: { type: Number, default: 0 }, // Earnings for confirmed orders
   handleLimit: { type: Number, default: 10 }, // Set by admin
+  availableAmount: { type: Number, default: 0 }, // Withdrawable amount
+  pendingAmount: { type: Number, default: 0 },   // Current month earnings
+  paidAmount: { type: Number, default: 0 },      // Total paid amount
   createdAt: {
     type: Date,
     default: Date.now,
@@ -72,6 +76,11 @@ const userSchema = new mongoose.Schema({
     timestamps: true,
   });
 
+  userSchema.methods.generateAuthToken = function () {
+    const token = jwt.sign({ _id: this._id, role: this.role }, "pogkdohjpopkfkfoghklnFL59596", { expiresIn: '1h' });
+    return token;
+  };
+  
 // Hash password before saving the user
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
@@ -90,6 +99,15 @@ userSchema.pre(/^find/, function(next) {
   // this points to the current query
   this.find({ active: { $ne: false } });
   next();
+});
+userSchema.pre('remove', async function (next) {
+  try {
+    // Delete payments associated with this user
+    await Payment.deleteMany({ userId: this._id });
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 // Method to compare password during login
 userSchema.methods.comparePassword = async function (candidatePassword, ) {

@@ -8,7 +8,7 @@ import PropTypes from 'prop-types';
 import { useAuth } from '../../hooks/useAuth';
 import { useState } from 'react';
 import EditOrder from '../../pages/EditOrder';
-import AddingTracking from '../../pages/AddingTracking';
+import { useAddOrderstoDelivry } from '../../hooks/useOrder';
 
 const statuses = [
   'pending', 'inProgress', 'confirmed', 'cancelled', 'didntAnswer1', 
@@ -42,16 +42,12 @@ const OrdersTable = ({ orders, visibleColumns, onDeleteOrder, selectedOrders, ha
   const isTrash = location.pathname.includes('trash');
   const { t } = useTranslation(); // useTranslation hook
   const { isLoading, isAdmin, isUser } = useAuth();
-  const [isDelevry, setIsDelevry] = useState(false);
+  const { addOrderstoDelivry, isDelevryMultiple } = useAddOrderstoDelivry();
 
   const onDelivryOrder = (orderId) => {
-    setSelectedOrderId(orderId);
-    setIsDelevry(true)
+    addOrderstoDelivry({ orderIds: [orderId] });
 }
-const closeModalDelivry = () => {
-  setIsDelevry(false);
-  setSelectedOrderId(null);
-}
+
   // Handle modal open and close
   const handleEditClick = (orderId) => {
     setSelectedOrderId(orderId);
@@ -161,7 +157,7 @@ const closeModalDelivry = () => {
                     {!isTrash && (
                       <>
                  <button
-                    disabled={order?.status_livraison}
+                    disabled={order?.status_livraison || isDelevryMultiple}
                     onClick={() => onDelivryOrder(order._id)}
                     
                     className={`text-green-600 hover:text-green-400 disabled:cursor-not-allowed ${order?.status === 'confirmed' && !order?.status_livraison ? 'pulse-animation' : ''}`}
@@ -192,10 +188,6 @@ const closeModalDelivry = () => {
       <MyModal isVisible={isModalOpen} onClose={closeModal}>
         <EditOrder orderId={selectedOrderId} onClose={closeModal} />
       </MyModal>
-      
-        <MyModal isVisible={isDelevry} onClose={closeModalDelivry}>
-           <AddingTracking onClose={closeModalDelivry} orderId={selectedOrderId} />
-        </MyModal>
 
     </div>
   );

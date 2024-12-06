@@ -3,19 +3,18 @@ import { useDeleteUser, useUser } from '../../hooks/useUser';
 import UsersTable from "../../components/users/UserTable";
 import Pagination from "../../components/shared/Pagination";
 import RowsPerPageSelector from "../../components/shared/RowsPage";
-import SearchBar from "../../components/shared/SearchBar";
 import ColumnVisibilityToggle from "../../components/shared/ColumnVisibilty";
 import ConfirmationModal from "../../components/shared/ConfirmationModal";
 import { useTranslation } from 'react-i18next'; // Import useTranslation
 import AddUser from "./AddUser";
 import MyModal from '../../components/shared/MyModal';
+import MetaData from "../../components/MetaData";
 const UsersPage = () => {
   const { t } = useTranslation(); // Initialize translation function
 
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const { isLoading, data, error } = useUser(currentPage, rowsPerPage);
-  const [searchTerm, setSearchTerm] = useState("");
   const [userToDelete, setUserToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { deleteUser, isDeleting } = useDeleteUser();
@@ -34,7 +33,9 @@ const UsersPage = () => {
     role: true,
     confirmed_order: true,
     order_Price: true,
-    earnings: true,
+    paidAmount: true,
+    availableAmount: true,
+    pendingAmount: true,
     handleLimit: true,
     createdAt: false,
     actions: true,
@@ -76,6 +77,8 @@ const UsersPage = () => {
   };
 
   return (
+    <>
+     <MetaData title={t('titles.users')} />
     <div>
     <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
 
@@ -89,7 +92,14 @@ const UsersPage = () => {
       </div>
       </div>
       <UsersTable onDeleteUser={handleDeleteUser} users={users} visibleColumns={visibleColumns} />
-      <Pagination currentPage={currentPage} totalPages={totalPages} handlePageChange={setCurrentPage} totalOrders={totalUsers} ordersCount={usersCount} />
+      <Pagination currentPage={currentPage} 
+        totalPages={totalPages} 
+        handlePageChange={setCurrentPage} 
+        totalOrders={totalUsers} 
+        ordersCount={usersCount}
+        text={t("users")}
+
+       />
       <ColumnVisibilityToggle visibleColumns={visibleColumns} toggleColumnVisibility={toggleColumnVisibility} />
 
       {isModalOpen && (
@@ -110,6 +120,7 @@ const UsersPage = () => {
           }
 
     </div>
+   </>
   );
 };
 

@@ -24,6 +24,8 @@ import NotFound from "./components/shared/NotFound";
 import ViewOrder from "./pages/ViewOrder";
 import TrashOrders from "./pages/TrashPage";
 import Products from "./pages/Products/Products";
+import Payment from "./pages/Payments/Payments";
+import AdminPayment from "./pages/Admin/AdminPayments";
 
 
 const queryClient = new QueryClient({
@@ -48,6 +50,7 @@ function App() {
                     </ProtectedRoute>
                   }
                 >
+                  <Route path="/payment" element={<Payment />} />
                    <Route path="/orders" element={<OrdersPage />} />
                    <Route path="/trash" element={<TrashOrders />} />
                    <Route path="/orders/create" element={<AddOrder />} />
@@ -69,7 +72,7 @@ function App() {
                 <Route path="/admin/users/edit/:id" element={<EditUser />} />
                 <Route path="/admin/users/view/:id" element={<ViewUser />} />
                 <Route path="/admin/products" element={<Products />} />
-
+                <Route path="/admin/payment" element={<AdminPayment />} />
                 <Route path="/admin/users" element={<Users />} />
                 <Route path="/admin/statistics" element={<Statistics />} />
                 
@@ -85,7 +88,6 @@ function App() {
                 <Route path="/statistics" element={<StatisticsUser />} />
 
                 </Route>
-         
                 <Route path="/login" element={<Login  />} />
                 <Route path="*" element={<NotFound />} />
             </Routes>

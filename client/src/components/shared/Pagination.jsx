@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-const Pagination = ({ currentPage, totalPages, handlePageChange, totalOrders, ordersCount }) => {
+const Pagination = ({ currentPage, totalPages, handlePageChange, totalOrders, ordersCount, text }) => {
   const { t } = useTranslation();
 
   return (
@@ -16,7 +16,7 @@ const Pagination = ({ currentPage, totalPages, handlePageChange, totalOrders, or
           {t("previous")}
         </button>
         <span className="text-gray-800 dark:text-gray-100">
-          {t("page")} {currentPage} {t("of")} {totalPages} - {t("filteredOrders", { totalOrders, ordersCount })}
+          {t("page")} {currentPage} {t("of")} {totalPages} - {t(`${text}`, { totalOrders, ordersCount })}
         </span>
         <button
           onClick={() => handlePageChange(currentPage + 1)}
@@ -37,6 +37,7 @@ Pagination.propTypes = {
   handlePageChange: PropTypes.func.isRequired,
   totalOrders: PropTypes.number.isRequired,
   ordersCount: PropTypes.number.isRequired,
+  text: PropTypes.string
 };
 
 export default Pagination;

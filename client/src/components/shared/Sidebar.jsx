@@ -6,7 +6,7 @@ const Sidebar = ({ isSidebarOpen, toggleSidebar }) => {
   return (
     <aside
       onClick={toggleSidebar}
-      className={`fixed z-40  top-0 left-0  w-64 md:w-[70px]  h-screen bg-white dark:bg-gray-800 shadow-lg transition-all duration-300 transform ${
+      className={`fixed z-40  top-0 left-0  w-64 md:w-[70px]  h-screen bg-gray-100 dark:bg-gray-800  transition-all duration-300 transform ${
         isSidebarOpen ? "translate-x-0" : "-translate-x-full"
       } lg:relative lg:translate-x-0 block md:hover:w-64 md:hover:translate-x-0 group`}
     >

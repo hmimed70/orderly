@@ -14,6 +14,7 @@ import { MdRecycling } from "react-icons/md";
 import { debounce } from "lodash";
 import { HiTrash } from "react-icons/hi";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import MetaData from "../components/MetaData";
 
 const TrashOrders = () => {
   const { t } = useTranslation(); 
@@ -120,6 +121,8 @@ const TrashOrders = () => {
     if (error) return <p>{t("ordersPage.error")}</p>;
 
   return (
+    <>
+     <MetaData title={t('titles.trash')} />
     <div className="flex flex-col">
     <div className="bg-white dark:bg-gray-800 my-2 p-2 rounded-md">
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
@@ -168,6 +171,8 @@ const TrashOrders = () => {
         handlePageChange={setCurrentPage} 
         totalOrders={totalOrders} 
         ordersCount={ordersCount} 
+        text={t("orders")}
+
       />
       <ColumnVisibilityToggle 
         visibleColumns={visibleColumns} 
@@ -182,6 +187,7 @@ const TrashOrders = () => {
         />
       )}
     </div>
+    </>
   );
 };
 

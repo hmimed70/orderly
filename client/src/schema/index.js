@@ -155,3 +155,34 @@ export const updatePasswordSchema = z
     ]),
 
   })
+
+  export const newPaymentSchema =  z.object({
+    amount: z
+    .string()
+    .transform((value) => parseFloat(value)) // Convert string to number
+    .refine((value) => !isNaN(value) && value > 0, {
+      message: "Amount must be a positive number",
+    }),
+    method: z.enum(["RIB", "Cash"]),
+    ccp: z.string().optional(),
+    note: z.string().optional()
+  })
+
+  export const updatedPaymentSchema =   z.object({
+    amount: z
+    .string() // Accept strings initially
+    .refine((str) => !isNaN(parseFloat(str)) && parseFloat(str) > 0, {
+      message: 'amount  must be a positive number',
+    }).transform((str) => parseFloat(str)),
+    status: z.enum(["accepted", "refused"]),
+    ccp: z.string().optional(),
+    note: z.string().optional(),
+    image: z
+    .union([
+      z.instanceof(File).refine((file) => file.size <= 2_000_000, {
+        message: "Max image size is 2MB",
+      }),
+      z.null(),
+      z.undefined(),
+    ]),
+  })

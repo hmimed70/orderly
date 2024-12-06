@@ -5,7 +5,6 @@ import { useGetSingleOrder, useAddOrderstoDelivry } from "../hooks/useOrder";
 import { useTranslation } from "react-i18next";
 
 const AddingTracking = ({ orderId, onClose }) => {
-  const { addOrderstoDelivry, isDelevryMultiple } = useAddOrderstoDelivry();
 
   const { t } = useTranslation();
   const { data, isLoading } = useGetSingleOrder(orderId);
